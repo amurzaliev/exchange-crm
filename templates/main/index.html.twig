@@ -1,20 +1,87 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseplus.html.twig' %}
 
-{% block title %}Hello {{ controller_name }}!{% endblock %}
+{% block title %}EXCHANGE-CRM{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    {% block header %}{{ parent() }}{% endblock %}
+    <div class="carousel">
+        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img class="d-block w-100" src="{{ asset('img/1.jpg') }}" alt="First slide">
+                    <div class="carousel-caption d-none d-md-block" style="color:#000;">
+                        <h5 style="font-size: 50px;">Лучшее средство для контроля движения валют</h5>
+                        <p>разработано специально для вас</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img class="d-block w-100" src="{{ asset('img/2.jpg') }}" alt="Second slide">
+                    <div class="carousel-caption d-none d-md-block" style="color:#000;">
+                        <h5 style="font-size: 50px;">АКЦИЯ: Купите подписку на 3 месяца и получите еще месяц бесплатно!</h5>
+                        <p>Подробнее об условиях акции читайте в разделе "Тарифы"</p>
+                    </div>
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Назад</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Далее</span>
+            </a>
+        </div>
+    </div>
+    <div class="about" style="margin-top: 70px; text-align:center; margin-bottom: 30px">
+        <div class="container">
+            <h1 style="text-align:center;">Наши главные принципы</h1>
+            <div class="row">
+                <div class="col-sm">
+                    <div class="card" style="width: 18rem; border: none;">
+                        <i class="fas fa-lock" style="text-align: center; font-size: 50px; margin: 20px;"></i>
+                        <div class="card-body">
+                            <h4 style="text-align:center; margin: 10px;">Безопасность</h4>
+                            <p style="text-align:center;" class="card-text">Здесь описание того насколько мы заботимся о безопасности наших пользователей и тд.</p>
+                        </div>
+                    </div>
+                </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+                <div class="col-sm">
+                    <div class="card" style="width: 18rem; border: none;">
+                        <i class="fas fa-thumbs-up" style="text-align: center; font-size: 50px; margin: 20px;"></i>
+                        <div class="card-body">
+                            <h4 style="text-align:center; margin: 10px;">Удобство</h4>
+                            <p style="text-align:center;" class="card-text">Здесь мы рассказываем об удобстве эксплуатации нашего софта и тд.</p>
+                        </div>
+                    </div>
+                </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'src/Controller/MainController.php'|file_link(0) }}">src/Controller/MainController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'templates/main/index.html.twig'|file_link(0) }}">templates/main/index.html.twig</a></code></li>
-    </ul>
-</div>
+                <div class="col-sm">
+                    <div class="card" style="width: 18rem; border: none;">
+                        <i class="fas fa-cogs" style="text-align: center; font-size: 50px; margin: 20px;"></i>
+                        <div class="card-body">
+                            <h4 style="text-align:center; margin: 10px;">Функциональность</h4>
+                            <p style="text-align:center;" class="card-text">Здесь мы говорим насколько функционален наш продукт и тд.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tryForFree">
+        <div class="card text-center">
+            <div class="card-header">
+                Попробуйте прямо сейчас
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Зарегистрируйтесь</h5>
+                <p class="card-text">И активируйте беслпатный Demo-аккаунт с основным функционалом.</p>
+                <a href="{{ path('fos_user_registration_register') }}" class="btn btn-outline-success">Зарегистрироваться</a>
+            </div>
+            <div class="card-footer text-muted">
+            </div>
+        </div>
+    </div>
+    {% block footer %}{{ parent() }}{% endblock %}
 {% endblock %}
