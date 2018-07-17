@@ -26,6 +26,9 @@
     "behat/transliterator": {
         "version": "1.2-dev"
     },
+    "cocur/slugify": {
+        "version": "v3.1"
+    },
     "container-interop/container-interop": {
         "version": "1.2.0"
     },
@@ -134,6 +137,12 @@
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
+    "knplabs/knp-menu": {
+        "version": "2.3.0"
+    },
+    "knplabs/knp-menu-bundle": {
+        "version": "v2.2.1"
+    },
     "monolog/monolog": {
         "version": "1.23.0"
     },
@@ -178,6 +187,39 @@
             "version": "5.2",
             "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
         }
+    },
+    "sonata-project/admin-bundle": {
+        "version": "3.31",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.31",
+            "ref": "0e5931df1732e3dccfba42a20853049e5e9db6ae"
+        }
+    },
+    "sonata-project/block-bundle": {
+        "version": "3.12.1"
+    },
+    "sonata-project/cache": {
+        "version": "2.0.1"
+    },
+    "sonata-project/core-bundle": {
+        "version": "3.9",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.9",
+            "ref": "2f69bd1995730b73a5211a9707622fb25a925df7"
+        }
+    },
+    "sonata-project/datagrid-bundle": {
+        "version": "2.3.1"
+    },
+    "sonata-project/doctrine-orm-admin-bundle": {
+        "version": "3.6.1"
+    },
+    "sonata-project/exporter": {
+        "version": "1.9.1"
     },
     "swiftmailer/swiftmailer": {
         "version": "v6.1.2"
@@ -356,6 +398,9 @@
     "symfony/security": {
         "version": "v4.1.1"
     },
+    "symfony/security-acl": {
+        "version": "v3.0.1"
+    },
     "symfony/security-bundle": {
         "version": "3.3",
         "recipe": {
@@ -451,6 +496,15 @@
     },
     "textalk/websocket": {
         "version": "1.2.0"
+    },
+    "twig/extensions": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "4851df0afc426b8f07204379d21fca25b6df5d68"
+        }
     },
     "twig/twig": {
         "version": "v2.5.0"

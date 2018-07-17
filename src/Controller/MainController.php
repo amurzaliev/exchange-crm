@@ -14,6 +14,7 @@ class MainController extends Controller
     {
         return $this->render('main/index.html.twig', [
             'controller_name' => 'MainController',
+
         ]);
     }
 }
