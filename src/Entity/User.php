@@ -12,12 +12,19 @@ use FOS\UserBundle\Model\User as BaseUser;
  */
 class User extends BaseUser
 {
+    const ROLE_DEFAULT = 'ROLE_OWNER';
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
     protected $id;
+
+    /**
+     * @ORM\Column(type="string",name="full_name", nullable=true)
+     */
+    protected $fullName;
 
     /**
      * @var ExchangeOffice[]|ArrayCollection
@@ -29,13 +36,20 @@ class User extends BaseUser
     public function __construct()
     {
         parent::__construct();
-        $this->exchangeOffices = new ArrayCollection();
     }
 
     public function getId()
     {
         return $this->id;
     }
+
+    public function setEmail($email)
+    {
+        $this->setUsername($email);
+
+        return parent::setEmail($email);
+    }
+
 
     public function setExchangeOffices(Collection $exchangeOffices): self
     {

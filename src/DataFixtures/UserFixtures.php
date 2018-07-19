@@ -24,45 +24,34 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $user = new User();
+        $admin = new User();
 
-        $user->setEmail('admin@mail.ru')
+        $admin->setEmail('admin@mail.ru')
             ->setPassword($this->userPasswordEncoder->encodePassword($user, '12345'))
-            ->setRoles(['ROLE_USER', 'ROLE_ADMIN'])
-            ->setUsername('admin')
-        ->setEnabled('true');
-
-        $manager->persist($user);
-        $manager->flush();
-
-        $this->addReference(self::ADMIN, $user);
-
-        $user = new User();
-
-        $user->setEmail('user@mail.ru')
-            ->setPassword($this->userPasswordEncoder->encodePassword($user, '12345'))
-            ->setRoles(['ROLE_USER'])
-            ->setUsername('user')
+            ->setRoles(['ROLE_ADMIN'])
             ->setEnabled('true');
+            $manager->persist($admin);
+            $manager->flush();
 
+        $this->addReference(self::ADMIN, $admin);
+
+        $user = new User();
+        $user->setEmail('user@mail.ru')
+             ->setPassword($this->userPasswordEncoder->encodePassword($user, '12345'))
+             ->setRoles(['ROLE_USER'])
+             ->setEnabled('true');
         $manager->persist($user);
-
         $manager->flush();
 
         $this->addReference(self::USER, $user);
 
-        $user = new User();
-
-        $user->setEmail('owner@mail.ru')
-            ->setPassword($this->userPasswordEncoder->encodePassword($user, '12345'))
-            ->setRoles(['ROLE_OWNER'])
-            ->setUsername('owner')
-            ->setEnabled('true');
-
-        $manager->persist($user);
-
+        $owner = new User();
+        $owner->setEmail('owner@mail.ru')
+              ->setPassword($this->userPasswordEncoder->encodePassword($user, '12345'))
+              ->setEnabled('true');
+        $manager->persist($owner);
         $manager->flush();
 
-        $this->addReference(self::OWNER, $user);
+        $this->addReference(self::OWNER, $owner);
     }
 }

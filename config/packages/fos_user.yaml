@@ -5,3 +5,6 @@ fos_user:
     from_email:
         address: "ve@mail.ru"
         sender_name: "Some company"
+    registration:
+            form:
+                type: App\Form\RegistrationType

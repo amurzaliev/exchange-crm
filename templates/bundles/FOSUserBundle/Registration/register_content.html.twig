@@ -1,8 +1,9 @@
 {% trans_default_domain 'FOSUserBundle' %}
 <div style="margin: 100px">
     <h1>Регистрация</h1>
-{{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register'}}) }}
-    {{ form_widget(form) }}
+    {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register', 'novalidate' : 'novalidate'}}) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.plainPassword) }}
     <button class="btn btn-outline-dark" type="submit">{{ 'registration.submit'|trans }}</button>
-{{ form_end(form) }}
+    {{ form_end(form) }}
 </div>
