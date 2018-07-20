@@ -26,29 +26,34 @@ class UserFixtures extends Fixture
     {
         $admin = new User();
 
-        $admin->setEmail('admin@mail.ru')
-            ->setPassword($this->userPasswordEncoder->encodePassword($user, '12345'))
+        $admin
+            ->setEmail('admin@mail.ru')
+            ->setPassword($this->userPasswordEncoder->encodePassword($admin, '12345'))
             ->setRoles(['ROLE_ADMIN'])
+            ->setFullName('Админ А.А')
             ->setEnabled('true');
-            $manager->persist($admin);
-            $manager->flush();
-
+        $manager->persist($admin);
+        $manager->flush();
         $this->addReference(self::ADMIN, $admin);
 
         $user = new User();
-        $user->setEmail('user@mail.ru')
-             ->setPassword($this->userPasswordEncoder->encodePassword($user, '12345'))
-             ->setRoles(['ROLE_USER'])
-             ->setEnabled('true');
+        $user
+            ->setEmail('user@mail.ru')
+            ->setPassword($this->userPasswordEncoder->encodePassword($user, '12345'))
+            ->setRoles(['ROLE_USER'])
+            ->setFullName('Пользователь А.А.')
+            ->setEnabled('true');
         $manager->persist($user);
         $manager->flush();
 
         $this->addReference(self::USER, $user);
 
         $owner = new User();
-        $owner->setEmail('owner@mail.ru')
-              ->setPassword($this->userPasswordEncoder->encodePassword($user, '12345'))
-              ->setEnabled('true');
+        $owner
+            ->setEmail('owner@mail.ru')
+            ->setPassword($this->userPasswordEncoder->encodePassword($user, '12345'))
+            ->setEnabled('true')
+            ->setFullName('Владелей А.А.');
         $manager->persist($owner);
         $manager->flush();
 

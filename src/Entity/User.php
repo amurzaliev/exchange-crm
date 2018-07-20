@@ -12,9 +12,11 @@ use FOS\UserBundle\Model\User as BaseUser;
  */
 class User extends BaseUser
 {
-    const ROLE_DEFAULT = 'ROLE_OWNER';
+    const ROLE_DEFAULT = 'ROLE_USER';
 
     /**
+     * @var int
+     *
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -22,12 +24,15 @@ class User extends BaseUser
     protected $id;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="string",name="full_name", nullable=true)
      */
     protected $fullName;
 
     /**
      * @var ExchangeOffice[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\ExchangeOffice", mappedBy="user")
      */
     private $exchangeOffices;
@@ -36,14 +41,15 @@ class User extends BaseUser
     public function __construct()
     {
         parent::__construct();
+        $this->setRoles(['ROLE_OWNER']);
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setEmail($email)
+    public function setEmail($email): self
     {
         $this->setUsername($email);
 
@@ -74,5 +80,16 @@ class User extends BaseUser
         if ($this->exchangeOffices->contains($exchangeOffice)) {
             $this->exchangeOffices->removeElement($exchangeOffice);
         }
+    }
+
+    public function setFullName(?string $fullName): self
+    {
+        $this->fullName = $fullName;
+        return $this;
+    }
+
+    public function getFullName(): ?string
+    {
+        return $this->fullName;
     }
 }
