@@ -37,6 +37,13 @@ class User extends BaseUser
      */
     private $exchangeOffices;
 
+    /**
+     * @var PermissionGroup[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\PermissionGroup", mappedBy="permissionGroup")
+     */
+    private $permissionGroups;
+
 
     public function __construct()
     {
@@ -91,5 +98,30 @@ class User extends BaseUser
     public function getFullName(): ?string
     {
         return $this->fullName;
+    }
+
+    public function setPermissionGroups(Collection $permissionGroups)
+    {
+        $this->permissionGroups = $permissionGroups;
+        return $this;
+    }
+
+    public function getPermissionGroups(): Collection
+    {
+        return $this->permissionGroups;
+    }
+
+    public function addPermissionGroups(PermissionGroup $permissionGroup)
+    {
+        if (!$this->permissionGroups->contains($permissionGroup)) {
+            $this->permissionGroups->add($permissionGroup);
+        }
+    }
+
+    public function removePermissionGroups(PermissionGroup $permissionGroup)
+    {
+        if (!$this->permissionGroups->contains($permissionGroup)) {
+            $this->permissionGroups->removeElement($permissionGroup);
+        }
     }
 }
