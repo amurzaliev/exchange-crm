@@ -75,7 +75,10 @@ class PermissionGroupController extends Controller
         int $id
     )
     {
-        $permissionGroup = $permissionGroupRepository->find($id);
+        $permissionGroup = $permissionGroupRepository->findOneBy([
+            'id' => $id,
+            'user' => $this->getUser()
+        ]);
 
         $form = $this->createForm(PermissionGroupType::class, $permissionGroup);
 
