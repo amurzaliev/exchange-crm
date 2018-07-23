@@ -2,6 +2,11 @@
 
 namespace App\Controller\Profile;
 
+use App\Entity\PermissionGroup;
+use App\Form\PermissionGroupType;
+use App\Repository\PermissionGroupRepository;
+use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -10,43 +15,83 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  * Class PermissionGroupController
  * @package App\Controller\Profile
  *
- * @Route("permission_group")
+ * @Route("profile/permission_group")
  */
 class PermissionGroupController extends Controller
 {
     /**
      * @Route("/", name="app_profile_permission_group_index")
+     * @param PermissionGroupRepository $permissionGroupRepository
+     * @return Response
      */
-    public function index()
+    public function index(PermissionGroupRepository $permissionGroupRepository)
     {
-        return $this->render('permission_group/index.html.twig', [
-            'controller_name' => 'PermissionGroupController',
+        $permissionGroups = $permissionGroupRepository->findAll();
+        return $this->render('profile/permission_group/index.html.twig', [
+            'permissionGroups' => $permissionGroups,
         ]);
     }
 
     /**
      * @Route("/create", name="app_profile_permission_group_create")
+     * @param Request $request
+     * @param ObjectManager $manager
+     * @return Response
      */
-    public function createAction()
+    public function createAction(Request $request, ObjectManager $manager)
     {
-        return new Response('createAction');
-    }
+        $permissionGroup = new PermissionGroup();
 
-    /**
-     * @Route("/add", name="app_profile_permission_group_add")
-     */
-    public function addAction()
-    {
-        return new Response('addAction');
+        $form = $this->createForm(PermissionGroupType::class, $permissionGroup);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $permissionGroup->setUser($this->getUser());
+            $manager->persist($permissionGroup);
+            $manager->flush();
+
+            return $this->redirectToRoute('app_profile_permission_group_index');
+        }
+
+        return $this->render('profile/permission_group/create.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 
     /**
      * @Route("/{id}/edit", name="app_profile_permission_group_edit")
+     * @param Request $request
+     * @param PermissionGroupRepository $permissionGroupRepository
+     * @param ObjectManager $manager
      * @param int $id
      * @return Response
      */
-    public function editAction(int $id)
+    public function editAction(
+        Request $request,
+        PermissionGroupRepository $permissionGroupRepository,
+        ObjectManager $manager,
+        int $id
+    )
     {
-        return new Response('editAction');
+        $permissionGroup = $permissionGroupRepository->find($id);
+
+        $form = $this->createForm(PermissionGroupType::class, $permissionGroup);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $permissionGroup->setUser($this->getUser());
+            $manager->persist($permissionGroup);
+            $manager->flush();
+
+            return $this->redirectToRoute('app_profile_permission_group_index');
+        }
+
+        return $this->render('profile/permission_group/edit.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 }

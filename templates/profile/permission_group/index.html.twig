@@ -1,0 +1,9 @@
+{% extends "profile.layout.html.twig" %}
+{% block body %}
+
+    <a href="{{ path('app_profile_permission_group_create') }}">Создать новую группу</a>
+    {% for permissionGroup in permissionGroups %}
+       <a href="{{ path('app_profile_permission_group_edit', {'id':permissionGroup.id}) }}"><div>PermissionGroup {{ permissionGroup.title }}</div></a>
+
+    {% endfor %}
+{% endblock body %}
