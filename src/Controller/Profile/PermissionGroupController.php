@@ -82,6 +82,10 @@ class PermissionGroupController extends Controller
             'user' => $this->getUser()
         ]);
 
+        if (!$permissionGroup) {
+            return $this->render('profile/сomponents/error_messages/404.html.twig');
+        }
+
         $form = $this->createForm(PermissionGroupType::class, $permissionGroup);
 
         $form->handleRequest($request);
