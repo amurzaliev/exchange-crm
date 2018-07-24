@@ -26,7 +26,9 @@ class PermissionGroupController extends Controller
      */
     public function index(PermissionGroupRepository $permissionGroupRepository)
     {
-        $permissionGroups = $permissionGroupRepository->findAll();
+        $permissionGroups = $permissionGroupRepository->findBy([
+            'user' => $this->getUser()
+        ]);
         return $this->render('profile/permission_group/index.html.twig', [
             'permissionGroups' => $permissionGroups,
         ]);
