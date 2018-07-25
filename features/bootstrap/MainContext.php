@@ -26,6 +26,7 @@ class MainContext extends RawMinkContext
         $this->kernel = $kernel;
     }
 
+
     protected function getContainer()
     {
         return $this->kernel->getContainer();
