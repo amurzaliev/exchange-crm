@@ -1,0 +1,66 @@
+{% extends "profile.layout.html.twig" %}
+{% block content %}
+
+    <section class="content-header">
+        <h1>
+            Обменный пункт
+            <small>Добавление</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="{{ path('profile_index') }}"><i class="fa fa-dashboard"></i> Главная</a></li>
+        </ol>
+    </section>
+
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <!--/.col (left) -->
+            <!-- right column -->
+            <div class="col-md-12">
+                <!-- /.box -->
+                <!-- general form elements disabled -->
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Добавления нового обменного пункта</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        {{ form_start(form) }}
+
+                        {{ form_start(form) }}
+
+                        {{ form_label(form.name, 'Название') }}
+                        {{ form_errors(form.name) }}
+                        {{ form_widget(form.name) }}
+                        {{ form_help(form.name) }}
+
+                        {{ form_label(form.address, 'Адрес') }}
+                        {{ form_errors(form.address) }}
+                        {{ form_widget(form.address) }}
+                        {{ form_help(form.address) }}
+
+                        {{ form_label(form.contact, 'Контакты') }}
+                        {{ form_errors(form.contact) }}
+                        {{ form_widget(form.contact) }}
+                        {{ form_help(form.contact) }}
+
+                        {{ form_label(form.active, 'Активность обменного пункта') }}
+                        {{ form_errors(form.active) }}
+                        {{ form_widget(form.active) }}
+                        {{ form_help(form.active) }}
+                        <hr>
+                        {{ form_widget(form.save, {'label' : 'Добавить', 'attr' : {
+                            'class' : 'btn btn-primary btn-lg'
+                        }}) }}
+                        {{ form_end(form) }}
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!--/.col (right) -->
+        </div>
+        <!-- /.row -->
+    </section>
+{% endblock %}

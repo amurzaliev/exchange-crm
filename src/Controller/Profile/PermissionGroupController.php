@@ -24,7 +24,7 @@ class PermissionGroupController extends Controller
      * @param PermissionGroupRepository $permissionGroupRepository
      * @return Response
      */
-    public function index(PermissionGroupRepository $permissionGroupRepository)
+    public function indexAction(PermissionGroupRepository $permissionGroupRepository)
     {
         $permissionGroups = $permissionGroupRepository->findBy([
             'user' => $this->getUser()
