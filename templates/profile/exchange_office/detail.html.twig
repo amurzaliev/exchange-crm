@@ -1,0 +1,48 @@
+{% extends "profile.layout.html.twig" %}
+{% block content %}
+
+    <section class="content-header">
+        <h1>
+            Данные обменного пункта
+            <small>Инофрмация</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="{{ path('profile_index') }}"><i class="fa fa-dashboard"></i> Главная</a></li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <!--/.col (left) -->
+            <!-- right column -->
+            <div class="col-md-12">
+                <!-- /.box -->
+                <!-- general form elements disabled -->
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Редактирование обменного пункта</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <p>Название обменного пункта: {{ officeRepository.name }}</p>
+                        <br>
+                        <p>Адрес: {{ officeRepository.address }}</p>
+                        <br>
+                        <p>Контакты: {{ officeRepository.contact }}</p>
+                        <br>
+                        {% if (officeRepository.active) %}
+                            <p>Активность:  работает</p>
+                        {% else %}
+                            <p>Активность:  не работает</p>
+                        {% endif %}
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!--/.col (right) -->
+        </div>
+        <!-- /.row -->
+    </section>
+{% endblock %}

@@ -12,6 +12,6 @@ class IndexController extends Controller
      */
     public function indexAction()
     {
-        return $this->render('profile/index/index.html.twig', []);
+        return $this->render('profile/index/index.html.twig');
     }
 }

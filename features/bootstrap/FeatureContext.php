@@ -44,7 +44,6 @@ class FeatureContext extends MainContext
     }
 
 
-
     /**
      * @When /^я захожу на сайт как "([^"]*)" с паролем "([^"]*)"$/
      * @param $username
