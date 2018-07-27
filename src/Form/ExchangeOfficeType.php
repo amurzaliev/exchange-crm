@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\ExchangeOffice;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,11 +17,10 @@ class ExchangeOfficeType extends AbstractType
             ->add('name')
             ->add('address')
             ->add('contact')
-            ->add('active', ChoiceType::class,[
-                'choices'  => [
-                    'Работает' => 1,
-                    'Не работает' => 0,
-            ]])
+            ->add('active', CheckboxType::class ,[
+                'label' => 'Активировать',
+                'required'=> false
+            ])
             ->add('save', SubmitType::class)
         ;
     }
