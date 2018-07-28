@@ -2,9 +2,8 @@ default:
     suites:
         default:
             contexts:
-                - FeatureContext:
+                - BaseContext:
                     kernel: '@kernel'
-                - Behat\MinkExtension\Context\MinkContext
     extensions:
         Behat\Symfony2Extension:
             kernel:
