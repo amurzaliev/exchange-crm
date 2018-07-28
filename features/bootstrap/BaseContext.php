@@ -34,7 +34,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @When /^я перехожу по маршруту "(?P<route>[^"]+)"$/
+     * @When /^я перехожу по маршруту "([^"]*)"$/
      *
      * @param $route
      */
@@ -42,7 +42,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     {
         if (array_key_exists($route, $this->routes)) {
             $this->visitPath($this->getContainer()->get('router')->generate($this->routes['Главная страница']));
-        } else{
+        } else {
             throw new \LogicException("Маршрут {$route} не найден в routes");
         }
 
@@ -73,7 +73,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @When /^я нажимаю на кнопку "(?P<button>(?:[^"]|\\")*)"$/
+     * @When /^я нажимаю на кнопку "([^"]*)"$/
      *
      * @param $button
      * @throws \Behat\Mink\Exception\ElementNotFoundException
@@ -85,7 +85,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @When /^я нажимаю на ссылку "(?P<link>(?:[^"]|\\")*)"$/
+     * @When /^я нажимаю на ссылку "([^"]*)"$/
      *
      * @param $link
      * @throws \Behat\Mink\Exception\ElementNotFoundException
@@ -97,7 +97,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @When /^я заполняю поле формы "(?P<field>(?:[^"]|\\")*)" значением "(?P<value>(?:[^"]|\\")*)"$/
+     * @When /^я заполняю поле формы "([^"]*)" значением "([^"]*)"$/
      *
      * @param $field
      * @param $value
@@ -128,13 +128,13 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @When /^я выбираю опцию "(?P<option>(?:[^"]|\\")*)" из поля выбора "(?P<select>(?:[^"]|\\")*)"$/
+     * @When /^я выбираю опцию "([^"]*)" из поля выбора "([^"]*)"$/
      *
      * @param $select
      * @param $option
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
-    public function selectOption($select, $option)
+    public function selectOption($option, $select)
     {
         $select = $this->fixStepArgument($select);
         $option = $this->fixStepArgument($option);
@@ -142,13 +142,13 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @When /^я дополнительно выбираю опцию "(?P<option>(?:[^"]|\\")*)" из поля выбора "(?P<select>(?:[^"]|\\")*)"$/
+     * @When /^я дополнительно выбираю опцию "([^"]*)" из поля выбора "([^"]*)"$/
      *
      * @param $select
      * @param $option
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
-    public function additionallySelectOption($select, $option)
+    public function additionallySelectOption($option, $select)
     {
         $select = $this->fixStepArgument($select);
         $option = $this->fixStepArgument($option);
@@ -156,7 +156,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @When /^я отмечаю галочкой опцию "(?P<option>(?:[^"]|\\")*)"$/
+     * @When /^я отмечаю галочкой опцию "([^"]*)"$/
      *
      * @param $option
      * @throws \Behat\Mink\Exception\ElementNotFoundException
@@ -168,7 +168,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @When /^я снимаю галочку с опции "(?P<option>(?:[^"]|\\")*)"$/
+     * @When /^я снимаю галочку с опции "([^"]*)"$/
      *
      * @param $option
      * @throws \Behat\Mink\Exception\ElementNotFoundException
@@ -180,18 +180,18 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @When /^я прикрепляю файл "(?P<path>[^"]*)" к полю "(?P<field>(?:[^"]|\\")*)"$/
+     * @When /^я прикрепляю файл "([^"]*)" к полю "([^"]*)"$/
      *
      * @param $field
      * @param $path
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
-    public function attachFileToField($field, $path)
+    public function attachFileToField($path, $field)
     {
         $field = $this->fixStepArgument($field);
 
         if ($this->getMinkParameter('files_path')) {
-            $fullPath = rtrim(realpath($this->getMinkParameter('files_path')), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$path;
+            $fullPath = rtrim(realpath($this->getMinkParameter('files_path')), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $path;
             if (is_file($fullPath)) {
                 $path = $fullPath;
             }
@@ -241,29 +241,29 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @Then /^код ответа сервера должен быть (?P<code>\d+)$/
+     * @Then /^код ответа сервера должен быть ([^"]*)$/
      *
      * @param $code
      * @throws \Behat\Mink\Exception\ExpectationException
      */
     public function assertResponseStatus($code)
     {
-        $this->assertSession()->statusCodeEquals($code);
+        $this->assertSession()->statusCodeEquals((int)$code);
     }
 
     /**
-     * @Then /^код ответа сервера НЕ должен быть (?P<code>\d+)$/
+     * @Then /^код ответа сервера НЕ должен быть ([^"]*)$/
      *
      * @param $code
      * @throws \Behat\Mink\Exception\ExpectationException
      */
     public function assertResponseStatusIsNot($code)
     {
-        $this->assertSession()->statusCodeNotEquals($code);
+        $this->assertSession()->statusCodeNotEquals((int)$code);
     }
 
     /**
-     * @Then /^я вижу слово "(?P<text>(?:[^"]|\\")*)" где-то на странице$/
+     * @Then /^я вижу слово "([^"]*)" где-то на странице$/
      *
      * @param $text
      * @throws \Behat\Mink\Exception\ResponseTextException
@@ -274,7 +274,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @Then /^я не должен видеть слово "(?P<text>(?:[^"]|\\")*)" где-то на странице$/
+     * @Then /^я не должен видеть слово "([^"]*)" где-то на странице$/
      *
      * @param $text
      * @throws \Behat\Mink\Exception\ResponseTextException
@@ -285,7 +285,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @Then /^я вижу текст совпадающий (?P<pattern>"(?:[^"]|\\")*")$/
+     * @Then /^я вижу текст совпадающий ([^"]*)$/
      *
      * @param $pattern
      * @throws \Behat\Mink\Exception\ResponseTextException
@@ -296,7 +296,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @Then /^я НЕ вижу текст совпадающий (?P<pattern>"(?:[^"]|\\")*")$/
+     * @Then /^я НЕ вижу текст совпадающий ([^"]*)$/
      *
      * @param $pattern
      * @throws \Behat\Mink\Exception\ResponseTextException
@@ -335,25 +335,25 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @Then /^я вижу слово "(?P<text>(?:[^"]|\\")*)" в "(?P<element>[^"]*)" элементе$/
+     * @Then /^я вижу слово "([^"]*)" в "([^"]*)" элементе$/
      *
      * @param $element
      * @param $text
      * @throws \Behat\Mink\Exception\ElementTextException
      */
-    public function assertElementContainsText($element, $text)
+    public function assertElementContainsText($text, $element)
     {
         $this->assertSession()->elementTextContains('css', $element, $this->fixStepArgument($text));
     }
 
     /**
-     * @Then /^я НЕ вижу слово "(?P<text>(?:[^"]|\\")*)" в "(?P<element>[^"]*)" элементе$/
+     * @Then /^я НЕ вижу слово "([^"]*)" в "([^"]*)" элементе$/
      *
      * @param $element
      * @param $text
      * @throws \Behat\Mink\Exception\ElementTextException
      */
-    public function assertElementNotContainsText($element, $text)
+    public function assertElementNotContainsText($text, $element)
     {
         $this->assertSession()->elementTextNotContains('css', $element, $this->fixStepArgument($text));
     }
@@ -391,7 +391,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @Then /^я вижу "(?P<element>[^"]*)" css элемент на странице$/
+     * @Then /^я вижу "([^"]*)" css элемент на странице$/
      *
      * @param $element
      * @throws \Behat\Mink\Exception\ElementNotFoundException
@@ -402,7 +402,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @Then /^я НЕ вижу "(?P<element>[^"]*)" css элемент на странице$/
+     * @Then /^я НЕ вижу "([^"]*)" css элемент на странице$/
      *
      * @param $element
      * @throws \Behat\Mink\Exception\ExpectationException
@@ -413,7 +413,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @Then /^поле формы "(?P<field>(?:[^"]|\\")*)" должно содержать значение "(?P<value>(?:[^"]|\\")*)"$/
+     * @Then /^поле формы "([^"]*)" должно содержать значение "([^"]*)"$/
      *
      * @param $field
      * @param $value
@@ -427,7 +427,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @Then /^поле формы "(?P<field>(?:[^"]|\\")*)" НЕ должно содержать значение "(?P<value>(?:[^"]|\\")*)"$/
+     * @Then /^поле формы "([^"]*)" НЕ должно содержать значение "([^"]*)"$/
      *
      * @param $field
      * @param $value
@@ -457,7 +457,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @Then /^поле выбора "(?P<checkbox>(?:[^"]|\\")*)" должно быть отмечено галочкой$/
+     * @Then /^поле выбора "([^"]*)" должно быть отмечено галочкой$/
      *
      * @param $checkbox
      * @throws \Behat\Mink\Exception\ExpectationException
@@ -468,7 +468,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @Then /^поле выбора "(?P<checkbox>(?:[^"]|\\")*)" НЕ должно быть отмечено галочкой$/
+     * @Then /^поле выбора "([^"]*)" НЕ должно быть отмечено галочкой$/
      *
      * @param $checkbox
      * @throws \Behat\Mink\Exception\ExpectationException
@@ -499,8 +499,8 @@ class BaseContext extends RawMinkContext implements TranslatableContext
      */
     public function printLastResponse()
     {
-        echo (
-            $this->getSession()->getCurrentUrl()."\n\n".
+        echo(
+            $this->getSession()->getCurrentUrl() . "\n\n" .
             $this->getSession()->getPage()->getContent()
         );
     }
@@ -518,7 +518,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
             throw new \RuntimeException('Set "show_cmd" parameter in behat.yml to be able to open page in browser (ex.: "show_cmd: firefox %s")');
         }
 
-        $filename = rtrim($this->getMinkParameter('show_tmp_dir'), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.uniqid().'.html';
+        $filename = rtrim($this->getMinkParameter('show_tmp_dir'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . uniqid() . '.html';
         file_put_contents($filename, $this->getSession()->getPage()->getContent());
         system(sprintf($this->getMinkParameter('show_cmd'), escapeshellarg($filename)));
     }
@@ -540,7 +540,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
      */
     public static function getMinkTranslationResources()
     {
-        return glob(__DIR__.'/../../../../i18n/*.xliff');
+        return glob(__DIR__ . '/../../../../i18n/*.xliff');
     }
 
     /**
@@ -556,7 +556,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @When /^я захожу на сайт как "(?P<username>(?:[^"]|\\")*)" с паролем "(?P<password>(?:[^"]|\\")*)"$/
+     * @When /^я захожу на сайт как "([^"]*)" с паролем "([^"]*)"$/
      *
      * @param $username
      * @param $password
