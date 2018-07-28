@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -61,11 +62,17 @@ class Currency
      */
     private $user;
 
+    /**
+     * @var Cashbox[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Cashbox", mappedBy="currency")
+     */
+    private $cashboxes;
 
     public function __construct()
     {
         $this->create_at = new DateTime();
         $this->updated_at = new DateTime();
+        $this->cashboxes = new ArrayCollection();
     }
 
     public function getId()
@@ -162,4 +169,34 @@ class Currency
         return $this;
     }
 
+    /**
+     * @return Collection|Cashbox[]
+     */
+    public function getCashboxes(): Collection
+    {
+        return $this->cashboxes;
+    }
+
+    public function addCashbox(Cashbox $cashbox): self
+    {
+        if (!$this->cashboxes->contains($cashbox)) {
+            $this->cashboxes[] = $cashbox;
+            $cashbox->setCurrency($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCashbox(Cashbox $cashbox): self
+    {
+        if ($this->cashboxes->contains($cashbox)) {
+            $this->cashboxes->removeElement($cashbox);
+            // set the owning side to null (unless already changed)
+            if ($cashbox->getCurrency() === $this) {
+                $cashbox->setCurrency(null);
+            }
+        }
+
+        return $this;
+    }
 }

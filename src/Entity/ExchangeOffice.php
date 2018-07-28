@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -52,6 +54,17 @@ class ExchangeOffice
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="exchangeOffices")
      */
     private $user;
+
+    /**
+     * @var Cashbox[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Cashbox", mappedBy="exchangeOffice")
+     */
+    private $cashboxes;
+
+    public function __construct()
+    {
+        $this->cashboxes = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -114,6 +127,37 @@ class ExchangeOffice
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Cashbox[]
+     */
+    public function getCashboxes(): Collection
+    {
+        return $this->cashboxes;
+    }
+
+    public function addCashbox(Cashbox $cashbox): self
+    {
+        if (!$this->cashboxes->contains($cashbox)) {
+            $this->cashboxes[] = $cashbox;
+            $cashbox->setExchangeOffice($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCashbox(Cashbox $cashbox): self
+    {
+        if ($this->cashboxes->contains($cashbox)) {
+            $this->cashboxes->removeElement($cashbox);
+            // set the owning side to null (unless already changed)
+            if ($cashbox->getExchangeOffice() === $this) {
+                $cashbox->setExchangeOffice(null);
+            }
+        }
 
         return $this;
     }

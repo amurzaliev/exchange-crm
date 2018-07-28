@@ -10,13 +10,16 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class ExchangeOfficeFixtures extends Fixture implements DependentFixtureInterface
 {
+
+    public const EXCHANGEOFFICE = 'Обменный пункт №1';
+
     public function load(ObjectManager $manager)
     {
         /** @var User $owner */
         $owner = $this->getReference(UserFixtures::OWNER);
 
         $exchangeOffice = new ExchangeOffice();
-        $exchangeOffice->setName('Обменный пункт №1')
+        $exchangeOffice->setName(self::EXCHANGEOFFICE)
             ->setAddress('Абдрахманова, 125')
             ->setContact('0312545454, 0555545454')
             ->setActive('true')
@@ -24,6 +27,8 @@ class ExchangeOfficeFixtures extends Fixture implements DependentFixtureInterfac
         $manager->persist($exchangeOffice);
 
         $manager->flush();
+
+        $this->addReference(self::EXCHANGEOFFICE, $exchangeOffice);
     }
 
     /**

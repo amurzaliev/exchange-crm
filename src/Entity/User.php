@@ -50,11 +50,17 @@ class User extends BaseUser
      */
     private $currency;
 
+    /**
+     * @var Cashbox[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Cashbox", mappedBy="user")
+     */
+    private $cashboxes;
 
     public function __construct()
     {
         parent::__construct();
         $this->setRoles(['ROLE_OWNER']);
+        $this->cashboxes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -147,5 +153,36 @@ class User extends BaseUser
     public function getCurrency(): int
     {
         return $this->currency;
+    }
+
+    /**
+     * @return Collection|Cashbox[]
+     */
+    public function getCashboxes(): Collection
+    {
+        return $this->cashboxes;
+    }
+
+    public function addCashbox(Cashbox $cashbox): self
+    {
+        if (!$this->cashboxes->contains($cashbox)) {
+            $this->cashboxes[] = $cashbox;
+            $cashbox->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCashbox(Cashbox $cashbox): self
+    {
+        if ($this->cashboxes->contains($cashbox)) {
+            $this->cashboxes->removeElement($cashbox);
+            // set the owning side to null (unless already changed)
+            if ($cashbox->getUser() === $this) {
+                $cashbox->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
