@@ -35,6 +35,13 @@
                     <i class="fa fa-unlock-alt"></i> <span>Обменные пункты</span>
                 </a>
             </li>
+            {% if ('ROLE_ADMIN' in app.user.roles) %}
+            <li class="active">
+                <a href="{{ path('app_profile_currency_index') }}">
+                    <i class="fa fa-unlock-alt"></i> <span>Валюта</span>
+                </a>
+            </li>
+            {% endif %}
         </ul>
     </section>
     <!-- /.sidebar -->

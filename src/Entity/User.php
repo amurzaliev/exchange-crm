@@ -44,6 +44,12 @@ class User extends BaseUser
      */
     private $permissionGroups;
 
+    /**
+     * @var integer
+     * @ORM\OneToMany(targetEntity="Currency", mappedBy="user")
+     */
+    private $currency;
+
 
     public function __construct()
     {
@@ -123,5 +129,23 @@ class User extends BaseUser
         if (!$this->permissionGroups->contains($permissionGroup)) {
             $this->permissionGroups->removeElement($permissionGroup);
         }
+    }
+
+    /**
+     * @param int $currency
+     * @return User
+     */
+    public function setCurrency(int $currency): User
+    {
+        $this->currency = $currency;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCurrency(): int
+    {
+        return $this->currency;
     }
 }
