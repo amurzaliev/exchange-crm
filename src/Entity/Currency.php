@@ -48,13 +48,13 @@ class Currency
      * @var datetime
      * @ORM\Column(type="date")
      */
-    private $create_at;
+    private $createAt;
 
     /**
      * @var datetime
      * @ORM\Column(type="date")
      */
-    private $updated_at;
+    private $updatedAt;
 
     /**
      * @var integer
@@ -70,8 +70,8 @@ class Currency
 
     public function __construct()
     {
-        $this->create_at = new DateTime();
-        $this->updated_at = new DateTime();
+        $this->createAt = new DateTime();
+        $this->updatedAt = new DateTime();
         $this->cashboxes = new ArrayCollection();
     }
 
@@ -102,7 +102,7 @@ class Currency
     {
         $this->imageFile = $image;
         if ($image) {
-            $this->updated_at = new DateTime('now');
+            $this->updatedAt = new DateTime('now');
         }
 
         return $this;
@@ -118,7 +118,7 @@ class Currency
      * @param string $icon
      * @return Currency
      */
-    public function setIcon(string $icon): Currency
+    public function setIcon(?string $icon): Currency
     {
         $this->icon = $icon;
         return $this;
@@ -156,16 +156,16 @@ class Currency
      */
     public function getCreateAt(): DateTime
     {
-        return $this->create_at;
+        return $this->createAt;
     }
 
     /**
-     * @param DateTime $create_at
+     * @param DateTime $createAt
      * @return Currency
      */
-    public function setCreateAt(DateTime $create_at): Currency
+    public function setCreateAt(DateTime $createAt): Currency
     {
-        $this->create_at = $create_at;
+        $this->createAt = $createAt;
         return $this;
     }
 
@@ -198,5 +198,16 @@ class Currency
         }
 
         return $this;
+    }
+
+    public function setUpdatedAt(DateTime $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    public function getUpdatedAt(): DateTime
+    {
+        return $this->updatedAt;
     }
 }

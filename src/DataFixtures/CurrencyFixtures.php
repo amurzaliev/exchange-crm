@@ -47,7 +47,7 @@ class CurrencyFixtures extends Fixture implements DependentFixtureInterface
 
     private function generateData(): array
     {
-        $fixturesPath = __DIR__ . '/../../public/images/fixtures/';
+        $fixturesPath = __DIR__ . '/../../public/fixtures/images/';
 
         // Copying fixtures images
         copy($fixturesPath . 'icon1.jpg', $fixturesPath . 'currency1.jpg');
@@ -69,7 +69,7 @@ class CurrencyFixtures extends Fixture implements DependentFixtureInterface
 
     private function clearImages()
     {
-        $files = glob(__DIR__ . '/../../public/images/currency/*');
+        $files = glob(__DIR__ . '/../../public/uploads/images/currency/*');
         foreach ($files as $file) {
             if (is_file($file))
                 unlink($file);

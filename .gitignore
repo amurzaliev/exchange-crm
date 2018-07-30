@@ -27,3 +27,4 @@ behat.yml
 ###< behat/symfony2-extension ###
 
 .idea/
+/public/uploads/*

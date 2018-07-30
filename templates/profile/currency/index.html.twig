@@ -38,11 +38,11 @@
                                 <tr>
                                     <td>{{ currency.id }}</td>
                                     <td>{{ currency.name }}</td>
-                                    <td>{{ currency.icon }}</td>
-                                    {#<td>#}
-                                        {#<a href="{{ path('app_profile_exchange_office_detail',{'id' : officeRepository.id }) }}" class="btn btn-default">Просмотр <i class="fa fa-fw fa-eye"></i></a>#}
-                                        {#<a href="{{ path('app_profile_exchange_office_edit', {'id' : officeRepository.id }) }}" class="btn btn-primary"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>#}
-                                    {#</td>#}
+                                    <td><img style="width: 50px; height: 25px" src="{{ vich_uploader_asset(currency, 'imageFile') }}"></td>
+                                    <td>
+                                        <a href="{{ path('app_profile_currency_detail',{'id' : currency.id }) }}" title="Просмотреть запись {{ currency.name }}" class="btn btn-default">Просмотр <i class="fa fa-fw fa-eye"></i></a>
+                                        <a href="{{ path('app_profile_currency_edit', {'id' : currency.id }) }}"  title="Редактировать запись {{ currency.name }}" class="btn btn-primary"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
+                                    </td>
                                 </tr>
                             {% else %}
                                 <tr>

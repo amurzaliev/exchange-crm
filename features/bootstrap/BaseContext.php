@@ -16,7 +16,8 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     {
         $this->kernel = $kernel;
         $this->routes = [
-            'Главная страница' => 'main_index'
+            'Главная страница' => 'main_index',
+            'Личный кабинет' => 'profile_index'
         ];
     }
 
@@ -41,7 +42,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     public function visitRoute($route)
     {
         if (array_key_exists($route, $this->routes)) {
-            $this->visitPath($this->getContainer()->get('router')->generate($this->routes['Главная страница']));
+            $this->visitPath($this->getContainer()->get('router')->generate($this->routes[$route]));
         } else {
             throw new \LogicException("Маршрут {$route} не найден в routes");
         }

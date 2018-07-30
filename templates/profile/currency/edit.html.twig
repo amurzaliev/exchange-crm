@@ -1,0 +1,57 @@
+{% extends "profile.layout.html.twig" %}
+{% block content %}
+
+    <section class="content-header">
+        <h1>
+            Валюта
+            <small>Редактирование</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="{{ path('profile_index') }}"><i class="fa fa-dashboard"></i> Главная</a></li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <!--/.col (left) -->
+            <!-- right column -->
+            <div class="col-md-12">
+                <!-- /.box -->
+                <!-- general form elements disabled -->
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Редактирование валюты</h3>
+                    </div>
+                    <!-- /.box-header -->
+
+                    <div class="box-body">
+                        {{ form_start(form) }}
+
+                        {{ form_start(form) }}
+
+                        {{ form_label(form.name, 'Название') }}
+                        {{ form_errors(form.name) }}
+                        {{ form_widget(form.name) }}
+                        {{ form_help(form.name) }}
+
+                        {{ form_label(form.imageFile, 'Иконка') }}
+                        {{ form_errors(form.imageFile) }}
+                        {{ form_widget(form.imageFile) }}
+                        {{ form_help(form.imageFile) }}
+
+                        <hr>
+                        {{ form_widget(form.save, {'label' : 'Сохранить', 'attr' : {
+                            'class' : 'btn btn-primary btn-lg'
+                        }}) }}
+                        {{ form_end(form) }}
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!--/.col (right) -->
+        </div>
+        <!-- /.row -->
+    </section>
+{% endblock %}

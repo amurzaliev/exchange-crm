@@ -48,10 +48,7 @@ class CurrencyController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-
             $currency->setUser($this->getUser());
-            $currency->setCreateAt(new \DateTime('now'));
             $manager->persist($currency);
             $manager->flush();
 
@@ -61,5 +58,63 @@ class CurrencyController extends Controller
         return $this->render('profile/currency/create.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @Route("/{id}/edit", name="app_profile_currency_edit")
+     * @param Request $request
+     * @param CurrencyRepository $currencyRepository
+     * @param ObjectManager $manager
+     * @param int $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function editAction(
+        Request $request,
+        CurrencyRepository $currencyRepository,
+        ObjectManager $manager,
+        int $id
+    )
+    {
+        $currencies = $currencyRepository->findOneBy([
+            'id' => $id,
+            'user' => $this->getUser()
+        ]);
+
+        if (!$currencies) {
+            return $this->render('profile/сomponents/error_messages/404.html.twig');
+        }
+        $form = $this->createForm(CurrencyType::class, $currencies);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $currencies->setUser($this->getUser());
+            $manager->persist($currencies);
+            $manager->flush();
+
+            return $this->redirectToRoute('app_profile_currency_index');
+        }
+
+        return $this->render('profile/currency/edit.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/detail", name="app_profile_currency_detail")
+     * @param int $id
+     * @param CurrencyRepository $currencyRepository
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function detailAction(int $id, CurrencyRepository $currencyRepository)
+    {
+        $currency = $currencyRepository->findOneBy([
+            'id' => $id,
+            'user' => $this->getUser()
+        ]);
+        return $this->render('profile/currency/detail.html.twig',[
+                'currency'=> $currency
+            ]
+        );
     }
 }
