@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -56,6 +58,16 @@ class PermissionGroup
      * @ORM\Column(type="boolean", length=255)
      */
     private $view_personal;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Staff", mappedBy="permissionGroup")
+     */
+    private $staff;
+
+    public function __construct()
+    {
+        $this->staff = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -128,5 +140,36 @@ class PermissionGroup
     public function isViewPersonal(): ?bool
     {
         return $this->view_personal;
+    }
+
+    /**
+     * @return Collection|Staff[]
+     */
+    public function getStaff(): Collection
+    {
+        return $this->staff;
+    }
+
+    public function addStaff(Staff $staff): self
+    {
+        if (!$this->staff->contains($staff)) {
+            $this->staff[] = $staff;
+            $staff->setPermissionGroup($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStaff(Staff $staff): self
+    {
+        if ($this->staff->contains($staff)) {
+            $this->staff->removeElement($staff);
+            // set the owning side to null (unless already changed)
+            if ($staff->getPermissionGroup() === $this) {
+                $staff->setPermissionGroup(null);
+            }
+        }
+
+        return $this;
     }
 }

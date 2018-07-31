@@ -56,11 +56,22 @@ class User extends BaseUser
      */
     private $cashboxes;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Staff", mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $staff;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Staff", mappedBy="owner")
+     */
+    private $staffs;
+
     public function __construct()
     {
         parent::__construct();
         $this->setRoles(['ROLE_OWNER']);
         $this->cashboxes = new ArrayCollection();
+        $this->staffs= new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -180,6 +191,55 @@ class User extends BaseUser
             // set the owning side to null (unless already changed)
             if ($cashbox->getUser() === $this) {
                 $cashbox->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getStaff(): ?Staff
+    {
+        return $this->staff;
+    }
+
+    public function setStaff(?Staff $staff): self
+    {
+        $this->staff = $staff;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newUser = $staff === null ? null : $this;
+        if ($newUser !== $staff->getUser()) {
+            $staff->setUser($newUser);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Staff[]
+     */
+    public function getStaffs(): Collection
+    {
+        return $this->staffs;
+    }
+
+    public function addSStaff(Staff $sStaff): self
+    {
+        if (!$this->staffs->contains($sStaff)) {
+            $this->staffs[] = $sStaff;
+            $sStaff->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSStaff(Staff $sStaff): self
+    {
+        if ($this->staffs->contains($sStaff)) {
+            $this->staffs->removeElement($sStaff);
+            // set the owning side to null (unless already changed)
+            if ($sStaff->getOwner() === $this) {
+                $sStaff->setOwner(null);
             }
         }
 
