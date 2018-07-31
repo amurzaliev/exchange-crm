@@ -2,12 +2,10 @@
 
 namespace App\Controller\Profile;
 
-use App\Entity\Staff;
 use App\Repository\StaffRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * Class StaffController
@@ -15,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  *
  * @Route("profile/staff")
  */
-class StaffController extends Controller
+class StaffController extends BaseProfileController
 {
 
     /**
@@ -57,11 +55,20 @@ class StaffController extends Controller
     /**
      * @Route("/{id}/show", name="profile_staff_show", requirements={"id"="\d+"})
      * @param int $id
-     * @Method({"GET"})
+     * @param StaffRepository $staffRepository
      * @return Response
+     * @Method({"GET"})
      */
-    public function showAction(int $id)
+    public function showAction(int $id, StaffRepository $staffRepository)
     {
-        return $this->render('profile/staff/show.html.twig');
+        $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), $id);
+
+        if (!$staff) {
+            return $this->show404();
+        }
+
+        return $this->render('profile/staff/show.html.twig', [
+            'staff' => $staff
+        ]);
     }
 }

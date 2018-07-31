@@ -11,4 +11,33 @@
         </ol>
     </section>
 
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <!--/.col (left) -->
+            <!-- right column -->
+            <div class="col-md-12">
+                <!-- /.box -->
+                <!-- general form elements disabled -->
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Информация о сотруднике</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <p><b>Ф.И.О:</b> {{ staff.user.fullName }}</p>
+                        <p><b>Логин:</b> {{ staff.user.username }}</p>
+                        <p><b>Должность:</b> {{ staff.position }}</p>
+                        <p><b>Время создание:</b> {{ staff.createAt.format('d-m-Y H:i:s') }}</p>
+                        <p><b>Время обновления:</b> {{ staff.updateAt.format('d-m-Y H:i:s') }}</p>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!--/.col (right) -->
+        </div>
+        <!-- /.row -->
+    </section>
+
 {% endblock %}

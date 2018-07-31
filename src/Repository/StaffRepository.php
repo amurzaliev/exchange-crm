@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Staff;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -33,6 +34,26 @@ class StaffRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    /**
+     * @param User $owner
+     * @param int $userId
+     * @return Staff|null
+     */
+    public function findByOneOwnerStaff(User $owner, int $userId)
+    {
+        try {
+            return $this->createQueryBuilder('s')
+                ->andWhere('s.owner = :owner')
+                ->andWhere('s.user = :user')
+                ->setParameter('owner', $owner)
+                ->setParameter('user', $userId)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
     }
 
 }
