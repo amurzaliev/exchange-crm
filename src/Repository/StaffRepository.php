@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Staff;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -19,32 +20,19 @@ class StaffRepository extends ServiceEntityRepository
         parent::__construct($registry, Staff::class);
     }
 
-//    /**
-//     * @return StaffFixtures[] Returns an array of StaffFixtures objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param User $owner
+     * @return Staff[]
+     */
+    public function findByAllOwnerStaff(User $owner)
     {
         return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
+            ->andWhere('s.owner = :owner')
+            ->setParameter('owner', $owner)
+            ->orderBy('s.createAt', 'DESC')
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?StaffFixtures
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

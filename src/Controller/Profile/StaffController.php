@@ -2,6 +2,8 @@
 
 namespace App\Controller\Profile;
 
+use App\Entity\Staff;
+use App\Repository\StaffRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,11 +21,16 @@ class StaffController extends Controller
     /**
      * @Route("/", name="profile_staff_index")
      * @Method({"GET"})
+     * @param StaffRepository $staffRepository
      * @return Response
      */
-    public function indexAction()
+    public function indexAction(StaffRepository $staffRepository)
     {
-        return $this->render('profile/staff/index.html.twig');
+        $staffs = $staffRepository->findByAllOwnerStaff($this->getUser());
+
+        return $this->render('profile/staff/index.html.twig', [
+            'staffs' => $staffs
+        ]);
     }
 
     /**
