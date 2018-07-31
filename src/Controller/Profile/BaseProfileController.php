@@ -5,7 +5,7 @@ namespace App\Controller\Profile;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
- * Class StaffController
+ * Class BaseProfileController
  * @package App\Controller\Profile
  *
  */
