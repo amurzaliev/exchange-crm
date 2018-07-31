@@ -44,8 +44,8 @@
                                     <td>{{ staff.user.fullName }}</td>
                                     <td>{{ staff.user.username }}</td>
                                     <td>{{ staff.position }}</td>
-                                    <td>{{ staff.createAt.format("d-m-Y H:i:s") }}</td>
-                                    <td>{{ staff.updateAt.format("d-m-Y H:i:s") }}</td>
+                                    <td>{{ staff.createdAt.format("d-m-Y H:i:s") }}</td>
+                                    <td>{{ staff.updatedAt.format("d-m-Y H:i:s") }}</td>
                                     <td>
                                         <a href="{{ path('profile_staff_show', {'id' : staff.user.id }) }}" class="btn btn-default"  title="Просмотреть запись {{ staff.user.fullName }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
                                         <a href="{{ path('profile_staff_edit', {'id' : staff.user.id }) }}" class="btn btn-primary" title="Редактировать запись {{ staff.user.fullName }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>

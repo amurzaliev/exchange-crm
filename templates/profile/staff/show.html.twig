@@ -28,8 +28,8 @@
                         <p><b>Ф.И.О:</b> {{ staff.user.fullName }}</p>
                         <p><b>Логин:</b> {{ staff.user.username }}</p>
                         <p><b>Должность:</b> {{ staff.position }}</p>
-                        <p><b>Время создание:</b> {{ staff.createAt.format('d-m-Y H:i:s') }}</p>
-                        <p><b>Время обновления:</b> {{ staff.updateAt.format('d-m-Y H:i:s') }}</p>
+                        <p><b>Время создание:</b> {{ staff.createdAt.format('d-m-Y H:i:s') }}</p>
+                        <p><b>Время обновления:</b> {{ staff.updatedAt.format('d-m-Y H:i:s') }}</p>
                     </div>
                     <!-- /.box-body -->
                 </div>

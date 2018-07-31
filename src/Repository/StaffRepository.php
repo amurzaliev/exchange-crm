@@ -30,7 +30,7 @@ class StaffRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('s')
             ->andWhere('s.owner = :owner')
             ->setParameter('owner', $owner)
-            ->orderBy('s.createAt', 'DESC')
+            ->orderBy('s.createdAt', 'DESC')
             ->getQuery()
             ->getResult()
         ;

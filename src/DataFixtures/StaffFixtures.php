@@ -32,8 +32,8 @@ class StaffFixtures extends Fixture
             ->setOwner($owner)
             ->setUser($user1)
             ->setPosition("Администратор")
-            ->setCreateAt(new \DateTime())
-            ->setUpdateAt(new \DateTime())
+            ->setCreatedAt(new \DateTime())
+            ->setUpdatedAt(new \DateTime())
         ;
         $manager->persist($staff1);
 
@@ -55,8 +55,8 @@ class StaffFixtures extends Fixture
             ->setOwner($owner)
             ->setUser($user2)
             ->setPosition("Кассир")
-            ->setCreateAt(new \DateTime())
-            ->setUpdateAt(new \DateTime())
+            ->setCreatedAt(new \DateTime())
+            ->setUpdatedAt(new \DateTime())
         ;
         $manager->persist($staff2);
 
@@ -78,8 +78,8 @@ class StaffFixtures extends Fixture
             ->setOwner($owner)
             ->setUser($user3)
             ->setPosition("Партнер")
-            ->setCreateAt(new \DateTime())
-            ->setUpdateAt(new \DateTime())
+            ->setCreatedAt(new \DateTime())
+            ->setUpdatedAt(new \DateTime())
         ;
         $manager->persist($staff3);
 
