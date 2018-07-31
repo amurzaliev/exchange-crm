@@ -20,7 +20,7 @@ class StaffRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Staff[] Returns an array of Staff objects
+//     * @return StaffFixtures[] Returns an array of StaffFixtures objects
 //     */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class StaffRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Staff
+    public function findOneBySomeField($value): ?StaffFixtures
     {
         return $this->createQueryBuilder('s')
             ->andWhere('s.exampleField = :val')

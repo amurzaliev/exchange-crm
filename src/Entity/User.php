@@ -5,10 +5,26 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\AttributeOverride;
+use Doctrine\ORM\Mapping\AttributeOverrides;
+use Doctrine\ORM\Mapping\Column;
 use FOS\UserBundle\Model\User as BaseUser;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ *
+ * @AttributeOverrides({
+ *      @AttributeOverride(name="email",
+ *          column=@Column(
+ *              nullable = true
+ *          )
+ *      ),
+ *     @AttributeOverride(name="emailCanonical",
+ *          column=@Column(
+ *              nullable = true
+ *          )
+ *      )
+ * })
  */
 class User extends BaseUser
 {
