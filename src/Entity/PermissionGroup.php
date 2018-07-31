@@ -172,4 +172,12 @@ class PermissionGroup
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function __toString()
+    {
+        return $this->getTitle();
+    }
 }

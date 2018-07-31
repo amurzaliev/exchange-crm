@@ -2,8 +2,13 @@
 
 namespace App\Controller\Profile;
 
+use App\Entity\Staff;
+use App\Entity\User;
+use App\Form\UserStaffType;
 use App\Repository\StaffRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -33,12 +38,41 @@ class StaffController extends BaseProfileController
 
     /**
      * @Route("/create", name="profile_staff_create")
+     * @param Request $request
+     * @param ObjectManager $manager
      * @return Response
      * @Method({"GET", "POST"})
      */
-    public function createAction()
+    public function createAction(Request $request, ObjectManager $manager)
     {
-        return $this->render('profile/staff/create.html.twig');
+        $user = new User();
+        $staff = new Staff();
+
+        $form = $this->createForm(UserStaffType::class, [
+            'user' => $user,
+            'staff' => $staff,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $user->setRoles(['ROLE_USER']);
+            $manager->persist($user);
+
+            $staff->setUser($user);
+            $staff->setOwner($this->getUser());
+            $staff->setCreatedAt(new \DateTime());
+            $staff->setUpdatedAt(new \DateTime());
+            $manager->persist($staff);
+            $manager->flush();
+
+            return $this->redirectToRoute('profile_staff_index');
+        }
+
+        return $this->render('profile/staff/create.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 
     /**
