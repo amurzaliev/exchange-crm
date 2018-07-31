@@ -8,6 +8,7 @@ use App\Form\UserStaffType;
 use App\Repository\StaffRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -79,11 +80,44 @@ class StaffController extends BaseProfileController
      * @Route("/{id}/edit", name="profile_staff_edit", requirements={"id"="\d+"})
      * @Method({"GET", "PUT"})
      * @param int $id
-     * @return Response
+     * @param Request $request
+     * @param ObjectManager $manager
+     * @param StaffRepository $staffRepository
+     * @return RedirectResponse|Response
      */
-    public function editAction(int $id)
+    public function editAction(
+        int $id,
+        Request $request,
+        ObjectManager $manager,
+        StaffRepository $staffRepository
+    )
     {
-        return $this->render('profile/staff/edit.html.twig');
+        $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), $id);
+        $user = $staff->getUser();
+
+        $form = $this->createForm(UserStaffType::class, [
+            'user' => $user,
+            'staff' => $staff,
+        ], [
+            'method' => 'put'
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $manager->persist($user);
+
+            $staff->setUpdatedAt(new \DateTime());
+            $manager->persist($staff);
+            $manager->flush();
+
+            return $this->redirectToRoute('profile_staff_index');
+        }
+
+        return $this->render('profile/staff/edit.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 
     /**
