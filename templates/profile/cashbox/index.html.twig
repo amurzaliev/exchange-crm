@@ -1,0 +1,67 @@
+{% extends "profile.layout.html.twig" %}
+{% block content %}
+    <section class="content-header">
+        <h1>
+            Управление персоналом
+            <small>Список</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">
+                            <a href="{{ path('app_profile_cashbox_create') }}" class="btn btn-block btn-success btn-lg">
+                                Добавить
+                            </a>
+                        </h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>#id</th>
+                                <th>Название</th>
+                                <th>Дата создания</th>
+                                <th>Дата изменения</th>
+                                <th>Действние</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for cashbox in cashboxes %}
+                                <tr>
+                                    <td>{{ cashbox.id }}</td>
+                                    <td>{{ cashbox.currency.name }}</td>
+                                    <td>{{ cashbox.createdAt.format("d-m-Y H:i:s") }}</td>
+                                    <td>{{ cashbox.updatedAt.format("d-m-Y H:i:s") }}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-default"  title="Просмотреть запись ">Просмотр <i class="fa fa-fw fa-eye"></i></a>
+                                        <a href="{{ path('app_profile_cashbox_edit', {'id' : cashbox.id }) }}" class="btn btn-primary" title="Редактировать запись "> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td>Нет данных</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+
+{% endblock %}

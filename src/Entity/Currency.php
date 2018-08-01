@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\PermissionGroupRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\CurrencyRepository")
  * @Vich\Uploadable
  */
 class Currency
@@ -32,8 +32,10 @@ class Currency
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
      * @var string
+     *
+     * @ORM\Column(type="string", length=255)
+     *
      */
     private $icon;
 
@@ -84,7 +86,7 @@ class Currency
      * @param string $name
      * @return Currency
      */
-    public function setName(string $name): Currency
+    public function setName(string $name): ?Currency
     {
         $this->name = $name;
         return $this;
@@ -210,4 +212,12 @@ class Currency
     {
         return $this->updatedAt;
     }
+
+    /**
+     * @return string
+     */
+//    public function __toString()
+//    {
+//        return $this->getName();
+//    }
 }
