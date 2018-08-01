@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\PermissionGroupRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\CurrencyRepository")
  * @Vich\Uploadable
  */
 class Currency

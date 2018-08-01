@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -54,10 +56,18 @@ class Cashbox
      */
     private $updatedAt;
 
+    /**
+     * @var CurrencyRate[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\CurrencyRate", mappedBy="cashboxCurrency")
+     */
+    private $currencyRates;
+
     public function __construct()
     {
         $this->createdAt = new DateTime();
         $this->updatedAt = new DateTime();
+        $this->currencyRates = new ArrayCollection();
     }
 
     public function getId()
@@ -121,6 +131,33 @@ class Cashbox
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getCurrencyRates(): Collection
+    {
+        return $this->currencyRates;
+    }
+
+    public function addCurrencyRate(CurrencyRate $currencyRate): self
+    {
+        if (!$this->currencyRates->contains($currencyRate)) {
+            $this->currencyRates->add($currencyRate);
+            $currencyRate->setCashboxCurrency($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCurrencyRate(CurrencyRate $currencyRate): self
+    {
+        if ($this->currencyRates->contains($currencyRate)) {
+            $this->currencyRates->removeElement($currencyRate);
+            if ($currencyRate->getCashboxCurrency() === $this) {
+                $currencyRate->setCashboxCurrency(null);
+            }
+        }
 
         return $this;
     }
