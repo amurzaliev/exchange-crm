@@ -18,6 +18,7 @@ class StaffType extends AbstractType
             ->add('permissionGroup', EntityType::class, [
                 'label' => 'Группа',
                 'class' => PermissionGroup::class,
+                'choice_label' => 'title',
                 'required' => false,
                 'placeholder' => 'Выберите группу'
             ])
