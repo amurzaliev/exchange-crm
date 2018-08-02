@@ -32,7 +32,7 @@ class CurrencyRateFixtures extends Fixture implements DependentFixtureInterface
 
         $currencyRate = new CurrencyRate();
         $currencyRate
-            ->setPurchase(60.05)
+            ->setPurchase(68.05)
             ->setSale(68.15)
             ->setUser($user)
             ->setCashboxCurrency($cashbox);
