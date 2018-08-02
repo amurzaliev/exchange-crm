@@ -9,6 +9,9 @@
 namespace App\DataFixtures;
 
 
+use App\Entity\Cashbox;
+use App\Entity\CurrencyRate;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -22,7 +25,20 @@ class CurrencyRateFixtures extends Fixture implements DependentFixtureInterface
      */
     public function load(ObjectManager $manager)
     {
-        // TODO: Implement load() method.
+        /** @var User $user */
+        $user = $this->getReference(UserFixtures::OWNER);
+        /** @var Cashbox $cashbox */
+        $cashbox = $this->getReference(CashboxFixtures::CASHBOX_ONE);
+
+        $currencyRate = new CurrencyRate();
+        $currencyRate
+            ->setPurchase(60.05)
+            ->setSale(68.15)
+            ->setUser($user)
+            ->setCashboxCurrency($cashbox);
+
+        $manager->persist($currencyRate);
+        $manager->flush();
     }
 
     /**
