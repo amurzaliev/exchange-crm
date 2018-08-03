@@ -93,6 +93,11 @@ class StaffController extends BaseProfileController
     )
     {
         $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), $id);
+
+        if (!$staff) {
+            return $this->show404();
+        }
+
         $user = $staff->getUser();
 
         $form = $this->createForm(UserStaffType::class, [

@@ -5,9 +5,10 @@ namespace App\DataFixtures;
 use App\Entity\Staff;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class StaffFixtures extends Fixture
+class StaffFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
@@ -96,7 +97,7 @@ class StaffFixtures extends Fixture
     public function getDependencies()
     {
         return array(
-            StaffFixtures::class,
+            UserFixtures::class
         );
     }
 }

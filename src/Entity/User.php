@@ -82,12 +82,20 @@ class User extends BaseUser
      */
     private $staffs;
 
+    /**
+     * @var CurrencyRate[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\CurrencyRate", mappedBy="user")
+     */
+    private $currencyRates;
+
     public function __construct()
     {
         parent::__construct();
         $this->setRoles(['ROLE_OWNER']);
         $this->cashboxes = new ArrayCollection();
-        $this->staffs= new ArrayCollection();
+        $this->staffs = new ArrayCollection();
+        $this->currencyRates = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -256,6 +264,33 @@ class User extends BaseUser
             // set the owning side to null (unless already changed)
             if ($sStaff->getOwner() === $this) {
                 $sStaff->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCurrencyRates(): Collection
+    {
+        return $this->currencyRates;
+    }
+
+    public function addCurrencyRate(CurrencyRate $currencyRate): self
+    {
+        if (!$this->currencyRates->contains($currencyRate)) {
+            $this->currencyRates->add($currencyRate);
+            $currencyRate->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCurrencyRate(CurrencyRate $currencyRate): self
+    {
+        if ($this->currencyRates->contains($currencyRate)) {
+            $this->currencyRates->removeElement($currencyRate);
+            if ($currencyRate->getUser() === $this) {
+                $currencyRate->setUser(null);
             }
         }
 
