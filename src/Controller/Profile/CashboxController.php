@@ -90,7 +90,7 @@ class CashboxController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            $cashRepository->setUpdatedAt(new \DateTime());
             $cashRepository->setUser($this->getUser());
             $manager->persist($cashRepository);
             $manager->flush();
@@ -101,6 +101,24 @@ class CashboxController extends Controller
         return $this->render('profile/cashbox/edit.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @Route("/{id}/detail", name="app_profile_cashbox_detail")
+     * @param int $id
+     * @param CashboxRepository $cashboxRepository
+     * @return Response
+     */
+    public function detailAction(int $id, CashboxRepository $cashboxRepository)
+    {
+        $cashbox = $cashboxRepository->findOneBy([
+            'id' => $id,
+            'user' => $this->getUser()
+        ]);
+        return $this->render('profile/cashbox/detail.html.twig',[
+                'cashbox'=> $cashbox
+            ]
+        );
     }
 
 }

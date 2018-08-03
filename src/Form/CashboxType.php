@@ -16,8 +16,6 @@ class CashboxType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('createdAt')
-            ->add('updatedAt')
             ->add('exchangeOffice', EntityType::class, [
                 'label' => 'Обменные пункты',
                 'class' => ExchangeOffice::class,

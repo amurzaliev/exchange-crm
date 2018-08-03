@@ -2,7 +2,7 @@
 {% block content %}
     <section class="content-header">
         <h1>
-            Управление персоналом
+            Управление кассами
             <small>Список</small>
         </h1>
         <ol class="breadcrumb">
@@ -31,7 +31,7 @@
                                 <th>Название</th>
                                 <th>Дата создания</th>
                                 <th>Дата изменения</th>
-                                <th>Действние</th>
+                                <th>Действие</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -42,8 +42,8 @@
                                     <td>{{ cashbox.createdAt.format("d-m-Y H:i:s") }}</td>
                                     <td>{{ cashbox.updatedAt.format("d-m-Y H:i:s") }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-default"  title="Просмотреть запись ">Просмотр <i class="fa fa-fw fa-eye"></i></a>
-                                        <a href="{{ path('app_profile_cashbox_edit', {'id' : cashbox.id }) }}" class="btn btn-primary" title="Редактировать запись "> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
+                                        <a href="{{ path('app_profile_cashbox_detail', {'id' : cashbox.id}) }}" class="btn btn-default"  title="Просмотреть запись {{ cashbox.currency.name }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
+                                        <a href="{{ path('app_profile_cashbox_edit', {'id' : cashbox.id }) }}" class="btn btn-primary" title="Редактировать запись {{ cashbox.currency.name }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
                                     </td>
                                 </tr>
                             {% else %}

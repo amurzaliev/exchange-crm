@@ -1,9 +1,55 @@
-{% extends 'base.html.twig' %}
+{% extends "profile.layout.html.twig" %}
+{% block content %}
 
-{% block title %}{% endblock %}
+    <section class="content-header">
+        <h1>
+            Касса
+            <small>Редактирование</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="{{ path('profile_index') }}"><i class="fa fa-dashboard"></i> Главная</a></li>
+        </ol>
+    </section>
 
-{% block body %}
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <!--/.col (left) -->
+            <!-- right column -->
+            <div class="col-md-12">
+                <!-- /.box -->
+                <!-- general form elements disabled -->
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Редактирование кассы</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        {{ form_start(form) }}
+
+                        {{ form_label(form.currency, 'Валюта') }}
+                        {{ form_errors(form.currency) }}
+                        {{ form_widget(form.currency) }}
+                        {{ form_help(form.currency) }}
+
+                        {{ form_label(form.exchangeOffice, 'Обменный пункт') }}
+                        {{ form_errors(form.exchangeOffice) }}
+                        {{ form_widget(form.exchangeOffice) }}
+                        {{ form_help(form.exchangeOffice) }}
+
+
+                        <hr>
+                        {{ form_widget(form.save, {'label' : 'Сохранить', 'attr' : {
+                            'class' : 'btn btn-primary btn-lg'
+                        }}) }}
+                        {{ form_end(form) }}
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!--/.col (right) -->
+        </div>
+        <!-- /.row -->
+    </section>
 {% endblock %}
