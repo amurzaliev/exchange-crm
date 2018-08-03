@@ -1,6 +1,6 @@
 # language: ru
 
-@cashbox
+@cashbox @fixtures
 Функционал: Тестируем создание, редактирование и просмотр касс
 
   @loginOwner @logout

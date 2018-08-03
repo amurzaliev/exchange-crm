@@ -1,6 +1,6 @@
 # language: ru
 
-@exchange_office
+@exchange_office @fixtures
 Функционал: Тестируем создание редактирование и просмотр обменного пункта
 
   @loginOwner @logout

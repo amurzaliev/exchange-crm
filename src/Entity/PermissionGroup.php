@@ -43,19 +43,22 @@ class PermissionGroup
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean", length=255)
+     *
+     * @ORM\Column(type="boolean")
      */
     private $create_personal;
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean", length=255)
+     *
+     * @ORM\Column(type="boolean")
      */
     private $edit_personal;
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean", length=255)
+     *
+     * @ORM\Column(type="boolean")
      */
     private $view_personal;
 
@@ -69,7 +72,7 @@ class PermissionGroup
         $this->staff = new ArrayCollection();
     }
 
-    public function getId()
+    public function getId():?int
     {
         return $this->id;
     }
@@ -79,7 +82,7 @@ class PermissionGroup
         return $this->title;
     }
 
-    public function setTitle(?string $title): self
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -91,14 +94,14 @@ class PermissionGroup
         return $this->alias;
     }
 
-    public function setAlias(?string $alias): self
+    public function setAlias(string $alias): self
     {
         $this->alias = $alias;
 
         return $this;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
         return $this;
@@ -109,9 +112,10 @@ class PermissionGroup
         return $this->user;
     }
 
-    public function setCreatePersonal(?bool $create_personal): self
+    public function setCreatePersonal(bool $create_personal): self
     {
         $this->create_personal = $create_personal;
+
         return $this;
     }
 
@@ -120,9 +124,10 @@ class PermissionGroup
         return $this->create_personal;
     }
 
-    public function setEditPersonal(?bool $edit_personal): self
+    public function setEditPersonal(bool $edit_personal): self
     {
         $this->edit_personal = $edit_personal;
+
         return $this;
     }
 
@@ -131,9 +136,10 @@ class PermissionGroup
         return $this->edit_personal;
     }
 
-    public function setViewPersonal(?bool $view_personal): self
+    public function setViewPersonal(bool $view_personal): self
     {
         $this->view_personal = $view_personal;
+
         return $this;
     }
 
@@ -142,9 +148,6 @@ class PermissionGroup
         return $this->view_personal;
     }
 
-    /**
-     * @return Collection|Staff[]
-     */
     public function getStaff(): Collection
     {
         return $this->staff;
@@ -153,7 +156,7 @@ class PermissionGroup
     public function addStaff(Staff $staff): self
     {
         if (!$this->staff->contains($staff)) {
-            $this->staff[] = $staff;
+            $this->staff->add($staff);
             $staff->setPermissionGroup($this);
         }
 
@@ -164,7 +167,6 @@ class PermissionGroup
     {
         if ($this->staff->contains($staff)) {
             $this->staff->removeElement($staff);
-            // set the owning side to null (unless already changed)
             if ($staff->getPermissionGroup() === $this) {
                 $staff->setPermissionGroup(null);
             }

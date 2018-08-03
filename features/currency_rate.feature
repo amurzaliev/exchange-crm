@@ -1,6 +1,6 @@
 # language: ru
 
-@currency_rate
+@currency_rate @fixtures
 Функционал: Тестируем функционал работы с курсами валют
 
   @loginOwner @logout

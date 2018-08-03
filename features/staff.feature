@@ -1,5 +1,6 @@
 # language: ru
 
+@staff @fixtures
 Функционал: Тестируем CRUD для персонала
 
   @loginOwner @logout

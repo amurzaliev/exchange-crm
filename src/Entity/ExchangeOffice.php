@@ -57,6 +57,7 @@ class ExchangeOffice
 
     /**
      * @var Cashbox[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Cashbox", mappedBy="exchangeOffice")
      */
     private $cashboxes;
@@ -66,7 +67,7 @@ class ExchangeOffice
         $this->cashboxes = new ArrayCollection();
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -76,7 +77,7 @@ class ExchangeOffice
         return $this->name;
     }
 
-    public function setName(?string $name): self
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -112,28 +113,25 @@ class ExchangeOffice
         return $this->active;
     }
 
-    public function setActive(?bool $active): self
+    public function setActive(bool $active): self
     {
         $this->active = $active;
 
         return $this;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    /**
-     * @return Collection|Cashbox[]
-     */
     public function getCashboxes(): Collection
     {
         return $this->cashboxes;
@@ -142,7 +140,7 @@ class ExchangeOffice
     public function addCashbox(Cashbox $cashbox): self
     {
         if (!$this->cashboxes->contains($cashbox)) {
-            $this->cashboxes[] = $cashbox;
+            $this->cashboxes->add($cashbox);
             $cashbox->setExchangeOffice($this);
         }
 
@@ -153,7 +151,6 @@ class ExchangeOffice
     {
         if ($this->cashboxes->contains($cashbox)) {
             $this->cashboxes->removeElement($cashbox);
-            // set the owning side to null (unless already changed)
             if ($cashbox->getExchangeOffice() === $this) {
                 $cashbox->setExchangeOffice(null);
             }
@@ -161,6 +158,5 @@ class ExchangeOffice
 
         return $this;
     }
-
 
 }

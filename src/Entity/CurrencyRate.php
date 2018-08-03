@@ -63,7 +63,7 @@ class CurrencyRate
         return $this->id;
     }
 
-    public function setPurchase(?float $purchase): self
+    public function setPurchase(float $purchase): self
     {
         $this->purchase = $purchase;
         return $this;
@@ -74,7 +74,7 @@ class CurrencyRate
         return $this->purchase;
     }
 
-    public function setSale(?float $sale): self
+    public function setSale(float $sale): self
     {
         $this->sale = $sale;
         return $this;
@@ -85,35 +85,36 @@ class CurrencyRate
         return $this->sale;
     }
 
-    public function setCreatedAt(?\DateTime $createdAt): self
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCashboxCurrency(?Cashbox $cashboxCurrency): self
+    public function setCashboxCurrency(Cashbox $cashboxCurrency): self
     {
         $this->cashboxCurrency = $cashboxCurrency;
         return $this;
     }
 
-    public function getCashboxCurrency(): Cashbox
+    public function getCashboxCurrency(): ?Cashbox
     {
         return $this->cashboxCurrency;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
+
         return $this;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }
