@@ -26,18 +26,18 @@
         <ul class="sidebar-menu" data-widget="tree">
             <li class="header">Главное меню</li>
             <li class="active">
-                <a href="{{ path('app_profile_permission_group_index') }}">
+                <a href="{{ path('profile_permission_group_index') }}">
                     <i class="fa fa-unlock-alt"></i> <span>Группы привилегий</span>
                 </a>
             </li>
             <li class="active">
-                <a href="{{ path('app_profile_exchange_office_index') }}">
+                <a href="{{ path('profile_exchange_office_index') }}">
                     <i class="fa fa-unlock-alt"></i> <span>Обменные пункты</span>
                 </a>
             </li>
             {% if ('ROLE_ADMIN' in app.user.roles) %}
             <li class="active">
-                <a href="{{ path('app_profile_currency_index') }}">
+                <a href="{{ path('profile_currency_index') }}">
                     <i class="fa fa-unlock-alt"></i> <span>Валюта</span>
                 </a>
             </li>
@@ -48,7 +48,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{ path('app_profile_cashbox_index') }}">
+                <a href="{{ path('profile_cashbox_index') }}">
                     <i class="fa fa-users"></i> <span>Кассы</span>
                 </a>
             </li>

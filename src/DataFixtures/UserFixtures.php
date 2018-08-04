@@ -28,7 +28,7 @@ class UserFixtures extends Fixture
 
         $admin
             ->setEmail('admin@mail.ru')
-            ->setPassword($this->userPasswordEncoder->encodePassword($admin, '12345'))
+            ->setPlainPassword('12345')
             ->setRoles(['ROLE_ADMIN'])
             ->setFullName('Админ А.А')
             ->setEnabled('true');
@@ -39,7 +39,7 @@ class UserFixtures extends Fixture
         $user = new User();
         $user
             ->setEmail('user@mail.ru')
-            ->setPassword($this->userPasswordEncoder->encodePassword($user, '12345'))
+            ->setPlainPassword('12345')
             ->setRoles(['ROLE_USER'])
             ->setFullName('Пользователь А.А.')
             ->setEnabled('true');
@@ -51,7 +51,7 @@ class UserFixtures extends Fixture
         $owner = new User();
         $owner
             ->setEmail('owner@mail.ru')
-            ->setPassword($this->userPasswordEncoder->encodePassword($user, '12345'))
+            ->setPlainPassword('12345')
             ->setEnabled('true')
             ->setFullName('Владелей А.А.');
         $manager->persist($owner);

@@ -27,21 +27,10 @@
                     <!-- /.box-header -->
                     <div class="box-body">
                         {{ form_start(form) }}
-
-                        {{ form_start(form) }}
-
-                        {{ form_label(form.name, 'Название') }}
-                        {{ form_errors(form.name) }}
-                        {{ form_widget(form.name) }}
-                        {{ form_help(form.name) }}
-
-                        {{ form_label(form.imageFile, 'Иконка') }}
-                        {{ form_errors(form.imageFile) }}
-                        {{ form_widget(form.imageFile) }}
-                        {{ form_help(form.imageFile) }}
-
+                        {{ form_row(form.name) }}
+                        {{ form_row(form.imageFile) }}
                         <hr>
-                        {{ form_widget(form.save, {'label' : 'Добавить', 'attr' : {
+                        {{ form_row(form.save, {'label' : 'Добавить', 'attr' : {
                             'class' : 'btn btn-primary btn-lg'
                         }}) }}
                         {{ form_end(form) }}

@@ -18,7 +18,7 @@
                 <div class="box">
                     <div class="box-header">
                         <h3 class="box-title">
-                            <a href="{{ path('app_profile_exchange_office_create') }}" class="btn btn-block btn-success btn-lg">
+                            <a href="{{ path('profile_exchange_office_create') }}" class="btn btn-block btn-success btn-lg">
                                 Добавить
                             </a>
                         </h3>
@@ -48,8 +48,8 @@
                                     <td>{{ officeRepository.address }}</td>
                                     <td>{{ officeRepository.contact }}</td>
                                     <td>
-                                        <a href="{{ path('app_profile_exchange_office_detail',{'id' : officeRepository.id }) }}" class="btn btn-default"  title="Просмотреть запись {{ officeRepository.name }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
-                                        <a href="{{ path('app_profile_exchange_office_edit', {'id' : officeRepository.id }) }}" class="btn btn-primary"  title="Редактировать запись {{ officeRepository.name }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
+                                        <a href="{{ path('profile_exchange_office_detail',{'id' : officeRepository.id }) }}" class="btn btn-default"  title="Просмотреть запись {{ officeRepository.name }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
+                                        <a href="{{ path('profile_exchange_office_edit', {'id' : officeRepository.id }) }}" class="btn btn-primary"  title="Редактировать запись {{ officeRepository.name }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
                                     </td>
                                 </tr>
                             {% else %}

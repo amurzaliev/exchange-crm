@@ -16,7 +16,7 @@ class CurrencyRateType extends AbstractType
         $builder
             ->add('purchase', NumberType::class, ['label' => 'Покупка'])
             ->add('sale', NumberType::class, ['label' => 'Продажа'])
-            ->add('submit', SubmitType::class, ['label' => 'Добавить'])
+            ->add('save', SubmitType::class, ['label' => 'Добавить'])
         ;
     }
 

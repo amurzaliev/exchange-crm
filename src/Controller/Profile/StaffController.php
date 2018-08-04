@@ -21,10 +21,10 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class StaffController extends BaseProfileController
 {
-
     /**
      * @Route("/", name="profile_staff_index")
-     * @Method({"GET"})
+     * @Method("GET")
+     *
      * @param StaffRepository $staffRepository
      * @return Response
      */
@@ -39,10 +39,11 @@ class StaffController extends BaseProfileController
 
     /**
      * @Route("/create", name="profile_staff_create")
+     * @Method({"GET", "POST"})
+     *
      * @param Request $request
      * @param ObjectManager $manager
      * @return Response
-     * @Method({"GET", "POST"})
      */
     public function createAction(Request $request, ObjectManager $manager)
     {
@@ -78,7 +79,8 @@ class StaffController extends BaseProfileController
 
     /**
      * @Route("/{id}/edit", name="profile_staff_edit", requirements={"id"="\d+"})
-     * @Method({"GET", "PUT"})
+     * @Method({"GET", "PATCH"})
+     *
      * @param int $id
      * @param Request $request
      * @param ObjectManager $manager
@@ -104,7 +106,7 @@ class StaffController extends BaseProfileController
             'user' => $user,
             'staff' => $staff,
         ], [
-            'method' => 'put'
+            'method' => 'PATCH'
         ]);
 
         $form->handleRequest($request);
@@ -127,10 +129,11 @@ class StaffController extends BaseProfileController
 
     /**
      * @Route("/{id}/show", name="profile_staff_show", requirements={"id"="\d+"})
+     * @Method("GET")
+     *
      * @param int $id
      * @param StaffRepository $staffRepository
      * @return Response
-     * @Method({"GET"})
      */
     public function showAction(int $id, StaffRepository $staffRepository)
     {

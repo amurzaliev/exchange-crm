@@ -622,4 +622,12 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     {
         $this->visitPath($this->getContainer()->get('router')->generate('fos_user_security_logout'));
     }
+
+    /**
+     * @BeforeFeature @fixtures
+     */
+    static public function loadFixtures()
+    {
+        exec('php bin/console doctrine:fixtures:load -n');
+    }
 }

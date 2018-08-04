@@ -1,6 +1,6 @@
 # language: ru
 
-@currency
+@currency @fixtures
 Функционал: Тестируем CRUD для валют
 
   @loginAdmin @logout

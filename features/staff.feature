@@ -1,5 +1,6 @@
 # language: ru
 
+@staff @fixtures
 Функционал: Тестируем CRUD для персонала
 
   @loginOwner @logout
@@ -12,7 +13,7 @@
       | user_staff_user_username | Valadimir_cheskidov |
       | user_staff_user_password | 123321 |
       | user_staff_staff_position | главный оператор |
-    Когда я отмечаю галочкой опцию "Активный:"
+    Когда я отмечаю галочкой опцию "Активный"
     Когда я выбираю опцию "оператор" из поля выбора "user_staff_staff_permissionGroup"
     Когда я нажимаю на кнопку "Добавить"
     Тогда я вижу слово "Владимир Ч" где-то на странице

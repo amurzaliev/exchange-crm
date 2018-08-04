@@ -6,6 +6,7 @@ use App\Entity\Cashbox;
 use App\Form\CashboxType;
 use App\Repository\CashboxRepository;
 use Doctrine\Common\Persistence\ObjectManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,11 +21,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class CashboxController extends Controller
 {
     /**
-     * @Route("/", name="app_profile_cashbox_index")
+     * @Route("/", name="profile_cashbox_index")
+     * @Method("GET")
+     *
      * @param CashboxRepository $cashboxRepository
      * @return Response
      */
-    public function index(CashboxRepository $cashboxRepository)
+    public function indexAction(CashboxRepository $cashboxRepository)
     {
         $cashboxes = $cashboxRepository->findBy([
             'user' => $this->getUser()
@@ -36,9 +39,11 @@ class CashboxController extends Controller
     }
 
     /**
+     * @Route("/create", name="profile_cashbox_create")
+     * @Method({"GET", "POST"})
+     *
      * @param Request $request
      * @param ObjectManager $manager
-     * @Route("/create", name="app_profile_cashbox_create")
      * @return Response
      */
     public function createAction(Request $request, ObjectManager $manager)
@@ -53,7 +58,7 @@ class CashboxController extends Controller
             $manager->persist($cashbox);
             $manager->flush();
 
-            return $this->redirectToRoute("app_profile_cashbox_index");
+            return $this->redirectToRoute("profile_cashbox_index");
         }
 
         return $this->render('profile/cashbox/create.html.twig', [
@@ -62,7 +67,9 @@ class CashboxController extends Controller
     }
 
     /**
-     * @Route("/{id}/edit", name="app_profile_cashbox_edit")
+     * @Route("/{id}/edit", name="profile_cashbox_edit")
+     * @Method({"GET", "PATCH"})
+     *
      * @param Request $request
      * @param CashboxRepository $cashboxRepository
      * @param ObjectManager $manager
@@ -74,28 +81,28 @@ class CashboxController extends Controller
         CashboxRepository $cashboxRepository,
         ObjectManager $manager,
         int $id
-    )
+    ): Response
     {
-        $cashRepository = $cashboxRepository->findOneBy([
+        $cashbox = $cashboxRepository->findOneBy([
             'id' => $id,
             'user' => $this->getUser()
         ]);
 
-        if (!$cashRepository) {
-            return $this->render('profile/сomponents/error_messages/404.html.twig');
+        if (!$cashbox) {
+            return $this->render('profile/components/error_messages/404.html.twig');
         }
 
-        $form = $this->createForm(CashboxType::class, $cashRepository);
+        $form = $this->createForm(CashboxType::class, $cashbox, ['method' => 'PATCH']);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $cashRepository->setUpdatedAt(new \DateTime());
-            $cashRepository->setUser($this->getUser());
-            $manager->persist($cashRepository);
+            $cashbox->setUpdatedAt(new \DateTime());
+            $cashbox->setUser($this->getUser());
+            $manager->persist($cashbox);
             $manager->flush();
 
-            return $this->redirectToRoute('app_profile_cashbox_index');
+            return $this->redirectToRoute('profile_cashbox_index');
         }
 
         return $this->render('profile/cashbox/edit.html.twig', [
@@ -104,7 +111,9 @@ class CashboxController extends Controller
     }
 
     /**
-     * @Route("/{id}/detail", name="app_profile_cashbox_detail")
+     * @Route("/{id}/detail", name="profile_cashbox_detail")
+     * @Method("GET")
+     *
      * @param int $id
      * @param CashboxRepository $cashboxRepository
      * @return Response
@@ -115,8 +124,8 @@ class CashboxController extends Controller
             'id' => $id,
             'user' => $this->getUser()
         ]);
-        return $this->render('profile/cashbox/detail.html.twig',[
-                'cashbox'=> $cashbox
+        return $this->render('profile/cashbox/detail.html.twig', [
+                'cashbox' => $cashbox
             ]
         );
     }

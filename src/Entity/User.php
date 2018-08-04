@@ -42,7 +42,7 @@ class User extends BaseUser
     /**
      * @var string
      *
-     * @ORM\Column(type="string",name="full_name", nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $fullName;
 
@@ -56,18 +56,20 @@ class User extends BaseUser
     /**
      * @var PermissionGroup[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\PermissionGroup", mappedBy="permissionGroup")
+     * @ORM\OneToMany(targetEntity="App\Entity\PermissionGroup", mappedBy="user")
      */
     private $permissionGroups;
 
     /**
-     * @var integer
+     * @var Currency[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="Currency", mappedBy="user")
      */
-    private $currency;
+    private $currencies;
 
     /**
      * @var Cashbox[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Cashbox", mappedBy="user")
      */
     private $cashboxes;
@@ -78,6 +80,8 @@ class User extends BaseUser
     private $staff;
 
     /**
+     * @var Staff[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Staff", mappedBy="owner")
      */
     private $staffs;
@@ -103,6 +107,7 @@ class User extends BaseUser
         $this->cashboxes = new ArrayCollection();
         $this->staffs = new ArrayCollection();
         $this->currencyRates = new ArrayCollection();
+        $this->currencies = new ArrayCollection();
         $this->vipClients = new ArrayCollection();
     }
 
@@ -122,6 +127,7 @@ class User extends BaseUser
     public function setExchangeOffices(Collection $exchangeOffices): self
     {
         $this->exchangeOffices = $exchangeOffices;
+
         return $this;
     }
 
@@ -130,23 +136,32 @@ class User extends BaseUser
         return $this->exchangeOffices;
     }
 
-    public function addExchangeOffice(ExchangeOffice $exchangeOffice)
+    public function addExchangeOffice(ExchangeOffice $exchangeOffice): self
     {
         if (!$this->exchangeOffices->contains($exchangeOffice)) {
             $this->exchangeOffices->add($exchangeOffice);
+            $exchangeOffice->setUser($this);
         }
+
+        return $this;
     }
 
-    public function removeExchangeOffice(ExchangeOffice $exchangeOffice)
+    public function removeExchangeOffice(ExchangeOffice $exchangeOffice): self
     {
         if ($this->exchangeOffices->contains($exchangeOffice)) {
             $this->exchangeOffices->removeElement($exchangeOffice);
+            if ($exchangeOffice->getUser() === $this) {
+                $exchangeOffice->setUser(null);
+            }
         }
+
+        return $this;
     }
 
     public function setFullName(?string $fullName): self
     {
         $this->fullName = $fullName;
+
         return $this;
     }
 
@@ -158,6 +173,7 @@ class User extends BaseUser
     public function setPermissionGroups(Collection $permissionGroups)
     {
         $this->permissionGroups = $permissionGroups;
+
         return $this;
     }
 
@@ -166,50 +182,64 @@ class User extends BaseUser
         return $this->permissionGroups;
     }
 
-    public function addPermissionGroups(PermissionGroup $permissionGroup)
+    public function addPermissionGroups(PermissionGroup $permissionGroup): self
     {
         if (!$this->permissionGroups->contains($permissionGroup)) {
             $this->permissionGroups->add($permissionGroup);
+            $permissionGroup->setUser($this);
         }
-    }
 
-    public function removePermissionGroups(PermissionGroup $permissionGroup)
-    {
-        if (!$this->permissionGroups->contains($permissionGroup)) {
-            $this->permissionGroups->removeElement($permissionGroup);
-        }
-    }
-
-    /**
-     * @param int $currency
-     * @return User
-     */
-    public function setCurrency(int $currency): User
-    {
-        $this->currency = $currency;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getCurrency(): int
+    public function removePermissionGroups(PermissionGroup $permissionGroup): self
     {
-        return $this->currency;
+        if ($this->permissionGroups->contains($permissionGroup)) {
+            $this->permissionGroups->removeElement($permissionGroup);
+            if ($permissionGroup->getUser() === $this) {
+                $permissionGroup->setUser(null);
+            }
+        }
+
+        return $this;
     }
 
-    /**
-     * @return Collection|Cashbox[]
-     */
-    public function getCashboxes(): Collection
+    public function setCurrencies(Collection $currencies): self
     {
-        return $this->cashboxes;
+        $this->currencies = $currencies;
+
+        return $this;
+    }
+
+    public function getCurrencies(): Collection
+    {
+        return $this->currencies;
+    }
+
+    public function addCurrency(Currency $currency): self
+    {
+        if (!$this->currencies->contains($currency)) {
+            $this->currencies->add($currency);
+            $currency->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCurrency(Currency $currency): self
+    {
+        if ($this->currencies->contains($currency)) {
+            $this->currencies->removeElement($currency);
+            if ($currency->getUser() === $this) {
+                $currency->setUser(null);
+            }
+        }
     }
 
     public function addCashbox(Cashbox $cashbox): self
     {
         if (!$this->cashboxes->contains($cashbox)) {
-            $this->cashboxes[] = $cashbox;
+            $this->cashboxes->add($cashbox);
             $cashbox->setUser($this);
         }
 
@@ -220,7 +250,6 @@ class User extends BaseUser
     {
         if ($this->cashboxes->contains($cashbox)) {
             $this->cashboxes->removeElement($cashbox);
-            // set the owning side to null (unless already changed)
             if ($cashbox->getUser() === $this) {
                 $cashbox->setUser(null);
             }
@@ -247,31 +276,27 @@ class User extends BaseUser
         return $this;
     }
 
-    /**
-     * @return Collection|Staff[]
-     */
     public function getStaffs(): Collection
     {
         return $this->staffs;
     }
 
-    public function addSStaff(Staff $sStaff): self
+    public function addStaff(Staff $staff): self
     {
-        if (!$this->staffs->contains($sStaff)) {
-            $this->staffs[] = $sStaff;
-            $sStaff->setOwner($this);
+        if (!$this->staffs->contains($staff)) {
+            $this->staffs->add($staff);
+            $staff->setOwner($this);
         }
 
         return $this;
     }
 
-    public function removeSStaff(Staff $sStaff): self
+    public function removeStaff(Staff $staff): self
     {
-        if ($this->staffs->contains($sStaff)) {
-            $this->staffs->removeElement($sStaff);
-            // set the owning side to null (unless already changed)
-            if ($sStaff->getOwner() === $this) {
-                $sStaff->setOwner(null);
+        if ($this->staffs->contains($staff)) {
+            $this->staffs->removeElement($staff);
+            if ($staff->getOwner() === $this) {
+                $staff->setOwner(null);
             }
         }
 

@@ -60,7 +60,7 @@ class Staff
      */
     private $updatedAt;
 
-    public function getId()
+    public function getId():?int
     {
         return $this->id;
     }
@@ -70,7 +70,7 @@ class Staff
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
 
@@ -82,7 +82,7 @@ class Staff
         return $this->owner;
     }
 
-    public function setOwner(?User $owner): self
+    public function setOwner(User $owner): self
     {
         $this->owner = $owner;
 
@@ -94,7 +94,7 @@ class Staff
         return $this->permissionGroup;
     }
 
-    public function setPermissionGroup(?PermissionGroup $permissionGroup): self
+    public function setPermissionGroup(PermissionGroup $permissionGroup): self
     {
         $this->permissionGroup = $permissionGroup;
 

@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -40,61 +39,60 @@ class Currency
     private $icon;
 
     /**
-     * @Vich\UploadableField(mapping="currency_icon", fileNameProperty="icon")
      * @var File
+     *
+     * @Vich\UploadableField(mapping="currency_icon", fileNameProperty="icon")
      */
     private $imageFile;
 
 
     /**
-     * @var datetime
-     * @ORM\Column(type="date")
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime")
      */
     private $createAt;
 
     /**
-     * @var datetime
-     * @ORM\Column(type="date")
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime")
      */
     private $updatedAt;
 
     /**
-     * @var integer
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="currency")
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="currencies")
      */
     private $user;
 
     /**
      * @var Cashbox[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Cashbox", mappedBy="currency")
      */
     private $cashboxes;
 
     public function __construct()
     {
-        $this->createAt = new DateTime();
-        $this->updatedAt = new DateTime();
+        $this->createAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
         $this->cashboxes = new ArrayCollection();
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param string $name
-     * @return Currency
-     */
-    public function setName(string $name): ?Currency
+    public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): ?string
     {
         return $this->name;
@@ -104,7 +102,7 @@ class Currency
     {
         $this->imageFile = $image;
         if ($image) {
-            $this->updatedAt = new DateTime('now');
+            $this->updatedAt = new \DateTime('now');
         }
 
         return $this;
@@ -115,65 +113,42 @@ class Currency
         return $this->imageFile;
     }
 
-
-    /**
-     * @param string $icon
-     * @return Currency
-     */
-    public function setIcon(?string $icon): Currency
+    public function setIcon(?string $icon): self
     {
         $this->icon = $icon;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getIcon(): ?string
     {
         return $this->icon;
     }
 
-    /**
-     * @param int $user
-     * @return Currency
-     */
-    public function setUser($user): Currency
+    public function setUser($user): self
     {
         $this->user = $user;
+
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getUser(): int
+    public function getUser(): User
     {
         return $this->user;
     }
 
 
-    /**
-     * @return DateTime
-     */
-    public function getCreateAt(): DateTime
+    public function getCreateAt(): ?\DateTimeInterface
     {
         return $this->createAt;
     }
 
-    /**
-     * @param DateTime $createAt
-     * @return Currency
-     */
-    public function setCreateAt(DateTime $createAt): Currency
+    public function setCreateAt(\DateTimeInterface $createAt): self
     {
         $this->createAt = $createAt;
+
         return $this;
     }
 
-    /**
-     * @return Collection|Cashbox[]
-     */
     public function getCashboxes(): Collection
     {
         return $this->cashboxes;
@@ -182,7 +157,7 @@ class Currency
     public function addCashbox(Cashbox $cashbox): self
     {
         if (!$this->cashboxes->contains($cashbox)) {
-            $this->cashboxes[] = $cashbox;
+            $this->cashboxes->add($cashbox);
             $cashbox->setCurrency($this);
         }
 
@@ -193,7 +168,6 @@ class Currency
     {
         if ($this->cashboxes->contains($cashbox)) {
             $this->cashboxes->removeElement($cashbox);
-            // set the owning side to null (unless already changed)
             if ($cashbox->getCurrency() === $this) {
                 $cashbox->setCurrency(null);
             }
@@ -202,22 +176,15 @@ class Currency
         return $this;
     }
 
-    public function setUpdatedAt(DateTime $updatedAt): self
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
-
-    /**
-     * @return string
-     */
-//    public function __toString()
-//    {
-//        return $this->getName();
-//    }
 }

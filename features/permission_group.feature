@@ -1,5 +1,6 @@
 # language: ru
 
+@permission_group @fixtures
 Функционал: Тестируем CRUD для привилегий пользователей
 
   @loginOwner @logout

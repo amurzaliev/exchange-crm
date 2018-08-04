@@ -27,20 +27,10 @@
                     <!-- /.box-header -->
                     <div class="box-body">
                         {{ form_start(form) }}
-
-                        {{ form_label(form.currency, 'Валюта') }}
-                        {{ form_errors(form.currency) }}
-                        {{ form_widget(form.currency) }}
-                        {{ form_help(form.currency) }}
-
-                        {{ form_label(form.exchangeOffice, 'Обменный пункт') }}
-                        {{ form_errors(form.exchangeOffice) }}
-                        {{ form_widget(form.exchangeOffice) }}
-                        {{ form_help(form.exchangeOffice) }}
-
-
+                        {{ form_row(form.currency) }}
+                        {{ form_row(form.exchangeOffice) }}
                         <hr>
-                        {{ form_widget(form.save, {'label' : 'Добавить', 'attr' : {
+                        {{ form_row(form.save, {'label' : 'Добавить', 'attr' : {
                             'class' : 'btn btn-primary btn-lg'
                         }}) }}
                         {{ form_end(form) }}

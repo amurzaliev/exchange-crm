@@ -30,7 +30,7 @@ class CurrencyRateController extends Controller
      * @param CurrencyRateRepository $currencyRateRepository
      * @return Response
      */
-    public function showAction(Cashbox $cashbox, CurrencyRateRepository $currencyRateRepository): Response
+    public function showAction(Cashbox $cashbox, CurrencyRateRepository $currencyRateRepository)
     {
         $rates = $cashbox->getCurrencyRates();
 
@@ -49,7 +49,7 @@ class CurrencyRateController extends Controller
      * @param Cashbox $cashbox
      * @return Response
      */
-    public function createAction(Request $request, EntityManagerInterface $manager, Cashbox $cashbox): Response
+    public function createAction(Request $request, EntityManagerInterface $manager, Cashbox $cashbox)
     {
         $currencyRate = new CurrencyRate();
         $form = $this->createForm(CurrencyRateType::class, $currencyRate);
