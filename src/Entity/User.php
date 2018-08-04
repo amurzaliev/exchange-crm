@@ -89,6 +89,13 @@ class User extends BaseUser
      */
     private $currencyRates;
 
+    /**
+     * @var VIPClient
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\VIPClient", mappedBy="user")
+     */
+    private $vipClients;
+
     public function __construct()
     {
         parent::__construct();
@@ -96,6 +103,7 @@ class User extends BaseUser
         $this->cashboxes = new ArrayCollection();
         $this->staffs = new ArrayCollection();
         $this->currencyRates = new ArrayCollection();
+        $this->vipClients = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -291,6 +299,37 @@ class User extends BaseUser
             $this->currencyRates->removeElement($currencyRate);
             if ($currencyRate->getUser() === $this) {
                 $currencyRate->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|VIPClient[]
+     */
+    public function getVipClients(): Collection
+    {
+        return $this->vipClients;
+    }
+
+    public function addVipClient(VIPClient $vipClient): self
+    {
+        if (!$this->vipClients->contains($vipClient)) {
+            $this->vipClients[] = $vipClient;
+            $vipClient->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVipClient(VIPClient $vipClient): self
+    {
+        if ($this->vipClients->contains($vipClient)) {
+            $this->vipClients->removeElement($vipClient);
+            // set the owning side to null (unless already changed)
+            if ($vipClient->getUser() === $this) {
+                $vipClient->setUser(null);
             }
         }
 
