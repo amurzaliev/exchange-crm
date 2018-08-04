@@ -6,7 +6,9 @@ use App\Entity\Currency;
 use App\Form\CurrencyType;
 use App\Repository\CurrencyRepository;
 use Doctrine\Common\Persistence\ObjectManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -19,25 +21,29 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class CurrencyController extends Controller
 {
     /**
-     * @Route("/", name="app_profile_currency_index")
+     * @Route("/", name="profile_currency_index")
+     * @Method("GET")
+     *
      * @param CurrencyRepository $currencyRepository
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function indexAction(CurrencyRepository $currencyRepository )
+    public function indexAction(CurrencyRepository $currencyRepository)
     {
         $currencies = $currencyRepository->findBy([
             'user' => $this->getUser()
         ]);
-        return $this->render('profile/currency/index.html.twig',[
-            'currencies'=> $currencies
+        return $this->render('profile/currency/index.html.twig', [
+            'currencies' => $currencies
         ]);
     }
 
     /**
-     * @Route("/create", name="app_profile_currency_create")
+     * @Route("/create", name="profile_currency_create")
+     * @Method({"GET", "POST"})
+     *
      * @param Request $request
      * @param ObjectManager $manager
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function createAction(Request $request, ObjectManager $manager)
     {
@@ -52,7 +58,7 @@ class CurrencyController extends Controller
             $manager->persist($currency);
             $manager->flush();
 
-            return $this->redirectToRoute('app_profile_currency_index');
+            return $this->redirectToRoute('profile_currency_index');
         }
 
         return $this->render('profile/currency/create.html.twig', [
@@ -61,19 +67,21 @@ class CurrencyController extends Controller
     }
 
     /**
-     * @Route("/{id}/edit", name="app_profile_currency_edit")
+     * @Route("/{id}/edit", name="profile_currency_edit")
+     * @Method({"GET", "PATCH"})
+     *
      * @param Request $request
      * @param CurrencyRepository $currencyRepository
      * @param ObjectManager $manager
      * @param int $id
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function editAction(
         Request $request,
         CurrencyRepository $currencyRepository,
         ObjectManager $manager,
         int $id
-    )
+    ): Response
     {
         $currencies = $currencyRepository->findOneBy([
             'id' => $id,
@@ -81,9 +89,9 @@ class CurrencyController extends Controller
         ]);
 
         if (!$currencies) {
-            return $this->render('profile/сomponents/error_messages/404.html.twig');
+            return $this->render('profile/components/error_messages/404.html.twig');
         }
-        $form = $this->createForm(CurrencyType::class, $currencies);
+        $form = $this->createForm(CurrencyType::class, $currencies, ['method' => 'PATCH']);
 
         $form->handleRequest($request);
 
@@ -92,7 +100,7 @@ class CurrencyController extends Controller
             $manager->persist($currencies);
             $manager->flush();
 
-            return $this->redirectToRoute('app_profile_currency_index');
+            return $this->redirectToRoute('profile_currency_index');
         }
 
         return $this->render('profile/currency/edit.html.twig', [
@@ -101,10 +109,12 @@ class CurrencyController extends Controller
     }
 
     /**
-     * @Route("/{id}/detail", name="app_profile_currency_detail")
+     * @Route("/{id}/detail", name="profile_currency_detail")
+     * @Method("GET")
+     *
      * @param int $id
      * @param CurrencyRepository $currencyRepository
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function detailAction(int $id, CurrencyRepository $currencyRepository)
     {
@@ -112,8 +122,8 @@ class CurrencyController extends Controller
             'id' => $id,
             'user' => $this->getUser()
         ]);
-        return $this->render('profile/currency/detail.html.twig',[
-                'currency'=> $currency
+        return $this->render('profile/currency/detail.html.twig', [
+                'currency' => $currency
             ]
         );
     }

@@ -6,7 +6,7 @@
     <title>Личный кабинет</title>
 
     {% block head %}
-        {{ include('profile/сomponents/head.html.twig') }}
+        {{ include('profile/components/head.html.twig') }}
     {% endblock %}
 
 </head>
@@ -14,11 +14,11 @@
     <div class="wrapper">
 
         {% block header %}
-            {{ include('profile/сomponents/header.html.twig') }}
+            {{ include('profile/components/header.html.twig') }}
         {% endblock %}
 
         {% block aside %}
-            {{ include('profile/сomponents/aside.html.twig') }}
+            {{ include('profile/components/aside.html.twig') }}
         {% endblock %}
 
         <div class="content-wrapper">
@@ -26,14 +26,14 @@
         </div>
 
         {% block footer %}
-            {{ include('profile/сomponents/footer.html.twig') }}
+            {{ include('profile/components/footer.html.twig') }}
         {% endblock %}
 
         <div class="control-sidebar-bg"></div>
     </div>
     <!-- ./wrapper -->
     {% block js %}
-        {{ include('profile/сomponents/js.html.twig') }}
+        {{ include('profile/components/js.html.twig') }}
     {% endblock %}
 </body>
 </html>

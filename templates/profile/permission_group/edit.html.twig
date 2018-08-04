@@ -26,40 +26,20 @@
                     <!-- /.box-header -->
                     <div class="box-body">
                         {{ form_start(form) }}
-
-                        {{ form_label(form.title, 'Название') }}
-                        {{ form_errors(form.title) }}
-                        {{ form_widget(form.title) }}
-                        {{ form_help(form.title) }}
-
-                        {{ form_label(form.alias, 'Альяс') }}
-                        {{ form_errors(form.alias) }}
-                        {{ form_widget(form.alias) }}
-                        {{ form_help(form.alias) }}
-
+                        {{ form_row(form.title) }}
+                        {{ form_row(form.alias) }}
                         <h3>Список пиривилегий</h3>
-
-                        {{ form_errors(form.create_personal) }}
-                        {{ form_widget(form.create_personal, {'attr' : {
+                        {{ form_row(form.create_personal, {'attr' : {
                             'class' : 'minimal'
                         }}) }}
-                        {{ form_help(form.create_personal) }}
-
-                        {{ form_errors(form.edit_personal) }}
-                        {{ form_widget(form.edit_personal, {'attr' : {
+                        {{ form_row(form.edit_personal, {'attr' : {
                             'class' : 'minimal'
                         }}) }}
-                        {{ form_help(form.edit_personal) }}
-
-                        {{ form_errors(form.view_personal) }}
-                        {{ form_widget(form.view_personal, {'attr' : {
+                        {{ form_row(form.view_personal, {'attr' : {
                             'class' : 'minimal'
                         }}) }}
-                        {{ form_help(form.view_personal) }}
-
                         <hr>
-
-                        {{ form_widget(form.save, {'label' : 'Сохранить', 'attr' : {
+                        {{ form_row(form.save, {'label' : 'Сохранить', 'attr' : {
                             'class' : 'btn btn-primary btn-lg'
                         }}) }}
                         {{ form_end(form) }}

@@ -17,13 +17,13 @@ class CashboxType extends AbstractType
     {
         $builder
             ->add('exchangeOffice', EntityType::class, [
-                'label' => 'Обменные пункты',
+                'label' => 'Обменный пункт',
                 'class' => ExchangeOffice::class,
                 'choice_label' => 'name',
                 'placeholder' => 'Выберите обменный пункт'
             ])
             ->add('currency', EntityType::class, [
-                'label' => 'Тип валюты',
+                'label' => 'Валюта',
                 'class' => Currency::class,
                 'choice_label' => 'name',
                 'placeholder' => 'Выберите тип валют'

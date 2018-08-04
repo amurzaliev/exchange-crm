@@ -21,46 +21,21 @@
                 <!-- general form elements disabled -->
                 <div class="box box-warning">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Добавления сотрудника</h3>
+                        <h3 class="box-title">Добавление сотрудника</h3>
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
                         {{ form_start(form) }}
-
-                        {{ form_label(form.user.fullName, 'Ф.И.О:') }}
-                        {{ form_errors(form.user.fullName) }}
-                        {{ form_widget(form.user.fullName) }}
-                        {{ form_help(form.user.fullName) }}
-
-                        {{ form_label(form.user.username, 'Логин:') }}
-                        {{ form_errors(form.user.username) }}
-                        {{ form_widget(form.user.username) }}
-                        {{ form_help(form.user.username) }}
-
-                        {{ form_label(form.user.password, 'Пароль:') }}
-                        {{ form_errors(form.user.password) }}
-                        {{ form_widget(form.user.password) }}
-                        {{ form_help(form.user.password) }}
+                        {{ form_row(form.user.fullName) }}
+                        {{ form_row(form.user.username) }}
+                        {{ form_row(form.user.password) }}
                         <br>
-
-                        {{ form_label(form.user.enabled) }}
-                        {{ form_errors(form.user.enabled) }}
-                        {{ form_widget(form.user.enabled) }}
-                        {{ form_help(form.user.enabled) }}
-
-                        {{ form_label(form.staff.position, 'Должность') }}
-                        {{ form_errors(form.staff.position) }}
-                        {{ form_widget(form.staff.position) }}
-                        {{ form_help(form.staff.position) }}
-
-                        {{ form_label(form.staff.permissionGroup) }}
-                        {{ form_errors(form.staff.permissionGroup) }}
-                        {{ form_widget(form.staff.permissionGroup) }}
-                        {{ form_help(form.staff.permissionGroup) }}
-
-                        <hr><br>
-
-                        {{ form_widget(form.save, {'label' : 'Сохранить', 'attr' : {
+                        {{ form_row(form.user.enabled) }}
+                        {{ form_row(form.staff.position) }}
+                        {{ form_row(form.staff.permissionGroup) }}
+                        <hr>
+                        <br>
+                        {{ form_row(form.save, {'label' : 'Сохранить', 'attr' : {
                             'class' : 'btn btn-primary btn-lg'
                         }}) }}
                         {{ form_end(form) }}

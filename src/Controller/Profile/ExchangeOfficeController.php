@@ -6,6 +6,7 @@ use App\Entity\ExchangeOffice;
 use App\Form\ExchangeOfficeType;
 use App\Repository\ExchangeOfficeRepository;
 use Doctrine\Common\Persistence\ObjectManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,7 +21,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class ExchangeOfficeController extends Controller
 {
     /**
-     * @Route("/", name="app_profile_exchange_office_index")
+     * @Route("/", name="profile_exchange_office_index")
+     * @Method("GET")
+     *
      * @param ExchangeOfficeRepository $exchangeOfficeRepository
      * @return Response
      */
@@ -29,13 +32,15 @@ class ExchangeOfficeController extends Controller
         $officeRepository = $exchangeOfficeRepository->findBy([
             'user' => $this->getUser()
         ]);
-        return $this->render('profile/exchange_office/index.html.twig',[
+        return $this->render('profile/exchange_office/index.html.twig', [
             'officeRepositories' => $officeRepository
         ]);
     }
 
     /**
-     * @Route("/create", name="app_profile_exchange_office_create")
+     * @Route("/create", name="profile_exchange_office_create")
+     * @Method({"GET", "POST"})
+     *
      * @param Request $request
      * @param ObjectManager $manager
      * @return Response
@@ -54,7 +59,7 @@ class ExchangeOfficeController extends Controller
             $manager->persist($officeRepository);
             $manager->flush();
 
-            return $this->redirectToRoute('app_profile_exchange_office_index');
+            return $this->redirectToRoute('profile_exchange_office_index');
         }
 
         return $this->render('profile/exchange_office/create.html.twig', [
@@ -63,7 +68,9 @@ class ExchangeOfficeController extends Controller
     }
 
     /**
-     * @Route("/{id}/edit", name="app_profile_exchange_office_edit")
+     * @Route("/{id}/edit", name="profile_exchange_office_edit")
+     * @Method({"GET", "PATCH"})
+     *
      * @param Request $request
      * @param ExchangeOfficeRepository $exchangeOfficeRepository
      * @param ObjectManager $manager
@@ -83,10 +90,10 @@ class ExchangeOfficeController extends Controller
         ]);
 
         if (!$officeRepository) {
-            return $this->render('profile/сomponents/error_messages/404.html.twig');
+            return $this->render('profile/components/error_messages/404.html.twig');
         }
 
-        $form = $this->createForm(ExchangeOfficeType::class, $officeRepository);
+        $form = $this->createForm(ExchangeOfficeType::class, $officeRepository, ['method' => 'PATCH']);
 
         $form->handleRequest($request);
 
@@ -96,7 +103,7 @@ class ExchangeOfficeController extends Controller
             $manager->persist($officeRepository);
             $manager->flush();
 
-            return $this->redirectToRoute('app_profile_exchange_office_index');
+            return $this->redirectToRoute('profile_exchange_office_index');
         }
 
         return $this->render('profile/exchange_office/edit.html.twig', [
@@ -105,7 +112,9 @@ class ExchangeOfficeController extends Controller
     }
 
     /**
-     * @Route("/{id}/detail", name="app_profile_exchange_office_detail")
+     * @Route("/{id}/detail", name="profile_exchange_office_detail")
+     * @Method("GET")
+     *
      * @param int $id
      * @param ExchangeOfficeRepository $exchangeOfficeRepository
      * @return Response
@@ -116,9 +125,9 @@ class ExchangeOfficeController extends Controller
             'id' => $id,
             'user' => $this->getUser()
         ]);
-        return $this->render('profile/exchange_office/detail.html.twig',[
-                'officeRepository'=> $officeRepository
+        return $this->render('profile/exchange_office/detail.html.twig', [
+                'officeRepository' => $officeRepository
             ]
-            );
+        );
     }
 }

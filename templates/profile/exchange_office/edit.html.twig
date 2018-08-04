@@ -26,28 +26,12 @@
                     <!-- /.box-header -->
                     <div class="box-body">
                         {{ form_start(form) }}
-
-                        {{ form_label(form.name, 'Название') }}
-                        {{ form_errors(form.name) }}
-                        {{ form_widget(form.name) }}
-                        {{ form_help(form.name) }}
-
-                        {{ form_label(form.address, 'Адрес') }}
-                        {{ form_errors(form.address) }}
-                        {{ form_widget(form.address) }}
-                        {{ form_help(form.address) }}
-
-                        {{ form_label(form.contact, 'Контакты') }}
-                        {{ form_errors(form.contact) }}
-                        {{ form_widget(form.contact) }}
-                        {{ form_help(form.contact) }}
-
-                        {{ form_label(form.active, 'Активность обменного пункта') }}
-                        {{ form_errors(form.active) }}
-                        {{ form_widget(form.active) }}
-                        {{ form_help(form.active) }}
+                        {{ form_row(form.name) }}
+                        {{ form_row(form.address) }}
+                        {{ form_row(form.contact) }}
+                        {{ form_row(form.active) }}
                         <hr>
-                        {{ form_widget(form.save, {'label' : 'Сохранить', 'attr' : {
+                        {{ form_row(form.save, {'label' : 'Сохранить', 'attr' : {
                             'class' : 'btn btn-primary btn-lg'
                         }}) }}
                         {{ form_end(form) }}

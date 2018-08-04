@@ -6,6 +6,7 @@ use App\Entity\PermissionGroup;
 use App\Form\PermissionGroupType;
 use App\Repository\PermissionGroupRepository;
 use Doctrine\Common\Persistence\ObjectManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,7 +21,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class PermissionGroupController extends Controller
 {
     /**
-     * @Route("/", name="app_profile_permission_group_index")
+     * @Route("/", name="profile_permission_group_index")
+     * @Method("GET")
+     *
      * @param PermissionGroupRepository $permissionGroupRepository
      * @return Response
      */
@@ -35,7 +38,9 @@ class PermissionGroupController extends Controller
     }
 
     /**
-     * @Route("/create", name="app_profile_permission_group_create")
+     * @Route("/create", name="profile_permission_group_create")
+     * @Method({"GET", "POST"})
+     *
      * @param Request $request
      * @param ObjectManager $manager
      * @return Response
@@ -54,7 +59,7 @@ class PermissionGroupController extends Controller
             $manager->persist($permissionGroup);
             $manager->flush();
 
-            return $this->redirectToRoute('app_profile_permission_group_index');
+            return $this->redirectToRoute('profile_permission_group_index');
         }
 
         return $this->render('profile/permission_group/create.html.twig', [
@@ -63,7 +68,9 @@ class PermissionGroupController extends Controller
     }
 
     /**
-     * @Route("/{id}/edit", name="app_profile_permission_group_edit")
+     * @Route("/{id}/edit", name="profile_permission_group_edit")
+     * @Method({"GET", "PATCH"})
+     *
      * @param Request $request
      * @param PermissionGroupRepository $permissionGroupRepository
      * @param ObjectManager $manager
@@ -83,10 +90,10 @@ class PermissionGroupController extends Controller
         ]);
 
         if (!$permissionGroup) {
-            return $this->render('profile/сomponents/error_messages/404.html.twig');
+            return $this->render('profile/components/error_messages/404.html.twig');
         }
 
-        $form = $this->createForm(PermissionGroupType::class, $permissionGroup);
+        $form = $this->createForm(PermissionGroupType::class, $permissionGroup, ['method' => 'PATCH']);
 
         $form->handleRequest($request);
 
@@ -96,7 +103,7 @@ class PermissionGroupController extends Controller
             $manager->persist($permissionGroup);
             $manager->flush();
 
-            return $this->redirectToRoute('app_profile_permission_group_index');
+            return $this->redirectToRoute('profile_permission_group_index');
         }
 
         return $this->render('profile/permission_group/edit.html.twig', [
