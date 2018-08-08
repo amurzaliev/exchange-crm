@@ -49,9 +49,9 @@
                                     <td>{{ exchangeOffice.address }}</td>
                                     <td>{{ exchangeOffice.contact }}</td>
                                     <td>
-                                        <a href="{{ path('profile_exchange_office_detail',{'id' : officeRepository.id }) }}" class="btn btn-default"  title="Просмотреть запись {{ exchangeOffice.name }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
-                                        <a href="{{ path('profile_exchange_office_edit', {'id' : officeRepository.id }) }}" class="btn btn-primary"  title="Редактировать запись {{ exchangeOffice.name }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
-                                        <a href="{{ path('profile_monetary_operations',  {'id' : officeRepository.id }) }}" class="btn btn-warning" title="Просмотреть курс валюты {{ exchangeOffice.name }} "> Покупка и Продажа <i class="fa fa-usd" aria-hidden="true"></i> <i class="fa fa-rub" aria-hidden="true"></i> <i class="fa fa-eur" aria-hidden="true"></i></a>
+                                        <a href="{{ path('profile_exchange_office_detail',{'id' : exchangeOffice.id }) }}" class="btn btn-default"  title="Просмотреть запись {{ exchangeOffice.name }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
+                                        <a href="{{ path('profile_exchange_office_edit', {'id' : exchangeOffice.id }) }}" class="btn btn-primary"  title="Редактировать запись {{ exchangeOffice.name }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
+                                        <a href="{{ path('profile_monetary_operations',  {'id' : exchangeOffice.id }) }}" class="btn btn-warning" title="Просмотреть курс валюты {{ exchangeOffice.name }} "> Покупка и Продажа <i class="fa fa-usd" aria-hidden="true"></i> <i class="fa fa-rub" aria-hidden="true"></i> <i class="fa fa-eur" aria-hidden="true"></i></a>
 
                                     </td>
                                 </tr>
