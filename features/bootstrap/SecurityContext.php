@@ -28,18 +28,35 @@ class SecurityContext extends RawMinkContext
         return $this->getEntityManager()->getRepository($entityName);
     }
 
-    /**
-     * @When /^я просматриваю "([^"]*)"$/
-     * @param $name
-     */
-    public function iViewExchangeOffice($name)
+    private function getExchangeOfficeIdByName($name)
     {
         /** @var \App\Repository\ExchangeOfficeRepository $exchangeOfficeRepository */
         $exchangeOfficeRepository = $this->getRepository(\App\Entity\ExchangeOffice::class);
         $exchangeOffice = $exchangeOfficeRepository->findOneBy(['name' => $name]);
+        return $exchangeOffice->getId();
+    }
+
+    /**
+     * @When /^я перехожу на просмотр обменного пункта "([^"]*)"$/
+     * @param $name
+     */
+    public function iViewExchangeOffice($name)
+    {
         $path = $this->getContainer()
             ->get('router')
-            ->generate('profile_exchange_office_detail', ['id' => $exchangeOffice->getId()]);
+            ->generate('profile_exchange_office_detail', ['id' => $this->getExchangeOfficeIdByName($name)]);
+        $this->visitPath($path);
+    }
+
+    /**
+     * @When /^я перехожу на редактирование обменного пункта "([^"]*)"$/
+     * @param $name
+     */
+    public function iEditExchangeOffice($name)
+    {
+        $path = $this->getContainer()
+            ->get('router')
+            ->generate('profile_exchange_office_edit', ['id' => $this->getExchangeOfficeIdByName($name)]);
         $this->visitPath($path);
     }
 
