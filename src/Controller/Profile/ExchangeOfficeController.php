@@ -3,6 +3,7 @@
 namespace App\Controller\Profile;
 
 use App\Entity\ExchangeOffice;
+use App\Entity\User;
 use App\Form\ExchangeOfficeType;
 use App\Repository\ExchangeOfficeRepository;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -10,7 +11,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * Class PermissionGroupController
@@ -18,7 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  *
  * @Route("profile/exchange_office")
  */
-class ExchangeOfficeController extends Controller
+class ExchangeOfficeController extends BaseProfileController
 {
     /**
      * @Route("/", name="profile_exchange_office_index")
@@ -29,11 +29,17 @@ class ExchangeOfficeController extends Controller
      */
     public function indexAction(ExchangeOfficeRepository $exchangeOfficeRepository)
     {
-        $officeRepository = $exchangeOfficeRepository->findBy([
-            'user' => $this->getUser()
-        ]);
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $exchangeOffices = $exchangeOfficeRepository->findAll();
+        } else {
+            $exchangeOffices = $exchangeOfficeRepository->findBy(['user' => $user]);
+        }
+
         return $this->render('profile/exchange_office/index.html.twig', [
-            'officeRepositories' => $officeRepository
+            'exchangeOffices' => $exchangeOffices
         ]);
     }
 
@@ -47,16 +53,14 @@ class ExchangeOfficeController extends Controller
      */
     public function createAction(Request $request, ObjectManager $manager)
     {
-        $officeRepository = new ExchangeOffice();
-
-        $form = $this->createForm(ExchangeOfficeType::class, $officeRepository);
-
+        $exchangeOffice = new ExchangeOffice();
+        $form = $this->createForm(ExchangeOfficeType::class, $exchangeOffice);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $officeRepository->setUser($this->getUser());
-            $manager->persist($officeRepository);
+            $exchangeOffice->setUser($this->getUser());
+            $manager->persist($exchangeOffice);
             $manager->flush();
 
             return $this->redirectToRoute('profile_exchange_office_index');
@@ -72,35 +76,35 @@ class ExchangeOfficeController extends Controller
      * @Method({"GET", "PATCH"})
      *
      * @param Request $request
-     * @param ExchangeOfficeRepository $exchangeOfficeRepository
      * @param ObjectManager $manager
      * @param int $id
+     * @param ExchangeOfficeRepository $exchangeOfficeRepository
      * @return Response
      */
     public function editAction(
         Request $request,
-        ExchangeOfficeRepository $exchangeOfficeRepository,
         ObjectManager $manager,
-        int $id
+        int $id,
+        ExchangeOfficeRepository $exchangeOfficeRepository
     )
     {
-        $officeRepository = $exchangeOfficeRepository->findOneBy([
-            'id' => $id,
-            'user' => $this->getUser()
-        ]);
+        $exchangeOffice = $exchangeOfficeRepository->find($id);
 
-        if (!$officeRepository) {
-            return $this->render('profile/components/error_messages/404.html.twig');
+        if (!$exchangeOffice) {
+            return $this->show404();
         }
 
-        $form = $this->createForm(ExchangeOfficeType::class, $officeRepository, ['method' => 'PATCH']);
+        if (!$this->isGranted('EDIT', $exchangeOffice)) {
+            return $this->show404();
+        }
 
+        $form = $this->createForm(ExchangeOfficeType::class, $exchangeOffice, ['method' => 'PATCH']);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $officeRepository->setUser($this->getUser());
-            $manager->persist($officeRepository);
+            $exchangeOffice->setUser($this->getUser());
+            $manager->persist($exchangeOffice);
             $manager->flush();
 
             return $this->redirectToRoute('profile_exchange_office_index');
@@ -121,13 +125,20 @@ class ExchangeOfficeController extends Controller
      */
     public function detailAction(int $id, ExchangeOfficeRepository $exchangeOfficeRepository)
     {
-        $officeRepository = $exchangeOfficeRepository->findOneBy([
-            'id' => $id,
-            'user' => $this->getUser()
-        ]);
+        $exchangeOffice = $exchangeOfficeRepository->find($id);
+
+        if (!$exchangeOffice) {
+            return $this->show404();
+        }
+
+        if (!$this->isGranted('VIEW', $exchangeOffice)) {
+            return $this->show404();
+        }
+
         return $this->render('profile/exchange_office/detail.html.twig', [
-                'officeRepository' => $officeRepository
+                'officeRepository' => $exchangeOffice
             ]
         );
+
     }
 }
