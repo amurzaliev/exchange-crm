@@ -4,6 +4,8 @@ default:
             contexts:
                 - BaseContext:
                     kernel: '@kernel'
+                - SecurityContext:
+                    kernel: '@kernel'
     extensions:
         Behat\Symfony2Extension:
             kernel:
