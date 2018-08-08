@@ -9,6 +9,8 @@
         {{ include('profile/components/head.html.twig') }}
     {% endblock %}
 
+    {% block stylesheet %}{% endblock %}
+
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
@@ -35,5 +37,7 @@
     {% block js %}
         {{ include('profile/components/js.html.twig') }}
     {% endblock %}
+
+    {% block Javascript %}{% endblock %}
 </body>
 </html>

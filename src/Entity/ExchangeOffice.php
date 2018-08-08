@@ -62,9 +62,17 @@ class ExchangeOffice
      */
     private $cashboxes;
 
+    /**
+     * @var Transactions
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Transactions", mappedBy="exchangeOffice")
+     */
+    private $transactions;
+
     public function __construct()
     {
         $this->cashboxes = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -153,6 +161,37 @@ class ExchangeOffice
             $this->cashboxes->removeElement($cashbox);
             if ($cashbox->getExchangeOffice() === $this) {
                 $cashbox->setExchangeOffice(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transactions[]
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transactions $transaction): self
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions[] = $transaction;
+            $transaction->setExchangeOffice($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transactions $transaction): self
+    {
+        if ($this->transactions->contains($transaction)) {
+            $this->transactions->removeElement($transaction);
+            // set the owning side to null (unless already changed)
+            if ($transaction->getExchangeOffice() === $this) {
+                $transaction->setExchangeOffice(null);
             }
         }
 

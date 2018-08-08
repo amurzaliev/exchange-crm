@@ -100,6 +100,13 @@ class User extends BaseUser
      */
     private $vipClients;
 
+    /**
+     * @var Transactions
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Transactions", mappedBy="user")
+     */
+    private $transactions;
+
     public function __construct()
     {
         parent::__construct();
@@ -109,6 +116,7 @@ class User extends BaseUser
         $this->currencyRates = new ArrayCollection();
         $this->currencies = new ArrayCollection();
         $this->vipClients = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -355,6 +363,37 @@ class User extends BaseUser
             // set the owning side to null (unless already changed)
             if ($vipClient->getUser() === $this) {
                 $vipClient->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transactions[]
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transactions $transaction): self
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions[] = $transaction;
+            $transaction->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transactions $transaction): self
+    {
+        if ($this->transactions->contains($transaction)) {
+            $this->transactions->removeElement($transaction);
+            // set the owning side to null (unless already changed)
+            if ($transaction->getUser() === $this) {
+                $transaction->setUser(null);
             }
         }
 

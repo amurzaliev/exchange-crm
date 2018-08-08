@@ -62,11 +62,27 @@ class Cashbox
      */
     private $currencyRates;
 
+    /**
+     * @var Transactions[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Transactions", mappedBy="сashboxFrom")
+     */
+    private $TransactionsFrom;
+
+    /**
+     * @var Transactions[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Transactions", mappedBy="сashboxTo")
+     */
+    private $transctionsTo;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
         $this->updatedAt = new \DateTime();
         $this->currencyRates = new ArrayCollection();
+        $this->TransactionsFrom = new ArrayCollection();
+        $this->transctionsTo = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -155,6 +171,68 @@ class Cashbox
             $this->currencyRates->removeElement($currencyRate);
             if ($currencyRate->getCashboxCurrency() === $this) {
                 $currencyRate->setCashboxCurrency(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transactions[]
+     */
+    public function getTransactionsFrom(): Collection
+    {
+        return $this->TransactionsFrom;
+    }
+
+    public function addTransactionsFrom(Transactions $transactionsFrom): self
+    {
+        if (!$this->TransactionsFrom->contains($transactionsFrom)) {
+            $this->TransactionsFrom[] = $transactionsFrom;
+            $transactionsFrom->setCashboxFrom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransactionsFrom(Transactions $transactionsFrom): self
+    {
+        if ($this->TransactionsFrom->contains($transactionsFrom)) {
+            $this->TransactionsFrom->removeElement($transactionsFrom);
+            // set the owning side to null (unless already changed)
+            if ($transactionsFrom->getCashboxFrom() === $this) {
+                $transactionsFrom->setCashboxFrom(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transactions[]
+     */
+    public function getTransctionsTo(): Collection
+    {
+        return $this->transctionsTo;
+    }
+
+    public function addTransctionsTo(Transactions $transctionsTo): self
+    {
+        if (!$this->transctionsTo->contains($transctionsTo)) {
+            $this->transctionsTo[] = $transctionsTo;
+            $transctionsTo->setсashboxTo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransctionsTo(Transactions $transctionsTo): self
+    {
+        if ($this->transctionsTo->contains($transctionsTo)) {
+            $this->transctionsTo->removeElement($transctionsTo);
+            // set the owning side to null (unless already changed)
+            if ($transctionsTo->getсashboxTo() === $this) {
+                $transctionsTo->setсashboxTo(null);
             }
         }
 

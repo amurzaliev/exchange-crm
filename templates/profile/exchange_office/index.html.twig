@@ -33,6 +33,7 @@
                                 <th>Активировать</th>
                                 <th>Адрес</th>
                                 <th>Телефоны</th>
+                                <th>Действие</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -50,6 +51,8 @@
                                     <td>
                                         <a href="{{ path('profile_exchange_office_detail',{'id' : officeRepository.id }) }}" class="btn btn-default"  title="Просмотреть запись {{ officeRepository.name }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
                                         <a href="{{ path('profile_exchange_office_edit', {'id' : officeRepository.id }) }}" class="btn btn-primary"  title="Редактировать запись {{ officeRepository.name }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
+                                        <a href="{{ path('profile_monetary_operations',  {'id' : officeRepository.id }) }}" class="btn btn-warning" title="Просмотреть курс валюты {{ officeRepository.name }} "> Покупка и Продажа <i class="fa fa-usd" aria-hidden="true"></i> <i class="fa fa-rub" aria-hidden="true"></i> <i class="fa fa-eur" aria-hidden="true"></i></a>
+
                                     </td>
                                 </tr>
                             {% else %}
