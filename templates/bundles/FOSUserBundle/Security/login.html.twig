@@ -1,8 +1,7 @@
 {% extends "layout.html.twig" %}
 
 {% block fos_user_content %}
-    <div class="container">
-        <a class="btn btn-outline-dark" style="text-align: center; margin: 20px;" href="{{ path('main_index') }}">Вернуться на главную</a>
+    <div>
         {{ include('@FOSUser/Security/login_content.html.twig') }}
     </div>
 {% endblock fos_user_content %}

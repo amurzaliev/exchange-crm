@@ -22,8 +22,16 @@
                     </li>
                 </ul>
                 <div class="form-inline my-2 my-lg-0">
-                    <a href="{{ path('fos_user_security_login') }}" style="margin: 20px;" class="btn btn-outline-success">Войти</a>
-                    <a href="{{ path('fos_user_registration_register') }}" style="margin: 20px;" class="btn btn-outline-success">Зарегистрироваться</a>
+                    {% if  is_granted('ROLE_USER') or is_granted('ROLE_OWNER') %}
+                        <a href="{{ path('profile_index') }}" style="margin: 20px;" class="btn btn-outline-success">Личный кабинет</a>
+                        <a href="{{ path('fos_user_security_logout') }}" style="margin: 20px;" class="btn btn-outline-success">Выйти</a>
+                        {% elseif is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('sonata_admin_dashboard') }}" style="margin: 20px;" class="btn btn-outline-success">Панель администратора</a>
+                            <a href="{{ path('fos_user_security_logout') }}" style="margin: 20px;" class="btn btn-outline-success">Выйти</a>
+                        {% else %}
+                            <a href="{{ path('fos_user_security_login') }}" style="margin: 20px;" class="btn btn-outline-success">Войти</a>
+                            <a href="{{ path('fos_user_registration_register') }}" style="margin: 20px;" class="btn btn-outline-success">Зарегистрироваться</a>
+                    {% endif %}
                 </div>
             </div>
         </nav>
