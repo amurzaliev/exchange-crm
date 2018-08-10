@@ -1,9 +1,9 @@
 {% trans_default_domain 'FOSUserBundle' %}
-<div style="margin: 100px">
+<div class="container input-form">
     <h1>Регистрация</h1>
     {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register', 'novalidate' : 'novalidate'}}) }}
     {{ form_row(form.email) }}
     {{ form_row(form.plainPassword) }}
-    <button class="btn btn-outline-dark" type="submit">{{ 'registration.submit'|trans }}</button>
+    <button class="btn btn-dark" type="submit">{{ 'registration.submit'|trans }}</button>
     {{ form_end(form) }}
 </div>
