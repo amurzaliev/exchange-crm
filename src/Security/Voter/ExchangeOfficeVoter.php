@@ -50,11 +50,13 @@ class ExchangeOfficeVoter extends Voter
             return true;
         }
 
-        switch ($attribute) {
-            case self::VIEW:
-                return $this->canView($exchangeOffice, $user);
-            case self::EDIT:
-                return false;
+        if ($this->decisionManager->decide($token, ['ROLE_USER'])) {
+            switch ($attribute) {
+                case self::VIEW:
+                    return $this->canView($exchangeOffice, $user);
+                case self::EDIT:
+                    return false;
+            }
         }
 
         return false;
@@ -62,7 +64,7 @@ class ExchangeOfficeVoter extends Voter
 
     private function canView(ExchangeOffice $exchangeOffice, User $user)
     {
-        if ($user->getExchangeOffices()->contains($exchangeOffice)) {
+        if ($user->getStaff()->hasExchangeOffice($exchangeOffice)) {
             return true;
         }
 

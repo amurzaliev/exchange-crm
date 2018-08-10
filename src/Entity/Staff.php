@@ -156,7 +156,7 @@ class Staff
         return $this->exchangeOffices;
     }
 
-    public function addExchangeOffice(ExchangeOffice $exchangeOffice):self
+    public function addExchangeOffice(ExchangeOffice $exchangeOffice): self
     {
         if (!$this->exchangeOffices->contains($exchangeOffice)) {
             $this->exchangeOffices->add($exchangeOffice);
@@ -166,7 +166,7 @@ class Staff
         return $this;
     }
 
-    public function removeExchangeOffice(ExchangeOffice $exchangeOffice):self
+    public function removeExchangeOffice(ExchangeOffice $exchangeOffice): self
     {
         if ($this->exchangeOffices->contains($exchangeOffice)) {
             $this->exchangeOffices->removeElement($exchangeOffice);
@@ -174,6 +174,11 @@ class Staff
         }
 
         return $this;
+    }
+
+    public function hasExchangeOffice(ExchangeOffice $exchangeOffice): bool
+    {
+        return $this->exchangeOffices->contains($exchangeOffice);
     }
 
 }

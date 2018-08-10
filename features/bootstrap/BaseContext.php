@@ -591,6 +591,30 @@ class BaseContext extends RawMinkContext implements TranslatableContext
         $this->pressButton('Войти');
     }
 
+    /** @BeforeScenario @loginStaff1
+     *
+     * @throws \Behat\Mink\Exception\ElementNotFoundException
+     */
+    public function loginStaff1BeforeScenario()
+    {
+        $this->visitPath($this->getContainer()->get('router')->generate('fos_user_security_login'));
+        $this->fillField('username', 'staff_1');
+        $this->fillField('password', '12345');
+        $this->pressButton('Войти');
+    }
+
+    /** @BeforeScenario @loginStaff2
+     *
+     * @throws \Behat\Mink\Exception\ElementNotFoundException
+     */
+    public function loginStaff2BeforeScenario()
+    {
+        $this->visitPath($this->getContainer()->get('router')->generate('fos_user_security_login'));
+        $this->fillField('username', 'staff_2');
+        $this->fillField('password', '12345');
+        $this->pressButton('Войти');
+    }
+
     /** @BeforeScenario @loginOwner
      *
      * @throws \Behat\Mink\Exception\ElementNotFoundException
