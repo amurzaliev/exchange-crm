@@ -34,8 +34,10 @@ class ExchangeOfficeController extends BaseProfileController
 
         if ($this->isGranted('ROLE_ADMIN')) {
             $exchangeOffices = $exchangeOfficeRepository->findAll();
-        } else {
+        } elseif ($this->isGranted('ROLE_OWNER')) {
             $exchangeOffices = $exchangeOfficeRepository->findBy(['user' => $user]);
+        } else {
+            $exchangeOffices = $user->getStaff()->getExchangeOffices();
         }
 
         return $this->render('profile/exchange_office/index.html.twig', [
