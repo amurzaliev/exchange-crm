@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\ExchangeOffice;
 use App\Entity\Staff;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -15,6 +16,8 @@ class StaffFixtures extends Fixture implements DependentFixtureInterface
 
         /** @var User $owner */
         $owner = $this->getReference(UserFixtures::OWNER);
+        /** @var ExchangeOffice $exchangeOffice */
+        $exchangeOffice = $this->getReference(ExchangeOfficeFixtures::EXCHANGEOFFICE);
 
         //Сотрудник 1
         $user1 = new User();
@@ -35,6 +38,7 @@ class StaffFixtures extends Fixture implements DependentFixtureInterface
             ->setPosition("Администратор")
             ->setCreatedAt(new \DateTime())
             ->setUpdatedAt(new \DateTime())
+            ->addExchangeOffice($exchangeOffice)
         ;
         $manager->persist($staff1);
 
@@ -97,7 +101,8 @@ class StaffFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return array(
-            UserFixtures::class
+            UserFixtures::class,
+            ExchangeOfficeFixtures::class
         );
     }
 }

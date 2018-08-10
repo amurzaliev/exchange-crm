@@ -69,10 +69,18 @@ class ExchangeOffice
      */
     private $transactions;
 
+    /**
+     * @var Staff[]|ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="App\Entity\Staff", inversedBy="exchangeOffices")
+     */
+    private $staffs;
+
     public function __construct()
     {
         $this->cashboxes = new ArrayCollection();
         $this->transactions = new ArrayCollection();
+        $this->staffs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -193,6 +201,29 @@ class ExchangeOffice
             if ($transaction->getExchangeOffice() === $this) {
                 $transaction->setExchangeOffice(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function getStaffs(): Collection
+    {
+        return $this->staffs;
+    }
+
+    public function addStaff(Staff $staff): self
+    {
+        if (!$this->staffs->contains($staff)) {
+            $this->staffs->add($staff);
+        }
+
+        return $this;
+    }
+
+    public function removeStaff(Staff $staff): self
+    {
+        if ($this->staffs->contains($staff)) {
+            $this->staffs->removeElement($staff);
         }
 
         return $this;

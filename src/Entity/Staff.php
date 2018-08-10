@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -60,7 +62,19 @@ class Staff
      */
     private $updatedAt;
 
-    public function getId():?int
+    /**
+     * @var ExchangeOffice[]|ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="App\Entity\ExchangeOffice", mappedBy="staffs")
+     */
+    private $exchangeOffices;
+
+    public function __construct()
+    {
+        $this->exchangeOffices = new ArrayCollection();
+    }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -133,6 +147,31 @@ class Staff
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getExchangeOffices(): Collection
+    {
+        return $this->exchangeOffices;
+    }
+
+    public function addExchangeOffice(ExchangeOffice $exchangeOffice):self
+    {
+        if (!$this->exchangeOffices->contains($exchangeOffice)) {
+            $this->exchangeOffices->add($exchangeOffice);
+            $exchangeOffice->addStaff($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExchangeOffice(ExchangeOffice $exchangeOffice):self
+    {
+        if ($this->exchangeOffices->contains($exchangeOffice)) {
+            $this->exchangeOffices->removeElement($exchangeOffice);
+            $exchangeOffice->removeStaff($this);
+        }
 
         return $this;
     }
