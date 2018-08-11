@@ -65,7 +65,7 @@ class MonetaryOperationsController extends BaseProfileController
     )
     {
         $status = true;
-        $message = "Данные успешно сохраннены!";
+        $message = "Данные успешно сохранены!";
         $allAmount = 0;
 
         $user = $this->getUser();
@@ -91,6 +91,12 @@ class MonetaryOperationsController extends BaseProfileController
 
             $exchangeOffice = $exchangeOfficeRepository->findByOne($exchangeOfficeId, $this->getOwner());
 
+            $cashboxAmount = $cashboxRepository->getAllAmount($cashboxId, $exchangeOffice);
+
+            if ($cashboxAmount) {
+                $allAmount = $cashboxAmount[0]['summa'];
+            }
+
             if (!$exchangeOffice) {
                 throw new \Exception("Обменный пункт не найден.", 403);
             }
@@ -98,7 +104,7 @@ class MonetaryOperationsController extends BaseProfileController
             $cashbox = $cashboxRepository->findByOne($cashboxId, $exchangeOffice);
 
             if (!$cashbox) {
-                throw new \Exception("Касса не найденна.", 403);
+                throw new \Exception("Касса не найдена.", 403);
             }
 
             if ($basicTypeOperations <= 0) {
@@ -109,8 +115,13 @@ class MonetaryOperationsController extends BaseProfileController
 
             if ($basicTypeOperations == 1) {
                 $transactions->setсashboxTo($cashbox);
-            } else if($basicTypeOperations == 2) {
+                $allAmount = number_format($allAmount + $amount, 4, ".", "");
+            } else if ($basicTypeOperations == 2) {
                 $transactions->setCashboxFrom($cashbox);
+                $allAmount = number_format($allAmount - $amount, 4, ".", "");
+                if ($allAmount < 0) {
+                    throw new \Exception("Недостаточно средств в кассе ".$cashbox->getCurrency()->getName()." для совершения операции.", 403);
+                }
             }
 
             $transactions
@@ -125,16 +136,10 @@ class MonetaryOperationsController extends BaseProfileController
             $manager->persist($transactions);
             $manager->flush();
 
-            $cashboxAmount = $cashboxRepository->getAllAmount($cashboxId, $exchangeOffice);
-
-            if ($cashboxAmount) {
-                $allAmount = $cashboxAmount[0]['summa'];
-            }
-
         } catch (\Exception $e) {
             $status = false;
             if ($e->getCode() != 403 ) {
-                $message = "Не изветсная ошибка. Обратитесь к администрации сайта.";
+                $message = "Неизвестная ошибка. Обратитесь к администрации сайта.";
             } else {
                 $message = $e->getMessage();
             }
@@ -144,7 +149,6 @@ class MonetaryOperationsController extends BaseProfileController
            'status' => $status,
            'message' => $message,
            'allAmount' => $allAmount,
-
         ]);
     }
 }
