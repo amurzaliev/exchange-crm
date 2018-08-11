@@ -28,6 +28,7 @@ security:
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/profile/exchange_office/create, role: ROLE_OWNER }
         - { path: ^/profile/cashbox/create, role: ROLE_OWNER }
+        - { path: ^/profile/staff/create, role: ROLE_OWNER }
         - { path: ^/profile/, role: ROLE_USER }
         - { path: ^/admin/, role: ROLE_ADMIN }
 

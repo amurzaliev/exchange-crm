@@ -91,7 +91,6 @@ class ExchangeOfficeController extends BaseProfileController
     )
     {
         $exchangeOffice = $exchangeOfficeRepository->find($id);
-dump($exchangeOffice);
         if (!$exchangeOffice) {
             return $this->show404();
         }

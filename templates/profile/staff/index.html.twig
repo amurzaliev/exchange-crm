@@ -47,8 +47,10 @@
                                     <td>{{ staff.createdAt.format("d-m-Y H:i:s") }}</td>
                                     <td>{{ staff.updatedAt.format("d-m-Y H:i:s") }}</td>
                                     <td>
-                                        <a href="{{ path('profile_staff_show', {'id' : staff.user.id }) }}" class="btn btn-default"  title="Просмотреть запись {{ staff.user.fullName }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
-                                        <a href="{{ path('profile_staff_edit', {'id' : staff.user.id }) }}" class="btn btn-primary" title="Редактировать запись {{ staff.user.fullName }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
+                                        <a href="{{ path('profile_staff_detail', {'id' : staff.user.id }) }}" class="btn btn-default"  title="Просмотреть запись {{ staff.user.fullName }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
+                                        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_OWNER') %}
+                                            <a href="{{ path('profile_staff_edit', {'id' : staff.user.id }) }}" class="btn btn-primary" title="Редактировать запись {{ staff.user.fullName }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% else %}
