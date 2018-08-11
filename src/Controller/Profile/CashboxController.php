@@ -30,10 +30,9 @@ class CashboxController extends BaseProfileController
      */
     public function indexAction(CashboxRepository $cashboxRepository)
     {
-//
+
         /** @var User $user */
         $user = $this->getUser();
-dump($user);
         if ($this->isGranted('ROLE_ADMIN')) {
             $cashboxes = $cashboxRepository->findAll();
         } elseif ($this->isGranted('ROLE_OWNER')) {
@@ -41,7 +40,6 @@ dump($user);
         } else {
             $cashboxes = $cashboxRepository->findBy(['user' => $user->getStaff()->getOwner()]);
         }
-        dump($cashboxes);
         return $this->render('profile/cashbox/index.html.twig', [
             'cashboxes' => $cashboxes,
         ]);
@@ -133,6 +131,14 @@ dump($user);
             'id' => $id,
             'user' => $this->getUser()->getStaff()->getOwner()
         ]);
+        if (!$cashbox) {
+            return $this->show404();
+        }
+
+        if (!$this->isGranted('VIEW', $cashbox)) {
+            return $this->show404();
+        }
+
         return $this->render('profile/cashbox/detail.html.twig', [
                 'cashbox' => $cashbox
             ]

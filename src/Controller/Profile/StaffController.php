@@ -30,7 +30,16 @@ class StaffController extends BaseProfileController
      */
     public function indexAction(StaffRepository $staffRepository)
     {
-        $staffs = $staffRepository->findByAllOwnerStaff($this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $staffs = $staffRepository->findAll();
+        } elseif ($this->isGranted('ROLE_OWNER')) {
+            $staffs = $staffRepository->findByAllOwnerStaff($this->getUser());
+        } else {
+            $staffs = $staffRepository->findByAllOwnerStaff($user->getStaff()->getOwner());
+        }
 
         return $this->render('profile/staff/index.html.twig', [
             'staffs' => $staffs
@@ -96,7 +105,13 @@ class StaffController extends BaseProfileController
     {
         $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), $id);
 
+
         if (!$staff) {
+            return $this->show404();
+        }
+
+        if (!$this->isGranted('EDIT', $staff)) {
+            dump($staff);
             return $this->show404();
         }
 
@@ -128,22 +143,31 @@ class StaffController extends BaseProfileController
     }
 
     /**
-     * @Route("/{id}/show", name="profile_staff_show", requirements={"id"="\d+"})
+     * @Route("/{id}/detail", name="profile_staff_detail", requirements={"id"="\d+"})
      * @Method("GET")
      *
      * @param int $id
      * @param StaffRepository $staffRepository
      * @return Response
      */
-    public function showAction(int $id, StaffRepository $staffRepository)
+    public function detailAction(int $id, StaffRepository $staffRepository)
     {
-        $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), $id);
+        if(in_array('ROLE_OWNER', $this->getUser()->getRoles())){
+            $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), $id);
+        }
+        else {
+            $staff = $staffRepository->findByOneOwnerStaff($this->getUser()->getStaff()->getOwner(), $id);
+        }
 
         if (!$staff) {
             return $this->show404();
         }
 
-        return $this->render('profile/staff/show.html.twig', [
+        if (!$this->isGranted('VIEW', $staff)) {
+            return $this->show404();
+        }
+
+        return $this->render('profile/staff/detail.html.twig', [
             'staff' => $staff
         ]);
     }

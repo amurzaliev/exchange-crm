@@ -34,7 +34,7 @@ class CurrencyRateController extends Controller
     {
         $rates = $cashbox->getCurrencyRates();
 
-        return $this->render('profile/currency_rate/show.html.twig', [
+        return $this->render('profile/currency_rate/detail.html.twig', [
             'cashbox' => $cashbox,
             'rates' => $rates
         ]);

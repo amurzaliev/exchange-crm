@@ -183,9 +183,7 @@ class Staff
     }
     public function hasCashbox(Cashbox $cashbox): bool
     {
-        $exchangeOffice = $cashbox->getExchangeOffice();
-
-        return $this->exchangeOffices->contains($exchangeOffice);
+        return $this->exchangeOffices->contains($cashbox->getExchangeOffice());
     }
 
 }
