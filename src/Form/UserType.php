@@ -17,7 +17,7 @@ class UserType extends AbstractType
         $builder
             ->add('fullName', TextType::class, ['label' => 'ФИО'])
             ->add('username', TextType::class, ['label' => 'Логин'])
-            ->add('password', PasswordType::class, ['label' => 'Пароль'])
+            ->add('plainPassword', PasswordType::class, ['label' => 'Пароль'])
             ->add('enabled',CheckboxType::class, [
                 'required' => false,
                 'label' => 'Активный'

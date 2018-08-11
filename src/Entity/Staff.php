@@ -65,7 +65,7 @@ class Staff
     /**
      * @var ExchangeOffice[]|ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="App\Entity\ExchangeOffice", mappedBy="staffs")
+     * @ORM\ManyToMany(targetEntity="App\Entity\ExchangeOffice", mappedBy="staffs", cascade={"persist"})
      */
     private $exchangeOffices;
 

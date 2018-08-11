@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\ExchangeOffice;
 use App\Entity\PermissionGroup;
 use App\Entity\Staff;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -22,6 +23,15 @@ class StaffType extends AbstractType
                 'choice_label' => 'title',
                 'required' => false,
                 'placeholder' => 'Выберите группу'
+            ])
+            ->add('exchangeOffices', EntityType::class, [
+                'label' => 'Обменные пункты',
+                'class' => ExchangeOffice::class,
+                'choice_label' => 'name',
+                'placeholder' => 'Выберите обменные пункты',
+                'expanded' => true,
+                'multiple' => true,
+                'by_reference' => false
             ])
         ;
     }

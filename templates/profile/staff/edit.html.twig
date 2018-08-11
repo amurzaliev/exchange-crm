@@ -28,11 +28,12 @@
                         {{ form_start(form) }}
                         {{ form_row(form.user.fullName) }}
                         {{ form_row(form.user.username) }}
-                        {{ form_row(form.user.password) }}
+                        {{ form_row(form.user.plainPassword) }}
                         <br>
                         {{ form_row(form.user.enabled) }}
                         {{ form_row(form.staff.position) }}
                         {{ form_row(form.staff.permissionGroup) }}
+                        {{ form_row(form.staff.exchangeOffices) }}
                         <hr>
                         <br>
                         {{ form_row(form.save, {'label' : 'Сохранить', 'attr' : {

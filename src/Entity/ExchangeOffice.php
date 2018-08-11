@@ -72,7 +72,7 @@ class ExchangeOffice
     /**
      * @var Staff[]|ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="App\Entity\Staff", inversedBy="exchangeOffices")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Staff", inversedBy="exchangeOffices", cascade={"persist"})
      */
     private $staffs;
 
@@ -215,6 +215,7 @@ class ExchangeOffice
     {
         if (!$this->staffs->contains($staff)) {
             $this->staffs->add($staff);
+            $staff->addExchangeOffice($this);
         }
 
         return $this;
@@ -224,6 +225,7 @@ class ExchangeOffice
     {
         if ($this->staffs->contains($staff)) {
             $this->staffs->removeElement($staff);
+            $staff->removeExchangeOffice($this);
         }
 
         return $this;
