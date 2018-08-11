@@ -3,6 +3,7 @@
 namespace App\Controller\Profile;
 
 use App\Entity\Cashbox;
+use App\Entity\User;
 use App\Form\CashboxType;
 use App\Repository\CashboxRepository;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -10,7 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
 
 /**
  * Class CashboxController
@@ -18,7 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  *
  * @Route("profile/cashbox")
  */
-class CashboxController extends Controller
+class CashboxController extends BaseProfileController
 {
     /**
      * @Route("/", name="profile_cashbox_index")
@@ -29,10 +30,18 @@ class CashboxController extends Controller
      */
     public function indexAction(CashboxRepository $cashboxRepository)
     {
-        $cashboxes = $cashboxRepository->findBy([
-            'user' => $this->getUser()
-        ]);
-
+//
+        /** @var User $user */
+        $user = $this->getUser();
+dump($user);
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $cashboxes = $cashboxRepository->findAll();
+        } elseif ($this->isGranted('ROLE_OWNER')) {
+            $cashboxes = $cashboxRepository->findBy(['user' => $user]);
+        } else {
+            $cashboxes = $cashboxRepository->findBy(['user' => $user->getStaff()->getOwner()]);
+        }
+        dump($cashboxes);
         return $this->render('profile/cashbox/index.html.twig', [
             'cashboxes' => $cashboxes,
         ]);
@@ -83,15 +92,15 @@ class CashboxController extends Controller
         int $id
     ): Response
     {
-        $cashbox = $cashboxRepository->findOneBy([
-            'id' => $id,
-            'user' => $this->getUser()
-        ]);
+        $cashbox = $cashboxRepository->find($id);
 
         if (!$cashbox) {
-            return $this->render('profile/components/error_messages/404.html.twig');
+            return $this->show404();
         }
 
+        if (!$this->isGranted('EDIT', $cashbox)) {
+            return $this->show404();
+        }
         $form = $this->createForm(CashboxType::class, $cashbox, ['method' => 'PATCH']);
 
         $form->handleRequest($request);
@@ -122,7 +131,7 @@ class CashboxController extends Controller
     {
         $cashbox = $cashboxRepository->findOneBy([
             'id' => $id,
-            'user' => $this->getUser()
+            'user' => $this->getUser()->getStaff()->getOwner()
         ]);
         return $this->render('profile/cashbox/detail.html.twig', [
                 'cashbox' => $cashbox
