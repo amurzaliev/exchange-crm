@@ -111,7 +111,6 @@ class StaffController extends BaseProfileController
         }
 
         if (!$this->isGranted('EDIT', $staff)) {
-            dump($staff);
             return $this->show404();
         }
 
