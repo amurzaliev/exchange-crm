@@ -5,12 +5,12 @@ namespace App\Controller\Profile;
 use App\Entity\PermissionGroup;
 use App\Form\PermissionGroupType;
 use App\Repository\PermissionGroupRepository;
+use App\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * Class PermissionGroupController
@@ -18,7 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  *
  * @Route("profile/permission_group")
  */
-class PermissionGroupController extends Controller
+class PermissionGroupController extends BaseProfileController
 {
     /**
      * @Route("/", name="profile_permission_group_index")
@@ -29,9 +29,18 @@ class PermissionGroupController extends Controller
      */
     public function indexAction(PermissionGroupRepository $permissionGroupRepository)
     {
-        $permissionGroups = $permissionGroupRepository->findBy([
-            'user' => $this->getUser()
-        ]);
+        $user = $this->getUser();
+
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $permissionGroups = $permissionGroupRepository->findAll();
+        } elseif ($this->isGranted('ROLE_OWNER')) {
+            $permissionGroups = $permissionGroupRepository->findBy(['user' => $user]);
+        } else {
+            $permissionGroups = $permissionGroupRepository->findBy(['user' => $user->getStaff()->getOwner()]);
+        }
+
+
+
         return $this->render('profile/permission_group/index.html.twig', [
             'permissionGroups' => $permissionGroups,
         ]);
@@ -90,7 +99,11 @@ class PermissionGroupController extends Controller
         ]);
 
         if (!$permissionGroup) {
-            return $this->render('profile/components/error_messages/404.html.twig');
+            return $this->show404();
+        }
+
+        if (!$this->isGranted('EDIT', $permissionGroup)) {
+            return $this->show404();
         }
 
         $form = $this->createForm(PermissionGroupType::class, $permissionGroup, ['method' => 'PATCH']);

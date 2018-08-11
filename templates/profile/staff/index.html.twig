@@ -16,6 +16,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
+                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_OWNER') %}
                     <div class="box-header">
                         <h3 class="box-title">
                             <a href="{{ path('profile_staff_create') }}" class="btn btn-block btn-success btn-lg">
@@ -23,6 +24,7 @@
                             </a>
                         </h3>
                     </div>
+                    {% endif %}
                     <!-- /.box-header -->
                     <div class="box-body">
                         <table id="example2" class="table table-bordered table-hover">

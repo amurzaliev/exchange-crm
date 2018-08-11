@@ -16,13 +16,15 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <div class="box-header">
-                        <h3 class="box-title">
-                            <a href="{{ path('profile_permission_group_create') }}" class="btn btn-block btn-success btn-lg">
-                                Добавить
-                            </a>
-                        </h3>
-                    </div>
+                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_OWNER') %}
+                        <div class="box-header">
+                            <h3 class="box-title">
+                                <a href="{{ path('profile_permission_group_create') }}" class="btn btn-block btn-success btn-lg">
+                                    Добавить
+                                </a>
+                            </h3>
+                        </div>
+                    {% endif %}
                     <!-- /.box-header -->
                     <div class="box-body">
                         <table id="example2" class="table table-bordered table-hover">
@@ -31,7 +33,9 @@
                                 <th>#id</th>
                                 <th>Наименование</th>
                                 <th>Альяс</th>
-                                <th>Действние</th>
+                                {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_OWNER') %}
+                                    <th>Действние</th>
+                                {% endif %}
                             </tr>
                             </thead>
                             <tbody>
@@ -40,10 +44,12 @@
                                     <td>{{ permissionGroup.id }}</td>
                                     <td>{{ permissionGroup.title }}</td>
                                     <td>{{ permissionGroup.alias }}</td>
+                                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_OWNER') %}
                                     <td>
                                         <a href="#" class="btn btn-default"  title="Просмотреть запись {{ permissionGroup.title }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
                                         <a href="{{ path('profile_permission_group_edit', {'id' : permissionGroup.id }) }}" class="btn btn-primary" title="Редактировать запись {{ permissionGroup.title }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
                                     </td>
+                                    {% endif %}
                                 </tr>
                             {% else %}
                                 <tr>

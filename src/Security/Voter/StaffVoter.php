@@ -66,7 +66,7 @@ class StaffVoter extends Voter
         return false;
     }
 
-    private function canView(staff $staff, User $user)
+    private function canView(Staff $staff, User $user)
     {
         if ($user->getStaff() === $staff) {
             return true;

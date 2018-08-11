@@ -30,7 +30,7 @@ class CashboxController extends BaseProfileController
      */
     public function indexAction(CashboxRepository $cashboxRepository)
     {
-//
+
         /** @var User $user */
         $user = $this->getUser();
         if ($this->isGranted('ROLE_ADMIN')) {
