@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Security\Voter\CashboxVoter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -65,7 +66,7 @@ class Staff
     /**
      * @var ExchangeOffice[]|ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="App\Entity\ExchangeOffice", mappedBy="staffs")
+     * @ORM\ManyToMany(targetEntity="App\Entity\ExchangeOffice", mappedBy="staffs", cascade={"persist"})
      */
     private $exchangeOffices;
 
@@ -178,6 +179,12 @@ class Staff
 
     public function hasExchangeOffice(ExchangeOffice $exchangeOffice): bool
     {
+        return $this->exchangeOffices->contains($exchangeOffice);
+    }
+    public function hasCashbox(Cashbox $cashbox): bool
+    {
+        $exchangeOffice = $cashbox->getExchangeOffice();
+
         return $this->exchangeOffices->contains($exchangeOffice);
     }
 

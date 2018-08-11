@@ -74,7 +74,7 @@ class Cashbox
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Transactions", mappedBy="сashboxTo")
      */
-    private $transctionsTo;
+    private $transactionsTo;
 
     public function __construct()
     {
@@ -82,7 +82,7 @@ class Cashbox
         $this->updatedAt = new \DateTime();
         $this->currencyRates = new ArrayCollection();
         $this->TransactionsFrom = new ArrayCollection();
-        $this->transctionsTo = new ArrayCollection();
+        $this->transactionsTo = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -211,28 +211,28 @@ class Cashbox
     /**
      * @return Collection|Transactions[]
      */
-    public function getTransctionsTo(): Collection
+    public function getTransactionsTo(): Collection
     {
-        return $this->transctionsTo;
+        return $this->transactionsTo;
     }
 
-    public function addTransctionsTo(Transactions $transctionsTo): self
+    public function addTransactionsTo(Transactions $transactionsTo): self
     {
-        if (!$this->transctionsTo->contains($transctionsTo)) {
-            $this->transctionsTo[] = $transctionsTo;
-            $transctionsTo->setсashboxTo($this);
+        if (!$this->transactionsTo->contains($transactionsTo)) {
+            $this->transactionsTo[] = $transactionsTo;
+            $transactionsTo->setсashboxTo($this);
         }
 
         return $this;
     }
 
-    public function removeTransctionsTo(Transactions $transctionsTo): self
+    public function removeTransactionsTo(Transactions $transactionsTo): self
     {
-        if ($this->transctionsTo->contains($transctionsTo)) {
-            $this->transctionsTo->removeElement($transctionsTo);
+        if ($this->transactionsTo->contains($transactionsTo)) {
+            $this->transactionsTo->removeElement($transactionsTo);
             // set the owning side to null (unless already changed)
-            if ($transctionsTo->getсashboxTo() === $this) {
-                $transctionsTo->setсashboxTo(null);
+            if ($transactionsTo->getсashboxTo() === $this) {
+                $transactionsTo->setсashboxTo(null);
             }
         }
 
