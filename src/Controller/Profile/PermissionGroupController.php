@@ -110,4 +110,24 @@ class PermissionGroupController extends Controller
             'form' => $form->createView()
         ]);
     }
+
+    /**
+     * @Route("/{id}/detail", name="profile_permission_group_detail")
+     * @Method("GET")
+     *
+     * @param int $id
+     * @param PermissionGroupRepository $permissionGroupRepository
+     * @return Response
+     */
+    public function detailAction(int $id, PermissionGroupRepository $permissionGroupRepository)
+    {
+
+        $permissionGroup = $permissionGroupRepository->find($id);
+
+        return $this->render('profile/permission_group/detail.html.twig', [
+                'permissionGroupRepository' => $permissionGroup
+            ]
+        );
+
+    }
 }

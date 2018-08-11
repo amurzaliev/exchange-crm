@@ -41,7 +41,7 @@
                                     <td>{{ permissionGroup.title }}</td>
                                     <td>{{ permissionGroup.alias }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-default"  title="Просмотреть запись {{ permissionGroup.title }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
+                                        <a href="{{ path('profile_permission_group_detail', {'id' : permissionGroup.id }) }}" class="btn btn-default"  title="Просмотреть запись {{ permissionGroup.title }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
                                         <a href="{{ path('profile_permission_group_edit', {'id' : permissionGroup.id }) }}" class="btn btn-primary" title="Редактировать запись {{ permissionGroup.title }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
                                     </td>
                                 </tr>

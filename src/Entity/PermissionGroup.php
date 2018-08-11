@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Libs\Enumeration\PermissionGroupEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -173,5 +174,24 @@ class PermissionGroup
         }
 
         return $this;
+    }
+
+    public function toArrayPermissions()
+    {
+        $array = [
+            'create' => [
+                'title' => PermissionGroupEnum::CREATE_PERSONAL,
+                'status' => $this->create_personal
+            ],
+            'edit' =>[
+                'title' => PermissionGroupEnum::EDIT_PERSONAL,
+                'status' => $this->edit_personal
+            ],
+            'view' =>[
+                'title' => PermissionGroupEnum::VIEW_PERSONAL,
+                'status' => $this->view_personal
+            ]
+        ];
+        return $array;
     }
 }
