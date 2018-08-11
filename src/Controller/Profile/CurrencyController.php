@@ -10,7 +10,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * Class CurrencyController
@@ -18,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  *
  * @Route("profile/currency")
  */
-class CurrencyController extends Controller
+class CurrencyController extends BaseProfileController
 {
     /**
      * @Route("/", name="profile_currency_index")
@@ -29,6 +28,10 @@ class CurrencyController extends Controller
      */
     public function indexAction(CurrencyRepository $currencyRepository)
     {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            return $this->show404();
+        }
+
         $currencies = $currencyRepository->findBy([
             'user' => $this->getUser()
         ]);
@@ -47,6 +50,10 @@ class CurrencyController extends Controller
      */
     public function createAction(Request $request, ObjectManager $manager)
     {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            return $this->show404();
+        }
+
         $currency = new Currency();
 
         $form = $this->createForm(CurrencyType::class, $currency);
@@ -83,13 +90,14 @@ class CurrencyController extends Controller
         int $id
     ): Response
     {
-        $currencies = $currencyRepository->findOneBy([
-            'id' => $id,
-            'user' => $this->getUser()
-        ]);
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            return $this->show404();
+        }
+
+        $currencies = $currencyRepository->find($id);
 
         if (!$currencies) {
-            return $this->render('profile/components/error_messages/404.html.twig');
+            return $this->show404();
         }
         $form = $this->createForm(CurrencyType::class, $currencies, ['method' => 'PATCH']);
 
@@ -118,10 +126,16 @@ class CurrencyController extends Controller
      */
     public function detailAction(int $id, CurrencyRepository $currencyRepository)
     {
-        $currency = $currencyRepository->findOneBy([
-            'id' => $id,
-            'user' => $this->getUser()
-        ]);
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            return $this->show404();
+        }
+
+        $currency = $currencyRepository->find($id);
+
+        if (!$currency) {
+            return $this->show404();
+        }
+
         return $this->render('profile/currency/detail.html.twig', [
                 'currency' => $currency
             ]

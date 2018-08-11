@@ -36,6 +36,14 @@ class SecurityContext extends RawMinkContext
         return $exchangeOffice->getId();
     }
 
+    private function getCurrencyIdByName($name)
+    {
+        /** @var \App\Repository\CurrencyRepository $currencyRepository */
+        $currencyRepository = $this->getRepository(\App\Entity\Currency::class);
+        $currency = $currencyRepository->findOneBy(['name' => $name]);
+        return $currency->getId();
+    }
+
     /**
      * @When /^я перехожу на просмотр обменного пункта "([^"]*)"$/
      * @param $name
@@ -57,6 +65,30 @@ class SecurityContext extends RawMinkContext
         $path = $this->getContainer()
             ->get('router')
             ->generate('profile_exchange_office_edit', ['id' => $this->getExchangeOfficeIdByName($name)]);
+        $this->visitPath($path);
+    }
+
+    /**
+     * @When /^я перехожу на просмотр типа валюты "([^"]*)"$/
+     * @param $name
+     */
+    public function iViewCurrency($name)
+    {
+        $path = $this->getContainer()
+            ->get('router')
+            ->generate('profile_currency_detail', ['id' => $this->getCurrencyIdByName($name)]);
+        $this->visitPath($path);
+    }
+
+    /**
+     * @When /^я перехожу на редактирование типа валюты "([^"]*)"$/
+     * @param $name
+     */
+    public function iEditCurrency($name)
+    {
+        $path = $this->getContainer()
+            ->get('router')
+            ->generate('profile_currency_edit', ['id' => $this->getCurrencyIdByName($name)]);
         $this->visitPath($path);
     }
 
