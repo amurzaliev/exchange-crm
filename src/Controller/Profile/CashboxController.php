@@ -127,10 +127,8 @@ class CashboxController extends BaseProfileController
      */
     public function detailAction(int $id, CashboxRepository $cashboxRepository)
     {
-        $cashbox = $cashboxRepository->findOneBy([
-            'id' => $id,
-            'user' => $this->getUser()->getStaff()->getOwner()
-        ]);
+        $cashbox = $cashboxRepository->find($id);
+
         if (!$cashbox) {
             return $this->show404();
         }
@@ -144,5 +142,4 @@ class CashboxController extends BaseProfileController
             ]
         );
     }
-
 }
