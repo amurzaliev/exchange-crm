@@ -25,8 +25,8 @@
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <p>Название группы: {{ permissionGroupRepository.title }}</p>
-                        {% for  permission in permissionGroupRepository.toArrayPermissions %}
+                        <p>Название группы: {{ permissionGroup.title }}</p>
+                        {% for  permission in permissionGroup.toArrayPermissions %}
                             {% if(permission['status']) %}
                                  <p>Имеет привелегии: {{ permission.title }}</p>
                             {% endif %}

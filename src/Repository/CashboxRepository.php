@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Cashbox;
+use App\Entity\Currency;
 use App\Entity\ExchangeOffice;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
@@ -101,6 +102,25 @@ class CashboxRepository extends ServiceEntityRepository
             return null;
         }
     }
+
+
+    /**
+     * @param string $currency
+     * @return Cashbox|null
+     */
+    public function findByCurrencyName( string $currency)
+    {
+        try {
+            return $this->createQueryBuilder('c')
+                ->andWhere('c.currency = :currency')
+                ->setParameter("exchangeOffice", $currency)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
+    }
+
 
     public function getAllAmount(int $id, ExchangeOffice $exchangeOffice)
     {
