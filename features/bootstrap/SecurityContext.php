@@ -39,9 +39,9 @@ class SecurityContext extends RawMinkContext
     private function getPermissionGroupIdByTitle($title)
     {
         /** @var \App\Repository\ExchangeOfficeRepository $exchangeOfficeRepository */
-        $exchangeOfficeRepository = $this->getRepository(\App\Entity\ExchangeOffice::class);
-        $exchangeOffice = $exchangeOfficeRepository->findOneBy(['title' => $title]);
-        return $exchangeOffice->getId();
+        $PermissionGroupRepository = $this->getRepository(\App\Entity\PermissionGroup::class);
+        $permissionGroup = $PermissionGroupRepository->findOneBy(['title' => $title]);
+        return $permissionGroup->getId();
     }
 
     private function getCurrencyIdByName($name)
@@ -59,6 +59,14 @@ class SecurityContext extends RawMinkContext
         $cashboxRepository = $this->getRepository(\App\Entity\Cashbox::class);
         $cashbox = $cashboxRepository->findOneBy(['name' => $currency]);
         return $cashbox->getId();
+    }
+
+    private function getStaffIdByLogin($login)
+    {
+        /** @var \App\Repository\CurrencyRepository $currencyRepository */
+        $staffRepository = $this->getRepository(\App\Entity\Staff::class);
+        $staff = $staffRepository->findOneBy(['login' => $login]);
+        return $staff->getId();
     }
 
     /**
@@ -159,4 +167,27 @@ class SecurityContext extends RawMinkContext
     }
 
 
+    /**
+     * @When /^я перехожу на просмотр страницы сотрудника с логином "([^"]*)"$/
+     * @param $login
+     */
+    public function iViewStaff($login)
+    {
+        $path = $this->getContainer()
+            ->get('router')
+            ->generate('profile_staff_detail', ['id' => $this->getStaffIdByLogin($login)]);
+        $this->visitPath($path);
+    }
+
+    /**
+     * @When /^я перехожу на редактирование страницы сотрудника с логином "([^"]*)"$/
+     * @param $login
+     */
+    public function iEditStaff($login)
+    {
+        $path = $this->getContainer()
+            ->get('router')
+            ->generate('profile_staff_detail', ['id' => $this->getStaffIdByLogin($login)]);
+        $this->visitPath($path);
+    }
 }
