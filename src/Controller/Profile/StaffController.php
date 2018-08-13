@@ -103,8 +103,13 @@ class StaffController extends BaseProfileController
         StaffRepository $staffRepository
     )
     {
-        $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), $id);
-
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $staff = $staffRepository->find($id);
+        } elseif ($this->isGranted('ROLE_OWNER')) {
+            $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), $id);
+        } else {
+            $staff = $staffRepository->findByOneOwnerStaff($this->getOwner(), $id);
+        }
 
         if (!$staff) {
             return $this->show404();
@@ -151,12 +156,12 @@ class StaffController extends BaseProfileController
      */
     public function detailAction(int $id, StaffRepository $staffRepository)
     {
-        if(in_array('ROLE_OWNER', $this->getUser()->getRoles())){
-            $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), $id);
-        } elseif(in_array('ROLE_ADMIN', $this->getUser()->getRoles())){
+        if ($this->isGranted('ROLE_ADMIN')) {
             $staff = $staffRepository->find($id);
+        } elseif ($this->isGranted('ROLE_OWNER')) {
+            $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), $id);
         } else {
-            $staff = $staffRepository->findByOneOwnerStaff($this->getUser()->getStaff()->getOwner(), $id);
+            $staff = $staffRepository->findByOneOwnerStaff($this->getOwner(), $id);
         }
 
         if (!$staff) {

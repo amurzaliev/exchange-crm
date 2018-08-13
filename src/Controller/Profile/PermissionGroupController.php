@@ -93,10 +93,7 @@ class PermissionGroupController extends BaseProfileController
         int $id
     )
     {
-        $permissionGroup = $permissionGroupRepository->findOneBy([
-            'id' => $id,
-            'user' => $this->getUser()
-        ]);
+        $permissionGroup = $permissionGroupRepository->find($id);
 
         if (!$permissionGroup) {
             return $this->show404();
