@@ -153,8 +153,9 @@ class StaffController extends BaseProfileController
     {
         if(in_array('ROLE_OWNER', $this->getUser()->getRoles())){
             $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), $id);
-        }
-        else {
+        } elseif(in_array('ROLE_ADMIN', $this->getUser()->getRoles())){
+            $staff = $staffRepository->find($id);
+        } else {
             $staff = $staffRepository->findByOneOwnerStaff($this->getUser()->getStaff()->getOwner(), $id);
         }
 

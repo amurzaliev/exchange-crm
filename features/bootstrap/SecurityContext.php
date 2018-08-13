@@ -38,9 +38,9 @@ class SecurityContext extends RawMinkContext
 
     private function getPermissionGroupIdByTitle($title)
     {
-        /** @var \App\Repository\ExchangeOfficeRepository $exchangeOfficeRepository */
-        $PermissionGroupRepository = $this->getRepository(\App\Entity\PermissionGroup::class);
-        $permissionGroup = $PermissionGroupRepository->findOneBy(['title' => $title]);
+        /** @var \App\Repository\PermissionGroupRepository $permissionGroupRepository */
+        $permissionGroupRepository = $this->getRepository(\App\Entity\PermissionGroup::class);
+        $permissionGroup = $permissionGroupRepository->findOneBy(['title' => $title]);
         return $permissionGroup->getId();
     }
 
@@ -63,9 +63,9 @@ class SecurityContext extends RawMinkContext
 
     private function getStaffIdByLogin($login)
     {
-        /** @var \App\Repository\CurrencyRepository $currencyRepository */
-        $staffRepository = $this->getRepository(\App\Entity\Staff::class);
-        $staff = $staffRepository->findOneBy(['login' => $login]);
+        /** @var \App\Repository\UserRepository $userRepository */
+        $userRepository = $this->getRepository(\App\Entity\User::class);
+        $staff = $userRepository->findOneBy(['username' => $login]);
         return $staff->getId();
     }
 
