@@ -97,9 +97,10 @@
                                     </td>
                                     <td class="purchase">
                                         <input type="text"
-                                               class="cashbox-purchase"
+                                               class="cashbox-currency cashbox-purchase"
                                                value="{{ cashbox.purchase }}"
                                                data-cashbox-id="{{ cashbox.id }}"
+                                               data-cashbox-action="purchase"
                                         >
                                     </td>
                                     <td class="purchase">
@@ -111,9 +112,10 @@
                                     </td>
                                     <td class="sale">
                                         <input type="text"
-                                               class="cashbox-sale"
+                                               class="cashbox-currency cashbox-sale"
                                                value="{{ cashbox.sale }}"
                                                data-cashbox-id="{{ cashbox.id }}"
+                                               data-cashbox-action="sale"
                                         >
                                     </td>
                                     <td class="sale">
@@ -306,6 +308,26 @@
             result = currency * amount;
 
             $(cashboxNumberClass+" .form-result").val(result);
+        });
+
+        $(".cashbox-currency").on("keyup", function () {
+            var amount,result;
+            var cashboxAction = $(this).data("cashbox-action");
+            var currency = $(this).val();
+            var cashboxId = $(this).data("cashbox-id");
+            var cashboxNumberClass = ".cashbox-number-"+cashboxId;
+
+            if (cashboxAction === "sale") {
+                amount = $(cashboxNumberClass+" .sale .cashbox-form").val();
+            } else if(cashboxAction === "purchase") {
+                amount = $(cashboxNumberClass+" .purchase .cashbox-form").val();
+            }
+
+            if (amount > 0) {
+                result = currency * amount;
+                $(cashboxNumberClass+" .form-result").val(result);
+            }
+
         });
     });
 
