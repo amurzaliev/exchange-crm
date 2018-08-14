@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -59,6 +61,16 @@ class VIPClient
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="vipClients")
      */
     private $user;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Transactions", mappedBy="VIPClient")
+     */
+    private $transactions;
+
+    public function __construct()
+    {
+        $this->transactions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -133,6 +145,37 @@ class VIPClient
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transactions[]
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transactions $transaction): self
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions[] = $transaction;
+            $transaction->setVIPClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transactions $transaction): self
+    {
+        if ($this->transactions->contains($transaction)) {
+            $this->transactions->removeElement($transaction);
+            // set the owning side to null (unless already changed)
+            if ($transaction->getVIPClient() === $this) {
+                $transaction->setVIPClient(null);
+            }
+        }
 
         return $this;
     }

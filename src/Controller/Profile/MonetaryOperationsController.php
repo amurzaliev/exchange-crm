@@ -6,6 +6,7 @@ use App\Entity\Transactions;
 use App\Model\Transactions\TransactionsHandler;
 use App\Repository\CashboxRepository;
 use App\Repository\ExchangeOfficeRepository;
+use App\Repository\VIPClientRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,15 +28,18 @@ class MonetaryOperationsController extends BaseProfileController
      * @param int $id
      * @param ExchangeOfficeRepository $exchangeOfficeRepository
      * @param CashboxRepository $cashboxRepository
+     * @param VIPClientRepository $clientRepository
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function indexAction(
         int $id,
         ExchangeOfficeRepository $exchangeOfficeRepository,
-        CashboxRepository $cashboxRepository
+        CashboxRepository $cashboxRepository,
+        VIPClientRepository $clientRepository
     )
     {
         $exchangeOffice = $exchangeOfficeRepository->findByOne($id, $this->getOwner());
+        $vipClients = $clientRepository->findByOwner($this->getOwner());
 
         if (!$exchangeOffice) {
             return $this->show404();
@@ -45,7 +49,8 @@ class MonetaryOperationsController extends BaseProfileController
 
         return $this->render('profile/monetary_operations/index.html.twig', [
             'cashboxs' => $cashboxs,
-            'exchangeOffice' => $exchangeOffice
+            'exchangeOffice' => $exchangeOffice,
+            'vipClients' => $vipClients
         ]);
     }
 

@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Model\ModelHandler;
 use App\Repository\CashboxRepository;
 use App\Repository\ExchangeOfficeRepository;
+use App\Repository\VIPClientRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,18 +16,21 @@ class TransactionsHandler extends ModelHandler
 {
     private $exchangeOfficeRepository;
     private $cashboxRepository;
+    private $VIPClientRepository;
 
     public function __construct(
         ContainerInterface $container,
         ObjectManager $manager,
         ExchangeOfficeRepository $exchangeOfficeRepository,
-        CashboxRepository $cashboxRepository
+        CashboxRepository $cashboxRepository,
+        VIPClientRepository $VIPClientRepository
     )
     {
         parent::__construct($container, $manager);
 
         $this->exchangeOfficeRepository = $exchangeOfficeRepository;
         $this->cashboxRepository = $cashboxRepository;
+        $this->VIPClientRepository = $VIPClientRepository;
     }
 
     /**
@@ -43,67 +47,69 @@ class TransactionsHandler extends ModelHandler
         $currency = $request->get("currency");
         $amount = $request->get("amount");
         $nationalCurrency = $request->get("national_currency");
-        $resultAmount = 0;
+        $vipClientId = intval($request->get("vip_client_id"));
 
-        switch ($cashboxAction) {
-            case "purchase" :
-                $basicTypeOperations = 1;
-                break;
-            case "sale":
-                $basicTypeOperations = 2;
-                break;
-            default:
-                $basicTypeOperations = 0;
-        }
-
-        $exchangeOffice = $this->exchangeOfficeRepository->findByOne($exchangeOfficeId, $this->getOwner($user));
-
+        $owner = $this->getOwner($user);
+        $exchangeOffice = $this->exchangeOfficeRepository->findByOne($exchangeOfficeId, $owner);
+        $cashbox = $this->cashboxRepository->findByOne($cashboxId, $exchangeOffice);
         $cashboxAmount = $this->cashboxRepository->getAllAmount($cashboxId, $exchangeOffice);
+        $vipClient = $this->VIPClientRepository->findByOneOwner($vipClientId, $owner);
+
+        $transactions = new Transactions();
 
         if ($cashboxAmount) {
             $resultAmount = $cashboxAmount[0]['summa'];
+        } else {
+            $resultAmount = 0;
         }
 
         if (!$exchangeOffice) {
             throw new \Exception("Обменный пункт не найден.", 403);
         }
 
-        $cashbox = $this->cashboxRepository->findByOne($cashboxId, $exchangeOffice);
-
         if (!$cashbox) {
             throw new \Exception("Касса не найдена.", 403);
         }
 
-        if ($basicTypeOperations <= 0) {
-            throw new \Exception("Неизвестный тип операции.", 403);
-        }
+        switch ($cashboxAction) {
+            case "purchase" :
+                $transactions
+                    ->setBasicType(1)
+                    ->setсashboxTo($cashbox);
+                $resultAmount = $this->countNumberAfterPoint($resultAmount + $amount);
+                break;
+            case "sale":
+                $transactions
+                    ->setBasicType(2)
+                    ->setCashboxFrom($cashbox);
+                $resultAmount = $this->countNumberAfterPoint($resultAmount - $amount);
 
-        $transactions = new Transactions();
+                if ($resultAmount < 0) {
+                    throw new \Exception("Недостаточно средств в кассе ".$cashbox->getCurrency()->getName()." для совершения операции.", 403);
+                }
 
-        if ($basicTypeOperations == 1) {
-            $transactions->setсashboxTo($cashbox);
-            $resultAmount = number_format($resultAmount + $amount, 4, ".", "");
-        } else if ($basicTypeOperations == 2) {
-            $transactions->setCashboxFrom($cashbox);
-            $resultAmount = number_format($resultAmount - $amount, 4, ".", "");
-
-            if ($resultAmount < 0) {
-                throw new \Exception("Недостаточно средств в кассе ".$cashbox->getCurrency()->getName()." для совершения операции.", 403);
-            }
+                break;
+            default:
+                throw new \Exception("Неизвестный тип операции.", 403);
         }
 
         $transactions
-            ->setBasicType($basicTypeOperations)
             ->setAmount($amount)
             ->setCurrentCourse($currency)
             ->setExchangeOffice($exchangeOffice)
             ->setUser($user)
             ->setNationalCurrency($nationalCurrency)
+            ->setVIPClient($vipClient)
         ;
 
         $this->manager->persist($transactions);
         $this->manager->flush();
 
         return $resultAmount;
+    }
+
+    public function countNumberAfterPoint($number, $decimals = 4, $decPoint = ".")
+    {
+        return number_format($number, $decimals, $decPoint, "");
     }
 }
