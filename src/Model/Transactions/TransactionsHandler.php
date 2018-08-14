@@ -48,6 +48,7 @@ class TransactionsHandler extends ModelHandler
         $amount = $request->get("amount");
         $nationalCurrency = $request->get("national_currency");
         $vipClientId = intval($request->get("vip_client_id"));
+        $notes = $request->get("notes");
 
         $owner = $this->getOwner($user);
         $exchangeOffice = $this->exchangeOfficeRepository->findByOne($exchangeOfficeId, $owner);
@@ -100,6 +101,7 @@ class TransactionsHandler extends ModelHandler
             ->setUser($user)
             ->setNationalCurrency($nationalCurrency)
             ->setVIPClient($vipClient)
+            ->setNote($notes)
         ;
 
         $this->manager->persist($transactions);

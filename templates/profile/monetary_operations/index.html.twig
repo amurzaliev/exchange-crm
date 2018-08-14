@@ -38,6 +38,9 @@
             border: 1px solid #a96d0e;
             background: #b7760d;
         }
+        textarea {
+            width: 100%;
+        }
     </style>
 
 {% endblock %}
@@ -166,7 +169,7 @@
                             </tr>
                             <tr>
                                 <td></td>
-                                <th>VIP клиенты</th>
+                                <th>VIP клиенты:</th>
                                 <td>
                                     <select id="vip_client_id" >
                                         <option value="">Выбрать клиента</option>
@@ -176,6 +179,11 @@
                                     </select>
                                 </td>
                                 <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>Примечание:</th>
+                                <td><textarea id="notes"></textarea></td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -217,6 +225,7 @@
             var cashboxAction = $(this).data("cashbox-action");
             var cashboxNumberClass = ".cashbox-number-"+cashboxId;
             var vip_client_id = $("#vip_client_id").val();
+            var notes = $("#notes").val();
             var exchange_office_id = "{{ exchangeOffice.id }}";
             var $boxMessage = $(".box-message");
             var $btnSaveTransactions = $(".save-transactions");
@@ -238,7 +247,8 @@
                 amount,
                 national_currency,
                 exchange_office_id,
-                vip_client_id
+                vip_client_id,
+                notes,
             };
 
             $.post("{{ path('profile_monetary_operations_create') }}", data)
