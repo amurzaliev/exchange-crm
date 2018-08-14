@@ -3,6 +3,7 @@
 namespace App\Controller\Profile;
 
 use App\Entity\Transactions;
+use App\Model\Transactions\TransactionsHandler;
 use App\Repository\CashboxRepository;
 use App\Repository\ExchangeOfficeRepository;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -52,90 +53,20 @@ class MonetaryOperationsController extends BaseProfileController
      * @Route("/create", name="profile_monetary_operations_create")
      * @Method({"POST"})
      * @param Request $request
-     * @param ObjectManager $manager
-     * @param ExchangeOfficeRepository $exchangeOfficeRepository
-     * @param CashboxRepository $cashboxRepository
+     * @param TransactionsHandler $transactionsHandler
      * @return JsonResponse
      */
     public function createAction(
         Request $request,
-        ObjectManager $manager,
-        ExchangeOfficeRepository $exchangeOfficeRepository,
-        CashboxRepository $cashboxRepository
+        TransactionsHandler $transactionsHandler
     )
     {
         $status = true;
         $message = "Данные успешно сохранены!";
-        $allAmount = 0;
-
-        $user = $this->getUser();
-        $exchangeOfficeId = intval($request->get("exchange_office_id"));
-        $cashboxAction = $request->get("cashboxAction");
-        $cashboxId = intval($request->get("cashboxId"));
-        $currency = $request->get("currency");
-        $amount = $request->get("amount");
-        $nationalCurrency = $request->get("national_currency");
-
-        switch ($cashboxAction) {
-            case "purchase" :
-                $basicTypeOperations = 1;
-                break;
-            case "sale":
-                $basicTypeOperations = 2;
-                break;
-            default:
-                $basicTypeOperations = 0;
-        }
+        $resultAmount = 0;
 
         try {
-
-            $exchangeOffice = $exchangeOfficeRepository->findByOne($exchangeOfficeId, $this->getOwner());
-
-            $cashboxAmount = $cashboxRepository->getAllAmount($cashboxId, $exchangeOffice);
-
-            if ($cashboxAmount) {
-                $allAmount = $cashboxAmount[0]['summa'];
-            }
-
-            if (!$exchangeOffice) {
-                throw new \Exception("Обменный пункт не найден.", 403);
-            }
-
-            $cashbox = $cashboxRepository->findByOne($cashboxId, $exchangeOffice);
-
-            if (!$cashbox) {
-                throw new \Exception("Касса не найдена.", 403);
-            }
-
-            if ($basicTypeOperations <= 0) {
-                throw new \Exception("Неизвестный тип операции.", 403);
-            }
-
-            $transactions = new Transactions();
-
-            if ($basicTypeOperations == 1) {
-                $transactions->setсashboxTo($cashbox);
-                $allAmount = number_format($allAmount + $amount, 4, ".", "");
-            } else if ($basicTypeOperations == 2) {
-                $transactions->setCashboxFrom($cashbox);
-                $allAmount = number_format($allAmount - $amount, 4, ".", "");
-                if ($allAmount < 0) {
-                    throw new \Exception("Недостаточно средств в кассе ".$cashbox->getCurrency()->getName()." для совершения операции.", 403);
-                }
-            }
-
-            $transactions
-                ->setBasicType($basicTypeOperations)
-                ->setAmount($amount)
-                ->setCurrentCourse($currency)
-                ->setExchangeOffice($exchangeOffice)
-                ->setUser($user)
-                ->setNationalCurrency($nationalCurrency)
-            ;
-
-            $manager->persist($transactions);
-            $manager->flush();
-
+            $resultAmount = $transactionsHandler->create($request, $this->getUser());
         } catch (\Exception $e) {
             $status = false;
             if ($e->getCode() != 403 ) {
@@ -148,7 +79,7 @@ class MonetaryOperationsController extends BaseProfileController
         return new JsonResponse([
            'status' => $status,
            'message' => $message,
-           'allAmount' => $allAmount,
+           'allAmount' => $resultAmount,
         ]);
     }
 }
