@@ -41,6 +41,19 @@
         textarea {
             width: 100%;
         }
+        .discount input {
+            float: left;
+            border-right: none !important;
+        }
+        .discount input + button{
+            background: white;
+            padding: 6px 15px;
+            cursor: pointer;
+            margin: 0 !important;
+            display: list-item;
+            border-radius: 0;
+            border: 1px solid #dadada;
+        }
     </style>
 
 {% endblock %}
@@ -125,10 +138,9 @@
                                                data-cashbox-action="sale"
                                         >
                                     </td>
-                                    <td class="currency">
-                                        <input type="text"
-                                               data-cashbox-id="{{ cashbox.id }}"
-                                        >
+                                    <td class="currency discount">
+                                        <input type="text" class="form-control">
+                                        <button class="btn btn-default" id="basic-addon2">%</button>
                                     </td>
                                     <td class="currency">
                                         <input class="form-result" type="text" disabled>

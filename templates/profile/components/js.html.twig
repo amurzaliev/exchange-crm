@@ -1,5 +1,6 @@
 <!-- jQuery 3 -->
 <script src="{{ asset('assets/profile/js/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/profile/js/jquery.cookie.js') }}"></script>
 <!-- jQuery UI 1.11.4 -->
 <script src="{{ asset('assets/profile/plugins/jQueryUI/jquery-ui.min.js') }}"></script>
 <!-- Bootstrap 3.3.7 -->
@@ -10,12 +11,25 @@
 <script src="{{ asset('assets/profile/js/adminlte.min.js') }}"></script>
 
 <script type="text/javascript">
+
     $(function () {
         //iCheck for checkbox and radio inputs
         $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
             checkboxClass: 'icheckbox_minimal-blue',
             radioClass   : 'iradio_minimal-blue'
-        })
+        });
+
+        $(".sidebar-toggle").on("click", function () {
+            if ($("body").hasClass("sidebar-collapse")) {
+                $.cookie('site_bar', null, {
+                    path: '/profile'
+                });
+            } else {
+                $.cookie('site_bar', 'sidebar-collapse', {
+                    path: '/profile'
+                });
+            }
+        });
     });
 
 </script>
