@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -42,6 +43,7 @@ class Currency
      * @var File
      *
      * @Vich\UploadableField(mapping="currency_icon", fileNameProperty="icon")
+
      */
     private $imageFile;
 
@@ -74,6 +76,32 @@ class Currency
      */
     private $cashboxes;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $iso;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $symbolDesignation;
+
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $decimals;
+
+    /**
+     * @ORM\Column(type="string", length=1)
+     */
+    private $decimalSeparator;
+
+    /**
+     * @ORM\Column(type="string", length=1)
+     */
+    private $thousandSeparator;
+
     public function __construct()
     {
         $this->createAt = new \DateTime();
@@ -101,8 +129,11 @@ class Currency
     public function setImageFile(File $image = null): self
     {
         $this->imageFile = $image;
-        if ($image) {
-            $this->updatedAt = new \DateTime('now');
+
+        $this->setUpdatedAt(new \DateTime());
+
+        if ($image instanceof UploadedFile) {
+            $this->setUpdatedAt(new \DateTime('now'));
         }
 
         return $this;
@@ -186,5 +217,65 @@ class Currency
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
+    }
+
+    public function getIso(): ?string
+    {
+        return $this->iso;
+    }
+
+    public function setIso(string $iso): self
+    {
+        $this->iso = $iso;
+
+        return $this;
+    }
+
+    public function getSymbolDesignation(): ?string
+    {
+        return $this->symbolDesignation;
+    }
+
+    public function setSymbolDesignation(string $symbolDesignation): self
+    {
+        $this->symbolDesignation = $symbolDesignation;
+
+        return $this;
+    }
+
+    public function getDecimals(): ?int
+    {
+        return $this->decimals;
+    }
+
+    public function setDecimals(int $decimals): self
+    {
+        $this->decimals = $decimals;
+
+        return $this;
+    }
+
+    public function getDecimalSeparator(): ?string
+    {
+        return $this->decimalSeparator;
+    }
+
+    public function setDecimalSeparator(string $decimalSeparator): self
+    {
+        $this->decimalSeparator = $decimalSeparator;
+
+        return $this;
+    }
+
+    public function getThousandSeparator(): ?string
+    {
+        return $this->thousandSeparator;
+    }
+
+    public function setThousandSeparator(string $thousandSeparator): self
+    {
+        $this->thousandSeparator = $thousandSeparator;
+
+        return $this;
     }
 }

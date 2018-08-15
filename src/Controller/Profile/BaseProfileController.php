@@ -32,4 +32,5 @@ abstract class BaseProfileController extends Controller
 
         return $user;
     }
+
 }

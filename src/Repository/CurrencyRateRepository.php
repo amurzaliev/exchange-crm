@@ -18,6 +18,4 @@ class CurrencyRateRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, CurrencyRate::class);
     }
-
-//    public function findAllBy
 }

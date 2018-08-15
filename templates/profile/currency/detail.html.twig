@@ -27,6 +27,16 @@
                     <div class="box-body">
                         <p>Название валюты: {{ currency.name }}</p>
                         <br>
+                        <p>Название iso-кода: {{ currency.iso }}</p>
+                        <br>
+                        <p>Символьное обозначение: {{ currency.symbolDesignation }}</p>
+                        <br>
+                        <p>Колличество знкаов после запятой: {{ currency.decimals}}</p>
+                        <br>
+                        <p>Разделитель точности: < {{ currency.decimalSeparator}} ></p>
+                        <br>
+                        <p>Разделитель тысячных: < {{ currency.thousandSeparator }} ></p>
+                        <br>
                         <p>Время создание: {{ currency.createAt|date('d-m-Y') }}</p>
                         <br>
                         <p>Время обновления: {{ currency.updatedAt|date('d-m-Y') }}</p>

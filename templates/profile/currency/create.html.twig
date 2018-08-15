@@ -29,6 +29,11 @@
                         {{ form_start(form) }}
                         {{ form_row(form.name) }}
                         {{ form_row(form.imageFile) }}
+                        {{ form_row(form.iso) }}
+                        {{ form_row(form.symbolDesignation) }}
+                        {{ form_row(form.decimals) }}
+                        {{ form_row(form.decimalSeparator) }}
+                        {{ form_row(form.thousandSeparator) }}
                         <hr>
                         {{ form_row(form.save, {'label' : 'Добавить', 'attr' : {
                             'class' : 'btn btn-primary btn-lg'

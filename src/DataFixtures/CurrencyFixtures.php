@@ -3,8 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\Currency;
-use App\Entity\ExchangeOffice;
-use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -22,6 +20,11 @@ class CurrencyFixtures extends Fixture implements DependentFixtureInterface
             $currency = new Currency();
             $currency
                 ->setName($item['name'])
+                ->setIso($item['iso'])
+                ->setSymbolDesignation($item['symbolDesignation'])
+                ->setDecimals($item['decimals'])
+                ->setDecimalSeparator($item['decimalSeparator'])
+                ->setThousandSeparator($item['thousandSeparator'])
                 ->setImageFile(new UploadedFile($item['image'], $item['id'], null,null,null,true))
                 ->setUser($this->getReference(UserFixtures::ADMIN));
 
@@ -57,12 +60,22 @@ class CurrencyFixtures extends Fixture implements DependentFixtureInterface
             [
                 'id' => 'currency1',
                 'image' => $fixturesPath . 'currency1.jpg',
-                'name' => 'Доллар США'
+                'name' => 'Доллар США',
+                'iso' => 'USD',
+                'symbolDesignation' => '$',
+                'decimals' => 2,
+                'decimalSeparator' => '.',
+                'thousandSeparator' => ','
             ],
             [
                 'id' => 'currency2',
                 'image' => $fixturesPath . 'currency2.jpg',
-                'name' => 'Тенге'
+                'name' => 'Тенге',
+                'iso' => 'KZT',
+                'symbolDesignation' => 'KZT',
+                'decimals' => 4,
+                'decimalSeparator' => '.',
+                'thousandSeparator' => ','
             ]
         ];
     }
