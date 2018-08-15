@@ -102,6 +102,11 @@ class Transactions
      */
     private $nationalCurrency;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\VIPClient", inversedBy="transactions")
+     */
+    private $VIPClient;
+
     public function __construct()
     {
         $this->setCreatedAt(new \DateTime());
@@ -253,6 +258,18 @@ class Transactions
     public function setNationalCurrency($nationalCurrency): self
     {
         $this->nationalCurrency = $nationalCurrency;
+
+        return $this;
+    }
+
+    public function getVIPClient(): ?VIPClient
+    {
+        return $this->VIPClient;
+    }
+
+    public function setVIPClient(?VIPClient $VIPClient): self
+    {
+        $this->VIPClient = $VIPClient;
 
         return $this;
     }

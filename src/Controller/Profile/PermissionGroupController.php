@@ -93,10 +93,7 @@ class PermissionGroupController extends BaseProfileController
         int $id
     )
     {
-        $permissionGroup = $permissionGroupRepository->findOneBy([
-            'id' => $id,
-            'user' => $this->getUser()
-        ]);
+        $permissionGroup = $permissionGroupRepository->find($id);
 
         if (!$permissionGroup) {
             return $this->show404();
@@ -137,8 +134,17 @@ class PermissionGroupController extends BaseProfileController
 
         $permissionGroup = $permissionGroupRepository->find($id);
 
+        if (!$permissionGroup) {
+            return $this->show404();
+        }
+
+        if (!$this->isGranted('VIEW', $permissionGroup)) {
+            return $this->show404();
+        }
+
+
         return $this->render('profile/permission_group/detail.html.twig', [
-                'permissionGroupRepository' => $permissionGroup
+                'permissionGroup' => $permissionGroup
             ]
         );
 

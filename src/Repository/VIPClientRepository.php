@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\VIPClient;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -19,32 +20,38 @@ class VIPClientRepository extends ServiceEntityRepository
         parent::__construct($registry, VIPClient::class);
     }
 
-//    /**
-//     * @return VIPClient[] Returns an array of VIPClient objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param $owner
+     * @return VIPClient[] Returns an array of VIPClient objects
+     */
+    public function findByOwner($owner)
     {
         return $this->createQueryBuilder('v')
-            ->andWhere('v.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('v.id', 'ASC')
-            ->setMaxResults(10)
+            ->andWhere('v.user = :owner')
+            ->setParameter('owner', $owner)
+            ->orderBy('v.id', 'DESC')
             ->getQuery()
             ->getResult()
-        ;
+            ;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?VIPClient
+    /**
+     * @param int $id
+     * @param $owner
+     * @return VIPClient|null
+     */
+    public function findByOneOwner(int $id, $owner)
     {
-        return $this->createQueryBuilder('v')
-            ->andWhere('v.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        try {
+            return $this->createQueryBuilder('v')
+                ->andWhere('v.id = :id')
+                ->andWhere('v.user = :owner')
+                ->setParameter('id', $id)
+                ->setParameter('owner', $owner)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
     }
-    */
 }

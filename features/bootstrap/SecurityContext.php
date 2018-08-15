@@ -36,12 +36,37 @@ class SecurityContext extends RawMinkContext
         return $exchangeOffice->getId();
     }
 
+    private function getPermissionGroupIdByTitle($title)
+    {
+        /** @var \App\Repository\PermissionGroupRepository $permissionGroupRepository */
+        $permissionGroupRepository = $this->getRepository(\App\Entity\PermissionGroup::class);
+        $permissionGroup = $permissionGroupRepository->findOneBy(['title' => $title]);
+        return $permissionGroup->getId();
+    }
+
     private function getCurrencyIdByName($name)
     {
         /** @var \App\Repository\CurrencyRepository $currencyRepository */
         $currencyRepository = $this->getRepository(\App\Entity\Currency::class);
         $currency = $currencyRepository->findOneBy(['name' => $name]);
         return $currency->getId();
+
+    }
+
+    private function getCashboxIdByCurrency($currency)
+    {
+        /** @var \App\Repository\CurrencyRepository $currencyRepository */
+        $cashboxRepository = $this->getRepository(\App\Entity\Cashbox::class);
+        $cashbox = $cashboxRepository->findOneBy(['name' => $currency]);
+        return $cashbox->getId();
+    }
+
+    private function getStaffIdByLogin($login)
+    {
+        /** @var \App\Repository\UserRepository $userRepository */
+        $userRepository = $this->getRepository(\App\Entity\User::class);
+        $staff = $userRepository->findOneBy(['username' => $login]);
+        return $staff->getId();
     }
 
     /**
@@ -92,4 +117,77 @@ class SecurityContext extends RawMinkContext
         $this->visitPath($path);
     }
 
+    /**
+     * @When /^я перехожу на просмотр валютной кассы "([^"]*)"$/
+     * @param $currency
+     */
+    public function iViewCashbox($currency)
+    {
+        $path = $this->getContainer()
+            ->get('router')
+            ->generate('profile_cashbox_detail', ['id' => $this->getCashboxIdByCurrency($currency)]);
+        $this->visitPath($path);
+    }
+
+    /**
+     * @When /^я перехожу на редактирование валютной кассы "([^"]*)"$/
+     * @param $currency
+     */
+    public function iEditCashbox($currency)
+    {
+        $path = $this->getContainer()
+            ->get('router')
+            ->generate('profile_cashbox_edit', ['id' => $this->getCashboxIdByCurrency($currency)]);
+        $this->visitPath($path);
+    }
+
+
+    /**
+     * @When /^я перехожу на просмотр группы привилегий "([^"]*)"$/
+     * @param $title
+     */
+    public function iViewPermissionGroup($title)
+    {
+        $path = $this->getContainer()
+            ->get('router')
+            ->generate('profile_permission_group_detail', ['id' => $this->getPermissionGroupIdByTitle($title)]);
+        $this->visitPath($path);
+    }
+
+    /**
+     * @When /^я перехожу на редактирование группы привилегий "([^"]*)"$/
+     * @param $title
+     */
+    public function iEditPermissionGroup($title)
+    {
+        $path = $this->getContainer()
+            ->get('router')
+            ->generate('profile_permission_group_edit', ['id' => $this->getPermissionGroupIdByTitle($title)]);
+        $this->visitPath($path);
+    }
+
+
+    /**
+     * @When /^я перехожу на просмотр страницы сотрудника с логином "([^"]*)"$/
+     * @param $login
+     */
+    public function iViewStaff($login)
+    {
+        $path = $this->getContainer()
+            ->get('router')
+            ->generate('profile_staff_detail', ['id' => $this->getStaffIdByLogin($login)]);
+        $this->visitPath($path);
+    }
+
+    /**
+     * @When /^я перехожу на редактирование страницы сотрудника с логином "([^"]*)"$/
+     * @param $login
+     */
+    public function iEditStaff($login)
+    {
+        $path = $this->getContainer()
+            ->get('router')
+            ->generate('profile_staff_detail', ['id' => $this->getStaffIdByLogin($login)]);
+        $this->visitPath($path);
+    }
 }

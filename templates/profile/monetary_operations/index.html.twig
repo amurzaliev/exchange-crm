@@ -38,6 +38,22 @@
             border: 1px solid #a96d0e;
             background: #b7760d;
         }
+        textarea {
+            width: 100%;
+        }
+        .discount input {
+            float: left;
+            border-right: none !important;
+        }
+        .discount input + button{
+            background: white;
+            padding: 6px 15px;
+            cursor: pointer;
+            margin: 0 !important;
+            display: list-item;
+            border-radius: 0;
+            border: 1px solid #dadada;
+        }
     </style>
 
 {% endblock %}
@@ -94,9 +110,10 @@
                                     </td>
                                     <td class="purchase">
                                         <input type="text"
-                                               class="cashbox-purchase"
+                                               class="cashbox-currency cashbox-purchase"
                                                value="{{ cashbox.purchase }}"
                                                data-cashbox-id="{{ cashbox.id }}"
+                                               data-cashbox-action="purchase"
                                         >
                                     </td>
                                     <td class="purchase">
@@ -108,9 +125,10 @@
                                     </td>
                                     <td class="sale">
                                         <input type="text"
-                                               class="cashbox-sale"
+                                               class="cashbox-currency cashbox-sale"
                                                value="{{ cashbox.sale }}"
                                                data-cashbox-id="{{ cashbox.id }}"
+                                               data-cashbox-action="sale"
                                         >
                                     </td>
                                     <td class="sale">
@@ -120,10 +138,9 @@
                                                data-cashbox-action="sale"
                                         >
                                     </td>
-                                    <td class="currency">
-                                        <input type="text"
-                                               data-cashbox-id="{{ cashbox.id }}"
-                                        >
+                                    <td class="currency discount">
+                                        <input type="text" class="form-control">
+                                        <button class="btn btn-default" id="basic-addon2">%</button>
                                     </td>
                                     <td class="currency">
                                         <input class="form-result" type="text" disabled>
@@ -166,13 +183,21 @@
                             </tr>
                             <tr>
                                 <td></td>
-                                <th>VIP клиенты</th>
+                                <th>VIP клиенты:</th>
                                 <td>
-                                    <select>
-                                        <option>Выбрать клиента</option>
+                                    <select id="vip_client_id" >
+                                        <option value="">Выбрать клиента</option>
+                                        {% for vipClient in vipClients %}
+                                            <option value="{{ vipClient.id }}">{{ vipClient.fullName }}</option>
+                                        {% endfor %}
                                     </select>
                                 </td>
                                 <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>Примечание:</th>
+                                <td><textarea id="notes"></textarea></td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -209,10 +234,12 @@
         $(".save-transactions").on("click", function (e) {
             e.preventDefault();
 
+            var currency, national_currency, amount,data;
             var cashboxId = $(this).data("cashbox-id");
             var cashboxAction = $(this).data("cashbox-action");
             var cashboxNumberClass = ".cashbox-number-"+cashboxId;
-            var currency, national_currency, amount;
+            var vip_client_id = $("#vip_client_id").val();
+            var notes = $("#notes").val();
             var exchange_office_id = "{{ exchangeOffice.id }}";
             var $boxMessage = $(".box-message");
             var $btnSaveTransactions = $(".save-transactions");
@@ -227,7 +254,16 @@
 
             national_currency = currency * amount;
 
-            var data = {cashboxId, cashboxAction, currency, amount, national_currency, exchange_office_id};
+            data = {
+                cashboxId,
+                cashboxAction,
+                currency,
+                amount,
+                national_currency,
+                exchange_office_id,
+                vip_client_id,
+                notes,
+            };
 
             $.post("{{ path('profile_monetary_operations_create') }}", data)
                 .done(function (response) {
@@ -284,6 +320,26 @@
             result = currency * amount;
 
             $(cashboxNumberClass+" .form-result").val(result);
+        });
+
+        $(".cashbox-currency").on("keyup", function () {
+            var amount,result;
+            var cashboxAction = $(this).data("cashbox-action");
+            var currency = $(this).val();
+            var cashboxId = $(this).data("cashbox-id");
+            var cashboxNumberClass = ".cashbox-number-"+cashboxId;
+
+            if (cashboxAction === "sale") {
+                amount = $(cashboxNumberClass+" .sale .cashbox-form").val();
+            } else if(cashboxAction === "purchase") {
+                amount = $(cashboxNumberClass+" .purchase .cashbox-form").val();
+            }
+
+            if (amount > 0) {
+                result = currency * amount;
+                $(cashboxNumberClass+" .form-result").val(result);
+            }
+
         });
     });
 
