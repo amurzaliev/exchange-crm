@@ -2,9 +2,12 @@
 
 namespace App\Controller\Profile;
 
+use App\Entity\Cashbox;
+use App\Entity\Currency;
 use App\Entity\ExchangeOffice;
 use App\Entity\User;
 use App\Form\ExchangeOfficeType;
+use App\Repository\CurrencyRepository;
 use App\Repository\ExchangeOfficeRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -31,7 +34,6 @@ class ExchangeOfficeController extends BaseProfileController
     {
         /** @var User $user */
         $user = $this->getUser();
-
         if ($this->isGranted('ROLE_ADMIN')) {
             $exchangeOffices = $exchangeOfficeRepository->findAll();
         } elseif ($this->isGranted('ROLE_OWNER')) {
@@ -51,20 +53,25 @@ class ExchangeOfficeController extends BaseProfileController
      *
      * @param Request $request
      * @param ObjectManager $manager
+     * @param CurrencyRepository $currencyRepository
      * @return Response
      */
-    public function createAction(Request $request, ObjectManager $manager)
+    public function createAction(Request $request, ObjectManager $manager, CurrencyRepository $currencyRepository )
     {
         $exchangeOffice = new ExchangeOffice();
         $form = $this->createForm(ExchangeOfficeType::class, $exchangeOffice);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $exchangeOffice->setUser($this->getUser());
             $manager->persist($exchangeOffice);
+            $cashbox = new Cashbox();
+            $cashbox->setUser($this->getUser());
+            $currency = $currencyRepository->findByOneIso($this->getParameter('default.currency'));
+            $cashbox->setCurrency($currency);
+            $cashbox->setExchangeOffice($exchangeOffice);
+            $manager->persist($cashbox);
             $manager->flush();
-
             return $this->redirectToRoute('profile_exchange_office_index');
         }
 
