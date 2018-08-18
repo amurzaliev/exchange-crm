@@ -144,7 +144,6 @@ class SecurityContext extends RawMinkContext
         $this->visitPath($path);
     }
 
-
     /**
      * @When /^я перехожу на просмотр группы привилегий "([^"]*)"$/
      * @param $title
@@ -169,7 +168,6 @@ class SecurityContext extends RawMinkContext
         $this->visitPath($path);
     }
 
-
     /**
      * @When /^я перехожу на просмотр страницы сотрудника с логином "([^"]*)"$/
      * @param $login
@@ -190,7 +188,8 @@ class SecurityContext extends RawMinkContext
     {
         $path = $this->getContainer()
             ->get('router')
-            ->generate('profile_staff_detail', ['id' => $this->getStaffIdByLogin($login)]);
+            ->generate('profile_staff_edit', ['id' => $this->getStaffIdByLogin($login)]);
         $this->visitPath($path);
     }
+
 }
