@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\CurrencyRate;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\DBALException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**

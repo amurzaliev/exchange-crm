@@ -5,7 +5,9 @@ namespace App\Controller\Profile;
 use App\Entity\Cashbox;
 use App\Entity\User;
 use App\Form\CashboxType;
+use App\Form\CurrencyRateType;
 use App\Repository\CashboxRepository;
+use App\Repository\CurrencyRateRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,9 +32,9 @@ class CashboxController extends BaseProfileController
      */
     public function indexAction(CashboxRepository $cashboxRepository)
     {
-
         /** @var User $user */
         $user = $this->getUser();
+
         if ($this->isGranted('ROLE_ADMIN')) {
             $cashboxes = $cashboxRepository->findAll();
         } elseif ($this->isGranted('ROLE_OWNER')) {
@@ -58,13 +60,10 @@ class CashboxController extends BaseProfileController
         $cashbox = new Cashbox();
         $form = $this->createForm(CashboxType::class, $cashbox);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-
             $cashbox->setUser($this->getUser());
             $manager->persist($cashbox);
             $manager->flush();
-
             return $this->redirectToRoute("profile_cashbox_index");
         }
 

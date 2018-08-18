@@ -102,6 +102,11 @@ class Currency
      */
     private $thousandSeparator;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $defaultCurrency;
+
     public function __construct()
     {
         $this->createAt = new \DateTime();
@@ -275,6 +280,18 @@ class Currency
     public function setThousandSeparator(string $thousandSeparator): self
     {
         $this->thousandSeparator = $thousandSeparator;
+
+        return $this;
+    }
+
+    public function getDefaultCurrency(): ?bool
+    {
+        return $this->defaultCurrency;
+    }
+
+    public function setDefaultCurrency(bool $defaultCurrency): self
+    {
+        $this->defaultCurrency = $defaultCurrency;
 
         return $this;
     }
