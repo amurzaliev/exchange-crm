@@ -56,7 +56,7 @@ class Transactions
     /**
      * @var float
      *
-     * @ORM\Column(type="decimal", precision=10, scale=4)
+     * @ORM\Column(type="decimal", precision=10, scale=4, nullable=true)
      */
     private $currentCourse;
 
@@ -98,7 +98,7 @@ class Transactions
     /**
      * @var float
      *
-     * @ORM\Column(type="decimal", precision=40, scale=4)
+     * @ORM\Column(type="decimal", precision=40, scale=4, nullable=true)
      */
     private $nationalCurrency;
 
