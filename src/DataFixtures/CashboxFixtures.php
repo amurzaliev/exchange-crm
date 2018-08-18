@@ -31,13 +31,25 @@ class CashboxFixtures extends Fixture implements DependentFixtureInterface
          */
         $currency = $this->getReference('currency1');
 
+        /**
+         * @var Currency $currencySom
+         */
+        $currencySom = $this->getReference('currency6');
+
         $cashbox = new Cashbox();
         $cashbox->setUser($owner)
             ->setExchangeOffice($exchangeOffice)
             ->setCurrency($currency)
             ->setCreatedAt(new \DateTime());
-
         $manager->persist($cashbox);
+
+        $cashboxSom = new Cashbox();
+        $cashboxSom->setUser($owner)
+            ->setExchangeOffice($exchangeOffice)
+            ->setCurrency($currencySom)
+            ->setCreatedAt(new \DateTime());
+        $manager->persist($cashboxSom);
+
         $manager->flush();
 
         $this->setReference(self::CASHBOX_ONE, $cashbox);
