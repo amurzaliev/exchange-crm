@@ -53,20 +53,23 @@ class SecurityContext extends RawMinkContext
 
     }
 
-    private function getCashboxIdByCurrency($currency)
-    {
-        /** @var \App\Repository\CurrencyRepository $currencyRepository */
-        $cashboxRepository = $this->getRepository(\App\Entity\Cashbox::class);
-        $cashbox = $cashboxRepository->findOneBy(['name' => $currency]);
-        return $cashbox->getId();
-    }
-
     private function getStaffIdByLogin($login)
     {
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->getRepository(\App\Entity\User::class);
         $staff = $userRepository->findOneBy(['username' => $login]);
         return $staff->getId();
+    }
+
+    private function getCashboxByName($name)
+    {
+        /** @var \App\Repository\currencyRepository $currencyRepository */
+        $currencyRepository = $this->getRepository(\App\Entity\Currency::class);
+        /** @var \App\Repository\CashboxRepository $cashboxRepository */
+        $cashboxRepository = $this->getRepository(\App\Entity\Cashbox::class);
+        $currency = $currencyRepository->findOneBy(['name' => $name]);
+        $cashbox = $cashboxRepository->findOneBy(['currency'=> $currency->getId()]);
+        return $cashbox->getId();
     }
 
     /**
@@ -119,25 +122,25 @@ class SecurityContext extends RawMinkContext
 
     /**
      * @When /^я перехожу на просмотр валютной кассы "([^"]*)"$/
-     * @param $currency
+     * @param $name
      */
-    public function iViewCashbox($currency)
+    public function iViewCashbox($name)
     {
         $path = $this->getContainer()
             ->get('router')
-            ->generate('profile_cashbox_detail', ['id' => $this->getCashboxIdByCurrency($currency)]);
+            ->generate('profile_cashbox_detail', ['id' => $this->getCashboxByName($name)]);
         $this->visitPath($path);
     }
 
     /**
      * @When /^я перехожу на редактирование валютной кассы "([^"]*)"$/
-     * @param $currency
+     * @param $name
      */
-    public function iEditCashbox($currency)
+    public function iEditCashbox($name)
     {
         $path = $this->getContainer()
             ->get('router')
-            ->generate('profile_cashbox_edit', ['id' => $this->getCashboxIdByCurrency($currency)]);
+            ->generate('profile_cashbox_edit', ['id' => $this->getCashboxByName($name)]);
         $this->visitPath($path);
     }
 
