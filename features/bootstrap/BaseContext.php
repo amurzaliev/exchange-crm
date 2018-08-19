@@ -25,6 +25,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
             'Добавление валютной кассы' => 'profile_cashbox_create',
             'Добавление курса валют' => 'profile_currency_rate_create',
             'Добавление валюты' => 'profile_currency_create',
+            'Управление обменными пунктами' => 'profile_exchange_office_index',
 
 
         ];
@@ -578,6 +579,16 @@ class BaseContext extends RawMinkContext implements TranslatableContext
         $this->fillField('username', $username);
         $this->fillField('password', $password);
         $this->pressButton('Войти');
+    }
+
+    /**
+     * @Then /^я жду ([^"]*) секунд$/
+     *
+     * @param $second
+     */
+    public function you($second)
+    {
+        sleep($second);
     }
 
     /**

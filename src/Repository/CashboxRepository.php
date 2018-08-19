@@ -37,6 +37,10 @@ class CashboxRepository extends ServiceEntityRepository
                     cu.name,
                     cu.icon,
                     cu.default_currency,
+                    cu.iso,
+                    cu.decimals,
+                    cu.decimal_separator,
+                    cu.thousand_separator,
                     (
                         SELECT 
                             IF(SUM(t.amount), SUM(t.amount),0)  

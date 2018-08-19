@@ -86,6 +86,7 @@
                                                class="cashbox-amount"
                                                data-cashbox-id="{{ cashbox.id }}"
                                                step="any"
+                                               name="cashbox_amount_{{ cashbox.iso }}"
                                         >
                                     </td>
                                 </tr>
@@ -137,9 +138,9 @@
                                 <td></td>
                                 <th colspan="2">
                                     <div class="box-message"></div>
-                                    <a href="#" class="btn btn-success save-transactions" data-cashbox-id="0" data-cashbox-action="">
+                                    <button title="Сохранить" id="save-transactions" class="btn btn-success save-transactions" data-cashbox-id="0" data-cashbox-action="">
                                         Сохранить
-                                    </a>
+                                    </button>
                                 </th>
                                 <td></td>
                             </tr>
@@ -190,8 +191,7 @@
             }
         });
 
-        $(".save-transactions").on("click", function (e) {
-            e.preventDefault();
+        $(".save-transactions").on("click", function () {
             var cashboxId = $(this).data("cashbox-id");
             var cashboxNumberClass = ".cashbox-number-"+cashboxId;
             var amount = $(cashboxNumberClass+" .cashbox-amount").val();
