@@ -13,6 +13,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 class CashboxFixtures extends Fixture implements DependentFixtureInterface
 {
     const CASHBOX_ONE = 'cashbox_one';
+    const CASHBOX_TWO = 'cashbox_two';
 
     public function load(ObjectManager $manager)
     {
@@ -53,6 +54,7 @@ class CashboxFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
 
         $this->setReference(self::CASHBOX_ONE, $cashbox);
+        $this->setReference(self::CASHBOX_TWO, $cashboxSom);
     }
 
 
