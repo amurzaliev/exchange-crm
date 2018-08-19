@@ -2,12 +2,10 @@
 
 namespace App\Controller\Profile;
 
-use App\Entity\Transactions;
 use App\Model\Transactions\TransactionsHandler;
 use App\Repository\CashboxRepository;
 use App\Repository\ExchangeOfficeRepository;
 use App\Repository\VIPClientRepository;
-use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,11 +45,14 @@ class MonetaryOperationsController extends BaseProfileController
         }
 
         $cashboxs = $cashboxRepository->findByAll($exchangeOffice);
+        $defaultCurrency = $cashboxRepository->findByOneDefaultCurrency($exchangeOffice);
+        $defaultCurrencyAmount = $cashboxRepository->getAllAmount($defaultCurrency->getId(), $exchangeOffice)[0];
 
         return $this->render('profile/monetary_operations/index.html.twig', [
             'cashboxs' => $cashboxs,
             'exchangeOffice' => $exchangeOffice,
-            'vipClients' => $vipClients
+            'vipClients' => $vipClients,
+            'defaultCurrency' => $defaultCurrencyAmount
         ]);
     }
 
@@ -69,10 +70,10 @@ class MonetaryOperationsController extends BaseProfileController
     {
         $status = true;
         $message = "Данные успешно сохранены!";
-        $resultAmount = 0;
+        $result = 0;
 
         try {
-            $resultAmount = $transactionsHandler->create($request, $this->getUser());
+            $result = $transactionsHandler->createPurchaseAndSaleOperation($request, $this->getUser());
         } catch (\Exception $e) {
             $status = false;
             if ($e->getCode() != 403 ) {
@@ -85,7 +86,8 @@ class MonetaryOperationsController extends BaseProfileController
         return new JsonResponse([
            'status' => $status,
            'message' => $message,
-           'allAmount' => $resultAmount,
+           'allAmount' => $result['resultAmount'],
+           'resultDefaultCurrencyAmount' => $result['resultDefaultCurrencyAmount'],
         ]);
     }
 

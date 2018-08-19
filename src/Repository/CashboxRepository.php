@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Cashbox;
-use App\Entity\Currency;
 use App\Entity\ExchangeOffice;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
@@ -37,6 +36,7 @@ class CashboxRepository extends ServiceEntityRepository
                     c.*,
                     cu.name,
                     cu.icon,
+                    cu.default_currency,
                     (
                         SELECT 
                             IF(SUM(t.amount), SUM(t.amount),0)  
@@ -98,6 +98,27 @@ class CashboxRepository extends ServiceEntityRepository
                 ->setParameter("exchangeOffice", $exchangeOffice)
                 ->getQuery()
                 ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param ExchangeOffice $exchangeOffice
+     * @return Cashbox
+     */
+    public function findByOneDefaultCurrency(ExchangeOffice $exchangeOffice)
+    {
+        try {
+            /** @var Cashbox $cashbox */
+            return $this->createQueryBuilder('c')
+                ->andWhere('c.exchangeOffice = :exchangeOffice')
+                ->join('c.currency', 'cu', 'WITH', 'cu.defaultCurrency = :defaultCurrency')
+                ->setParameter("exchangeOffice", $exchangeOffice)
+                ->setParameter("defaultCurrency", true)
+                ->getQuery()
+                ->getOneOrNullResult()
+            ;
         } catch (NonUniqueResultException $e) {
             return null;
         }

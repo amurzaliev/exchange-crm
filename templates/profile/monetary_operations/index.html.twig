@@ -54,6 +54,11 @@
             border-radius: 0;
             border: 1px solid #dadada;
         }
+        .DefaultCurrency {
+            color: #55840b;
+            font-weight: bold;
+            font-size: 24px;
+        }
     </style>
 
 {% endblock %}
@@ -76,7 +81,7 @@
                 <div class="box">
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="example2" class="table table-bordered table-hover">
+                        <table id="example2" class="table table-bordered">
                             <thead>
                             <tr>
                                 <th colspan="3">Валюта</th>
@@ -98,54 +103,57 @@
                             </thead>
                             <tbody>
                             {% for cashbox in cashboxs %}
-                                <tr class="cashbox-row cashbox-number-{{ cashbox.id }}">
-                                    <td class="cashbox-allAmount">
-                                        {{ cashbox.summa }}
-                                    </td>
-                                    <td>
-                                        {{ cashbox.name }}
-                                    </td>
-                                    <td>
-                                        <img style="width: 50px; height: 25px" src="{{ asset('uploads/images/currency/') }}{{ cashbox.icon }}">
-                                    </td>
-                                    <td class="purchase">
-                                        <input type="text"
-                                               class="cashbox-currency cashbox-purchase"
-                                               value="{{ cashbox.purchase }}"
-                                               data-cashbox-id="{{ cashbox.id }}"
-                                               data-cashbox-action="purchase"
-                                        >
-                                    </td>
-                                    <td class="purchase">
-                                        <input type="number"
-                                               class="cashbox-form"
-                                               data-cashbox-id="{{ cashbox.id }}"
-                                               data-cashbox-action="purchase"
-                                        >
-                                    </td>
-                                    <td class="sale">
-                                        <input type="text"
-                                               class="cashbox-currency cashbox-sale"
-                                               value="{{ cashbox.sale }}"
-                                               data-cashbox-id="{{ cashbox.id }}"
-                                               data-cashbox-action="sale"
-                                        >
-                                    </td>
-                                    <td class="sale">
-                                        <input type="number"
-                                               class="cashbox-form"
-                                               data-cashbox-id="{{ cashbox.id }}"
-                                               data-cashbox-action="sale"
-                                        >
-                                    </td>
-                                    <td class="currency discount">
-                                        <input type="text" class="form-control">
-                                        <button class="btn btn-default" id="basic-addon2">%</button>
-                                    </td>
-                                    <td class="currency">
-                                        <input class="form-result" type="text" disabled>
-                                    </td>
-                                </tr>
+
+                                {% if not cashbox.default_currency %}
+                                    <tr class="cashbox-row cashbox-number-{{ cashbox.id }}">
+                                        <td class="cashbox-allAmount">
+                                            {{ cashbox.summa }}
+                                        </td>
+                                        <td>
+                                            {{ cashbox.name }}
+                                        </td>
+                                        <td>
+                                            <img style="width: 50px; height: 25px" src="{{ asset('uploads/images/currency/') }}{{ cashbox.icon }}">
+                                        </td>
+                                        <td class="purchase">
+                                            <input type="text"
+                                                   class="cashbox-currency cashbox-purchase"
+                                                   value="{{ cashbox.purchase }}"
+                                                   data-cashbox-id="{{ cashbox.id }}"
+                                                   data-cashbox-action="purchase"
+                                            >
+                                        </td>
+                                        <td class="purchase">
+                                            <input type="number"
+                                                   class="cashbox-form"
+                                                   data-cashbox-id="{{ cashbox.id }}"
+                                                   data-cashbox-action="purchase"
+                                            >
+                                        </td>
+                                        <td class="sale">
+                                            <input type="text"
+                                                   class="cashbox-currency cashbox-sale"
+                                                   value="{{ cashbox.sale }}"
+                                                   data-cashbox-id="{{ cashbox.id }}"
+                                                   data-cashbox-action="sale"
+                                            >
+                                        </td>
+                                        <td class="sale">
+                                            <input type="number"
+                                                   class="cashbox-form"
+                                                   data-cashbox-id="{{ cashbox.id }}"
+                                                   data-cashbox-action="sale"
+                                            >
+                                        </td>
+                                        <td class="currency discount">
+                                            <input type="text" class="form-control">
+                                            <button class="btn btn-default" id="basic-addon2">%</button>
+                                        </td>
+                                        <td class="currency">
+                                            <input class="form-result" type="text" disabled>
+                                        </td>
+                                    </tr>
+                                {% endif %}
                             {% else %}
                                 <tr>
                                     <td>Нет данных</td>
@@ -178,7 +186,7 @@
                             <tr>
                                 <td></td>
                                 <th>Остаток Нац. валюты:</th>
-                                <td>0.0</td>
+                                <td class="DefaultCurrency" id="resultDefaultCurrencyAmount">{{ defaultCurrency.summa }}</td>
                                 <td></td>
                             </tr>
                             <tr>
@@ -277,6 +285,7 @@
                         $btnSaveTransactions.data("cashbox-id", 0);
                         $btnSaveTransactions.data("cashbox-action", "");
                         $(cashboxNumberClass+" .cashbox-allAmount").html(response.allAmount);
+                        $("#resultDefaultCurrencyAmount").html(response.resultDefaultCurrencyAmount);
                     } else  {
                         $boxMessage.html('<p class="bg-danger">'+response.message+'</p>');
                     }
