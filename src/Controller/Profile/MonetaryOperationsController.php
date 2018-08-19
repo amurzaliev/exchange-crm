@@ -52,7 +52,8 @@ class MonetaryOperationsController extends BaseProfileController
             'cashboxs' => $cashboxs,
             'exchangeOffice' => $exchangeOffice,
             'vipClients' => $vipClients,
-            'defaultCurrency' => $defaultCurrencyAmount
+            'defaultCurrencyAmount' => $defaultCurrencyAmount,
+            'defaultCurrency' => $defaultCurrency,
         ]);
     }
 

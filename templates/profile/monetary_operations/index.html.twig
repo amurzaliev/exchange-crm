@@ -87,7 +87,7 @@
                                 <th colspan="3">Валюта</th>
                                 <th colspan="2" class="purchase">Покупка</th>
                                 <th colspan="2" class="sale">Продажа</th>
-                                <th colspan="2" class="currency">Нац. валюта</th>
+                                <th colspan="2" class="currency">Нац. валюта <img style="width: 50px; height: 25px" src="{{ asset('uploads/images/currency/') }}{{ defaultCurrency.currency.icon }}"></th>
                             </tr>
                             <tr>
                                 <th>Остаток</th>
@@ -185,8 +185,8 @@
                             </tr>
                             <tr>
                                 <td></td>
-                                <th>Остаток Нац. валюты:</th>
-                                <td class="DefaultCurrency" id="resultDefaultCurrencyAmount">{{ defaultCurrency.summa }}</td>
+                                <th><img style="width: 50px; height: 25px" src="{{ asset('uploads/images/currency/') }}{{ defaultCurrency.currency.icon }}"> Остаток Нац. валюты:</th>
+                                <td class="DefaultCurrency" id="resultDefaultCurrencyAmount">{{ defaultCurrencyAmount.summa }}</td>
                                 <td></td>
                             </tr>
                             <tr>
