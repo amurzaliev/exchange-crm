@@ -40,6 +40,7 @@ class CurrencyFixtures extends Fixture implements DependentFixtureInterface, Con
                 ->setDefaultCurrency($item['defaultCurrency'])
                 ->setImageFile(new UploadedFile($item['image'], $item['id'], null,null,null,true))
                 ->setUser($this->getReference(UserFixtures::ADMIN));
+
             $this->setReference($item['id'], $currency);
             $manager->persist($currency);
         }

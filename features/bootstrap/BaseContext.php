@@ -17,7 +17,16 @@ class BaseContext extends RawMinkContext implements TranslatableContext
         $this->kernel = $kernel;
         $this->routes = [
             'Главная страница' => 'main_index',
-            'Личный кабинет' => 'profile_index'
+            'Личный кабинет' => 'profile_index',
+            'Добавление сотрудника' => 'profile_staff_create',
+            'Добавление группы привилегий' => 'profile_permission_group_create',
+            'Добавление обменного пункта' => 'profile_exchange_office_create',
+            'Добавление ВИП-клиента' => 'profile_vip_client_create',
+            'Добавление валютной кассы' => 'profile_cashbox_create',
+            'Добавление курса валют' => 'profile_currency_rate_create',
+            'Добавление валюты' => 'profile_currency_create',
+
+
         ];
     }
 
@@ -35,7 +44,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @When /^я перехожу по маршруту "([^"]*)"$/
+     * @When /^я нахожусь на странице "([^"]*)"$/
      *
      * @param $route
      */
@@ -579,8 +588,8 @@ class BaseContext extends RawMinkContext implements TranslatableContext
         $this->visitPath($this->getContainer()->get('router')->generate('fos_user_security_logout'));
     }
 
-    /** @BeforeScenario @loginUser
-     *
+    /**
+     * @BeforeScenario @loginUser
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
     public function loginUserBeforeScenario()
@@ -591,8 +600,8 @@ class BaseContext extends RawMinkContext implements TranslatableContext
         $this->pressButton('Войти');
     }
 
-    /** @BeforeScenario @loginStaff1
-     *
+    /**
+     * @BeforeScenario @loginStaff1
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
     public function loginStaff1BeforeScenario()
@@ -603,8 +612,8 @@ class BaseContext extends RawMinkContext implements TranslatableContext
         $this->pressButton('Войти');
     }
 
-    /** @BeforeScenario @loginStaff2
-     *
+    /**
+     * @BeforeScenario @loginStaff2
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
     public function loginStaff2BeforeScenario()
@@ -615,8 +624,8 @@ class BaseContext extends RawMinkContext implements TranslatableContext
         $this->pressButton('Войти');
     }
 
-    /** @BeforeScenario @loginOwner
-     *
+    /**
+     * @BeforeScenario @loginOwner
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
     public function loginOwnerBeforeScenario()
@@ -627,12 +636,13 @@ class BaseContext extends RawMinkContext implements TranslatableContext
         $this->pressButton('Войти');
     }
 
-    /** @BeforeScenario @loginAdmin
-     *
+    /**
+     * @BeforeScenario @loginAdmin
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
     public function loginAdminBeforeScenario()
     {
+
         $this->visitPath($this->getContainer()->get('router')->generate('fos_user_security_login'));
         $this->fillField('username', 'admin@mail.ru');
         $this->fillField('password', '12345');
@@ -640,7 +650,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     }
 
     /**
-     * @AsterScenario @logout
+     * @AfterScenario @logout
      */
     public function logoutAfterScenario()
     {
