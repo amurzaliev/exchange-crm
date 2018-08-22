@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Currency;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -36,4 +37,31 @@ class CurrencyRepository extends ServiceEntityRepository
             return null;
         }
     }
+
+    /**
+     * @param int $userId
+     * @return array|null
+     */
+    public function findByCurrency(int $userId)
+    {
+        try {
+            $conn = $this->getEntityManager()->getConnection();
+            $sql = 'SELECT currency.* FROM cashbox
+                inner join currency on cashbox.currency_id = currency.id
+                where cashbox.user_id = :id
+                group by cashbox.currency_id';
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':id' => $userId
+            ]);
+
+            return $stmt->fetchAll();
+
+        } catch (DBALException $e) {
+            return null;
+        }
+    }
+
+
 }

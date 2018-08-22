@@ -8,6 +8,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 /**
  * @method Cashbox|null find($id, $lockMode = null, $lockVersion = null)
@@ -194,4 +195,42 @@ class CashboxRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param ExchangeOffice $exchangeOffice
+     * @return Cashbox[] | null
+     */
+    public function findByExchangeOffice($exchangeOffice)
+    {
+        try {
+            return $this->createQueryBuilder('c')
+                ->andWhere('c.exchangeOffice = :exchangeOffice')
+                ->setParameter('exchangeOffice', $exchangeOffice)
+                ->orderBy('c.createdAt', 'DESC')
+                ->getQuery()
+                ->getResult();
+        } catch (NotFoundResourceException $e) {
+            return null;
+        }
+
+    }
+
+    /**
+     * @param int $exchangeOfficeId
+     * @return Cashbox | null
+     */
+    public function findByCashboxes( int $exchangeOfficeId)
+    {
+        try {
+            return $this->createQueryBuilder('c')
+                ->andWhere('c.exchangeOffice = :exchangeOffice')
+                ->setParameter("exchangeOffice", $exchangeOfficeId)
+                ->getQuery()
+                ->getResult();
+        } catch (NotFoundResourceException $e) {
+            return null;
+        }
+
+
+
+    }
 }

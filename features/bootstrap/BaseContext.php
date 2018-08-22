@@ -93,7 +93,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
     {
         $button = $this->fixStepArgument($button);
         $this->getSession()->getPage()->pressButton($button);
-    }
+        }
 
     /**
      * @When /^я нажимаю на ссылку "([^"]*)"$/
@@ -133,8 +133,10 @@ class BaseContext extends RawMinkContext implements TranslatableContext
      */
     public function fillFields(TableNode $fields)
     {
+
         foreach ($fields->getRowsHash() as $field => $value) {
             $this->fillField($field, $value);
+
         }
     }
 

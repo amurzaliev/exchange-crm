@@ -7,6 +7,7 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @method ExchangeOffice|null find($id, $lockMode = null, $lockVersion = null)
@@ -37,6 +38,23 @@ class ExchangeOfficeRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getOneOrNullResult();
         } catch (NonUniqueResultException $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param User $owner
+     * @return ExchangeOffice[]|null
+     */
+    public function findByAllOwnersExchange (User $owner)
+    {
+        try {
+            return $this->createQueryBuilder('e')
+                ->andWhere('e.user = :owner')
+                ->setParameter('owner', $owner)
+                ->getQuery()
+                ->getArrayResult();
+        } catch (NotFoundHttpException $e) {
             return null;
         }
     }
