@@ -1,97 +1,56 @@
 <?php
 
-namespace App\Controller\Profile;
+namespace App\Model\Controller;
 
-use App\Entity\Cashbox;
+
 use App\Entity\CurrencyRate;
 use App\Entity\ExchangeOffice;
-use App\Entity\User;
-use App\Form\CurrencyRateType;
+use App\Model\ModelHandler;
 use App\Repository\CashboxRepository;
 use App\Repository\CurrencyRepository;
 use App\Repository\ExchangeOfficeRepository;
+use App\Repository\VIPClientRepository;
+use App\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class CurrencyRateController
- * @package App\Controller\Profile
- *
- * @Route("profile/currency_rate")
- */
-class CurrencyRateController extends BaseProfileController
+class ControllerHandler extends ModelHandler
 {
-    /**
-     * @Route("/", name="profile_currency_rate_index")
-     * @Method({"GET", "POST"})
-     */
-    public function indexAction()
+    public function __construct(
+        ContainerInterface $container,
+        ObjectManager $manager,
+        ExchangeOfficeRepository $exchangeOfficeRepository,
+        CashboxRepository $cashboxRepository,
+        VIPClientRepository $VIPClientRepository
+    )
     {
+        parent::__construct($container, $manager);
 
-//        if (!$this->isGranted('ROLE_ADMIN')) {
-//            return $this->show404();
-//        }
-
-        return $this->render('profile/currency_rate/index.html.twig', [
-
-        ]);
-    }
-    /**
-     * @Route("/{id}/detail", name="profile_currency_rate_detail", requirements={"id"="\d+"})
-     * @Method("GET")
-     *
-     * @param Cashbox $cashbox
-     * @return Response
-     */
-    public function detailAction(Cashbox $cashbox)
-    {
-        $rates = $cashbox->getCurrencyRates();
-
-        return $this->render('profile/currency_rate/detail.html.twig', [
-            'cashbox' => $cashbox,
-            'rates' => $rates
-        ]);
+        $this->exchangeOfficeRepository = $exchangeOfficeRepository;
+        $this->cashboxRepository = $cashboxRepository;
+        $this->VIPClientRepository = $VIPClientRepository;
+        $this->container = $container;
+        $this->manager = $manager;
     }
 
-    /**
-     * @Route("/{id}/create", name="profile_currency_rate_create", requirements={"id"="\d+"})
-     * @Method({"GET", "POST"})
-     *
-     * @param Request $request
-     * @param EntityManagerInterface $manager
-     * @param Cashbox $cashbox
-     * @return Response
-     */
-    public function createAction(Request $request, EntityManagerInterface $manager, Cashbox $cashbox)
-    {
-        $currencyRate = new CurrencyRate();
-        $form = $this->createForm(CurrencyRateType::class, $currencyRate);
-        $form->handleRequest($request);
 
-        /** @var User $user */
-        $user = $this->getUser();
+    public function getAllForRoles($repository, User $user){
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $currencyRate
-                ->setUser($user)
-                ->setCashboxCurrency($cashbox);
-
-            $manager->persist($currencyRate);
-            $manager->flush();
-
-            return $this->redirectToRoute('profile_currency_rate_show', ['id' => $cashbox->getId()]);
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            $q = $this->manager->getRepository($repository)->findAll();
+        } elseif (in_array('ROLE_OWNER', $user->getRoles())) {
+            $q = $this->manager->getRepository($repository)->findBy(['user' => $user]);
+        } else {
+            $q = $this->manager->getRepository($repository)->findBy(['user' => $user->getStaff()->getOwner()]);
         }
-
-        return $this->render('profile/currency_rate/create.html.twig', [
-            'cashbox' => $cashbox,
-            'form' => $form->createView()
-        ]);
+        return $q;
     }
+
 
     /**
      * @Route( "//ajax_all_exchange_owner", name="profile_all_owner_exchanges")

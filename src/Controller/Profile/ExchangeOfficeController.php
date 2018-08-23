@@ -2,10 +2,9 @@
 
 namespace App\Controller\Profile;
 
+use App\Model\Controller\ControllerHandler;
 use App\Entity\Cashbox;
-use App\Entity\Currency;
 use App\Entity\ExchangeOffice;
-use App\Entity\User;
 use App\Form\ExchangeOfficeType;
 use App\Repository\CurrencyRepository;
 use App\Repository\ExchangeOfficeRepository;
@@ -27,23 +26,13 @@ class ExchangeOfficeController extends BaseProfileController
      * @Route("/", name="profile_exchange_office_index")
      * @Method("GET")
      *
-     * @param ExchangeOfficeRepository $exchangeOfficeRepository
+     * @param ControllerHandler $controllerHandler
      * @return Response
      */
-    public function indexAction(ExchangeOfficeRepository $exchangeOfficeRepository)
+    public function indexAction(ControllerHandler $controllerHandler)
     {
-        /** @var User $user */
-        $user = $this->getUser();
-        if ($this->isGranted('ROLE_ADMIN')) {
-            $exchangeOffices = $exchangeOfficeRepository->findAll();
-        } elseif ($this->isGranted('ROLE_OWNER')) {
-            $exchangeOffices = $exchangeOfficeRepository->findBy(['user' => $user]);
-        } else {
-            $exchangeOffices = $user->getStaff()->getExchangeOffices();
-        }
-
         return $this->render('profile/exchange_office/index.html.twig', [
-            'exchangeOffices' => $exchangeOffices
+            'exchangeOffices' => $controllerHandler->getAllForRoles(ExchangeOffice::class, $this->getUser()),
         ]);
     }
 

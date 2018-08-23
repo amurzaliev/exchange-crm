@@ -2,7 +2,6 @@
 
 namespace App\Controller\Profile;
 
-use App\Entity\Currency;
 use App\Entity\VIPClient;
 use App\Form\VIPClientType;
 use App\Repository\VIPClientRepository;
@@ -27,11 +26,8 @@ class VipClientController extends Controller
      */
     public function index(VIPClientRepository $VIPClientRepository)
     {
-        $vipClients = $VIPClientRepository->findBy([
-            'user' => $this->getUser()
-        ]);
         return $this->render('profile/vip_client/index.html.twig', [
-            'vipClients' => $vipClients,
+            'vipClients' => $VIPClientRepository->findBy(['user' => $this->getUser()])
         ]);
     }
 

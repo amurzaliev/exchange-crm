@@ -2,6 +2,7 @@
 
 namespace App\Controller\Profile;
 
+use App\Model\Controller\ControllerHandler;
 use App\Entity\Staff;
 use App\Entity\User;
 use App\Form\UserStaffType;
@@ -25,24 +26,13 @@ class StaffController extends BaseProfileController
      * @Route("/", name="profile_staff_index")
      * @Method("GET")
      *
-     * @param StaffRepository $staffRepository
+     * @param ControllerHandler $controllerHandler
      * @return Response
      */
-    public function indexAction(StaffRepository $staffRepository)
+    public function indexAction(ControllerHandler $controllerHandler)
     {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        if ($this->isGranted('ROLE_ADMIN')) {
-            $staffs = $staffRepository->findAll();
-        } elseif ($this->isGranted('ROLE_OWNER')) {
-            $staffs = $staffRepository->findByAllOwnerStaff($this->getUser());
-        } else {
-            $staffs = $staffRepository->findByAllOwnerStaff($user->getStaff()->getOwner());
-        }
-
         return $this->render('profile/staff/index.html.twig', [
-            'staffs' => $staffs
+            'staffs' => $controllerHandler->getAllForRoles(Staff::class, $this->getUser()),
         ]);
     }
 

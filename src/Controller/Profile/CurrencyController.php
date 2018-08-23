@@ -2,6 +2,7 @@
 
 namespace App\Controller\Profile;
 
+use App\Model\Controller\ControllerHandler;
 use App\Entity\Currency;
 use App\Form\CurrencyType;
 use App\Repository\CurrencyRepository;
@@ -23,20 +24,13 @@ class CurrencyController extends BaseProfileController
      * @Route("/", name="profile_currency_index")
      * @Method("GET")
      *
-     * @param CurrencyRepository $currencyRepository
+     * @param ControllerHandler $controllerHandler
      * @return Response
      */
-    public function indexAction(CurrencyRepository $currencyRepository)
+    public function indexAction(ControllerHandler $controllerHandler)
     {
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            return $this->show404();
-        }
-
-        $currencies = $currencyRepository->findBy([
-            'user' => $this->getUser()
-        ]);
         return $this->render('profile/currency/index.html.twig', [
-            'currencies' => $currencies
+            'currency' => $controllerHandler->getAllForRoles(Currency::class, $this->getUser()),
         ]);
     }
 

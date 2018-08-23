@@ -55,16 +55,13 @@
 {% endblock %}
 
 {% block Javascript %}
-
     <script type="text/javascript">
-
         $(function () {
             let selectExchange = $('#selectExchange');
-
             let loadExchange = function () {
                 $.ajax({
                     type: "POST",
-                    url: "{{ path('profile_allOwnerExchanges') }}",
+                    url: "{{ path('profile_all_owner_exchanges') }}",
                     data: this.userId,
                     success: function (exchanges) {
                         selectExchange.append(
@@ -76,48 +73,37 @@
                         )
                     }
                 })
-            }
-
+            };
             $("#selectExchange").change(function () {
-
                 let table = $('#table');
                 let forms = table.children().find('.form_in_tr');
                 forms.remove();
                 let exchangeId = $(this).val();
                 if (exchangeId === '0') {
-                    allCurrency()
+                    allCurrency();
                 }
-
                 $.ajax({
                     type: "POST",
                     url: "{{ path('profile_find_by_exchange_office') }}",
                     data: {'id': exchangeId},
                     success: function (currencyRates) {
-                        builderForm(currencyRates, exchangeId)
-
-                        writeCurrencyRate()
-
-
+                        builderForm(currencyRates, exchangeId);
+                        writeCurrencyRate();
                     }
                 })
-
             });
-
-
             let allCurrency = function () {
-
                 $.ajax({
                         type: "POST",
                         url: "{{ path('profile_all_owners_currencies') }}",
                         data: this.userId,
                         success: function (curryncies) {
-                            builderForm(curryncies, 0)
-                            writeCurrencyRate()
+                            builderForm(curryncies, 0);
+                            writeCurrencyRate();
                         }
                     }
                 )
-            }
-
+            };
             let builderForm = function (datas, exchangeId) {
                 let table = $('#table');
                 $.each(datas, function (i, data) {
@@ -134,27 +120,24 @@
                             '<td>' + '<input type="submit" name="save" class="save btn btn-primary ml-2" title = "Обменять курс валюты ' + data.name + ' " value = "Обновить" >' + '</td>' +
                             '<td>' +
                             '</form>' +
-                            '</tr>')
-
+                            '</tr>');
                         table.append(form);
                     }
                 })
-            }
+            };
             let writeCurrencyRate = function () {
                 let table = $('#table');
-                let forms = table.children().find('.form_in_tr')
-
+                let forms = table.children().find('.form_in_tr');
                 $.each(forms, function (i, form) {
                     $(form).find('.save').on('click', function (e) {
-                        e.preventDefault()
+                        e.preventDefault();
                         let array = {
                             sale: $(this).parent().parent().find("input[name ='currency_rate_sale']").val(),
                             purchase: $(this).parent().parent().find("input[name ='currency_rate_purchase']").val(),
                             cashbox_id: $(this).parent().parent().find("input[name ='cashboxId']").val(),
                             exchange_id: $(this).parent().parent().find('.exchangeId').val(),
                             iso: $(this).parent().parent().find('.iso').val()
-                        }
-
+                        };
                         $.ajax({
                             type: "POST",
                             url: "{{ path('profile_currency_rate_create_ajax') }}",
@@ -166,24 +149,21 @@
                                 }
                                 let message = $(
                                     '<p class="text_message" style="color: ' + color + '; text-align: center; font-size: large ">' + response.message + '</p>'
-                                )
+                                );
                                 if ($('#showMessage').children) {
                                     $('.text_message').remove();
-                                    $('#showMessage').append(message)
+                                    $('#showMessage').append(message);
                                     setTimeout(function () {
                                         $('.text_message').remove();
                                     }, 6000)
                                 }
-
-
                             }
                         })
                     })
                 })
-            }
-            allCurrency()
+            };
+            allCurrency();
             loadExchange();
-        })
-
+        });
     </script>
 {% endblock %}
