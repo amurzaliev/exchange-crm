@@ -5,10 +5,12 @@ namespace App\Model\Controller;
 
 use App\Entity\CurrencyRate;
 use App\Entity\ExchangeOffice;
+use App\Entity\Staff;
 use App\Model\ModelHandler;
 use App\Repository\CashboxRepository;
 use App\Repository\CurrencyRepository;
 use App\Repository\ExchangeOfficeRepository;
+use App\Repository\StaffRepository;
 use App\Repository\VIPClientRepository;
 use App\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -47,6 +49,20 @@ class ControllerHandler extends ModelHandler
             $q = $this->manager->getRepository($repository)->findBy(['user' => $user]);
         } else {
             $q = $this->manager->getRepository($repository)->findBy(['user' => $user->getStaff()->getOwner()]);
+        }
+        return $q;
+    }
+
+    public function getAllStaffForRoles(User $user){
+
+        $staffRepository = $this->manager->getRepository(Staff::class);
+
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            $q = $staffRepository->findAll();
+        } elseif (in_array('ROLE_OWNER', $user->getRoles())) {
+            $q = $staffRepository->findByAllOwnerStaff($user);
+        } else {
+            $q = $staffRepository->findByAllOwnerStaff($user->getStaff()->getOwner());
         }
         return $q;
     }

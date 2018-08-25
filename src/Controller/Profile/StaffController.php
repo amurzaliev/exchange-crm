@@ -32,7 +32,7 @@ class StaffController extends BaseProfileController
     public function indexAction(ControllerHandler $controllerHandler)
     {
         return $this->render('profile/staff/index.html.twig', [
-            'staffs' => $controllerHandler->getAllForRoles(Staff::class, $this->getUser()),
+            'staffs' => $controllerHandler->getAllStaffForRoles($this->getUser()),
         ]);
     }
 
