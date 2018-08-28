@@ -19,8 +19,9 @@
                     {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_OWNER') %}
                         <div class="box-header">
                             <h3 class="box-title">
-                                <a href="{{ path('profile_exchange_office_create') }}" class="btn btn-block btn-success btn-lg">
-                                    Добавить
+                                <a href="{{ path('profile_exchange_office_create') }}"
+                                   class="btn btn-block btn-success btn-lg">
+                                    Добавить <i class="fa fa-fw fa-plus"></i>
                                 </a>
                             </h3>
                         </div>
@@ -43,19 +44,18 @@
                                     <td>{{ exchangeOffice.id }}</td>
                                     <td>{{ exchangeOffice.name }}</td>
                                     {% if (exchangeOffice.active == 1) %}
-                                    <td>Работает</td>
+                                        <td>Работает</td>
                                     {% else %}
-                                    <td>Не работает</td>
+                                        <td>Не работает</td>
                                     {% endif %}
                                     <td>{{ exchangeOffice.address }}</td>
                                     <td>
-                                        <a href="{{ path('profile_exchange_office_detail',{'id' : exchangeOffice.id }) }}" class="btn btn-default"  title="Просмотреть запись {{ exchangeOffice.name }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
                                         {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_OWNER') %}
-                                            <a href="{{ path('profile_exchange_office_edit', {'id' : exchangeOffice.id }) }}" class="btn btn-primary"  title="Редактировать запись {{ exchangeOffice.name }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
+                                            <a href="{{ path('profile_exchange_office_detail',{'id' : exchangeOffice.id }) }}"
+                                               class="btn btn-primary"
+                                               title="Управление обменным пунктом {{ exchangeOffice.name }}">Управление
+                                                обменным пунктом <i class="fa fa-fw fa-edit"></i></a>
                                         {% endif %}
-                                        <a href="{{ path('profile_monetary_operations_balance',  {'id' : exchangeOffice.id }) }}" class="btn btn-success" title="Баланс касс {{ exchangeOffice.name }} "> Баланс касс <i class="fa fa-database" aria-hidden="true"></i></a>
-                                        <a href="{{ path('profile_monetary_operations',  {'id' : exchangeOffice.id }) }}" class="btn btn-warning" title="Покупка и Продажа {{ exchangeOffice.name }} "> Покупка и Продажа <i class="fa fa-usd" aria-hidden="true"></i> <i class="fa fa-rub" aria-hidden="true"></i> <i class="fa fa-eur" aria-hidden="true"></i></a>
-
                                     </td>
                                 </tr>
                             {% else %}
