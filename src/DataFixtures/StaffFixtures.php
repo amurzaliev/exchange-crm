@@ -25,7 +25,7 @@ class StaffFixtures extends Fixture implements DependentFixtureInterface
             ->setUsername("staff_1")
             ->setPlainPassword("12345")
             ->setRoles(['ROLE_USER'])
-            ->setFullName('Сосрудник А.А')
+            ->setFullName('Иванов А.А')
             ->setEnabled('true')
         ;
 
@@ -49,7 +49,7 @@ class StaffFixtures extends Fixture implements DependentFixtureInterface
             ->setUsername("staff_2")
             ->setPlainPassword("12345")
             ->setRoles(['ROLE_USER'])
-            ->setFullName('Сосрудник А.А')
+            ->setFullName('Петров А.А')
             ->setEnabled('true')
         ;
 
@@ -72,7 +72,7 @@ class StaffFixtures extends Fixture implements DependentFixtureInterface
             ->setUsername("staff_3")
             ->setPlainPassword("12345")
             ->setRoles(['ROLE_USER'])
-            ->setFullName('Сосрудник А.А')
+            ->setFullName('Сидоров А.А')
             ->setEnabled('true')
         ;
 

@@ -1,4 +1,6 @@
 {% extends "profile.layout.html.twig" %}
+
+
 {% block content %}
 
     <section class="content-header">
@@ -24,20 +26,46 @@
                     <div class="box-header with-border">
                         <h3 class="box-title">Добавления нового обменного пункта</h3>
                     </div>
-                    <!-- /.box-header -->
-                    <div class="box-body">
-                        {{ form_start(form) }}
-                        {{ form_row(form.name) }}
-                        {{ form_row(form.address) }}
-                        {{ form_row(form.contact) }}
-                        {{ form_row(form.active) }}
-                        <hr>
-                        {{ form_row(form.save, {'label' : 'Добавить', 'attr' : {
-                            'class' : 'btn btn-primary btn-lg'
-                        }}) }}
-                        {{ form_end(form) }}
+                    <div id="showMessage"  style="width: 90%; height: 50px" >
                     </div>
-                    <!-- /.box-body -->
+                    <form>
+                        <div class="form-group">
+
+                            <label for="exchange_office_name" >Название</label>
+                            <input type="text" name="name_exchange" id="exchange_office_name" class="form-control">
+
+                            <label for="exchange_office_address" >Адресс</label>
+                            <input type="text" name="address_exchange" id="exchange_office_address"  class="form-control" >
+
+                            <label for="exchange_office_contact" >Контакты</label>
+                            <input type="text" name="contact_exchange" id="exchange_office_contact"  class="form-control" >
+
+                            <input type="checkbox"  name="active_exchange" id="exchange_office_active" >
+                            <label for="exchange_office_active" >Активировать</label>
+                            <br>
+                        </div>
+                        <label for="selectCahboxes" >Добавить кассы</label>
+                        <label for="selectStaffs" style="margin-left: 21.5%" >Ваши сотрудники</label>
+                        <br>
+                        <select id="selectCahboxes" class="multipleSelectCahboxes" name="cahboxes" multiple>
+                            {% for currency in currencies %}
+                                {% if not currency.defaultCurrency %}
+                                    <option value="{{ currency.id }}">{{ currency.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+
+                        <select id="selectStaffs"  title="Персонал" class="multipleSelectStaffs" name="staffs" multiple>
+                            {% for staff in staffs %}
+                                <option value="{{ staff.user.id }}">{{ staff.user.fullName }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" style="margin-left: 6%; margin-bottom: 6%; padding: 20px 50px" class="add_staff btn btn-primary ml-2" > Добавить сотрудника </button>
+                        <br>
+                        <button type="submit" class="save btn btn-primary ml-2" > Добавить </button>
+                    </form>
+
+
                 </div>
                 <!-- /.box -->
             </div>
@@ -45,4 +73,85 @@
         </div>
         <!-- /.row -->
     </section>
+{% endblock %}
+
+{% block Javascript  %}
+
+    {{ parent() }}
+
+
+    <script type='text/javascript'>
+
+        $('.multipleSelectStaffs').fastselect();
+        $('.multipleSelectCahboxes').fastselect();
+
+        $(function() {
+            $('.save').on('click', function (e) {
+                e.preventDefault()
+                let active  = 0;
+                if($('#exchange_office_active').is(':checked')){
+                    active = 1;
+                }
+                let datas ={
+                    name: $('#exchange_office_name').val(),
+                    address: $('#exchange_office_address').val(),
+                    contact: $('#exchange_office_contact').val(),
+                    active: active,
+                    cashboxes: $('#selectCahboxes').val(),
+                    staffs: $('#selectStaffs').val()
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('profile_exchange_office_create_ajax') }}",
+                    data: datas,
+                    success: function (reason)
+                    {
+                        console.log(reason)
+                        if(reason.message) {
+                            let message = $(
+                                '<p class="text_message" style="color: red; text-align: center; font-size: large ">' + reason.message + '</p>'
+                            )
+                            if ($('#showMessage').children) {
+                                $('.text_message').remove();
+                                $('#showMessage').append(message)
+                                setTimeout(function () {
+                                    $('.text_message').remove();
+                                }, 10000)
+                            }
+                        }
+
+                        if(!reason.message){
+
+                            let message = $('<h3 class="text_message" style="color: blue; text-align: center">Данные успешно сохранены</h3>' );
+                                    $('.text_message').remove();
+                                    $('#showMessage').append(message)
+                                    setTimeout(function () {
+                                        window.location.href = '/profile/exchange_office/'
+                                    }, 2000)
+
+
+
+                        }
+                    }
+                }).fail(function(reason){
+                    let errorMessage = $('<h3 class="text_message" style="color: red; text-align: center">Ошибка сервера</h3>' );
+                    if(reason){
+                        if ($('#showMessage').children) {
+                            $('.text_message').remove();
+                            $('#showMessage').append(errorMessage)
+                            setTimeout(function () {
+                                $('.text_message').remove();
+                            }, 10000)
+                        }
+                    }
+                });
+
+
+
+
+            })
+
+        })
+    </script>
+
 {% endblock %}
