@@ -2,10 +2,10 @@
 
 namespace App\Controller\Profile;
 
+use App\Model\Controller\ControllerHandler;
 use App\Entity\PermissionGroup;
 use App\Form\PermissionGroupType;
 use App\Repository\PermissionGroupRepository;
-use App\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,25 +24,13 @@ class PermissionGroupController extends BaseProfileController
      * @Route("/", name="profile_permission_group_index")
      * @Method("GET")
      *
-     * @param PermissionGroupRepository $permissionGroupRepository
+     * @param ControllerHandler $controllerHandler
      * @return Response
      */
-    public function indexAction(PermissionGroupRepository $permissionGroupRepository)
+    public function indexAction(ControllerHandler $controllerHandler)
     {
-        $user = $this->getUser();
-
-        if ($this->isGranted('ROLE_ADMIN')) {
-            $permissionGroups = $permissionGroupRepository->findAll();
-        } elseif ($this->isGranted('ROLE_OWNER')) {
-            $permissionGroups = $permissionGroupRepository->findBy(['user' => $user]);
-        } else {
-            $permissionGroups = $permissionGroupRepository->findBy(['user' => $user->getStaff()->getOwner()]);
-        }
-
-
-
         return $this->render('profile/permission_group/index.html.twig', [
-            'permissionGroups' => $permissionGroups,
+            'permissionGroups' => $controllerHandler->getAllForRoles(PermissionGroup::class, $this->getUser()),
         ]);
     }
 

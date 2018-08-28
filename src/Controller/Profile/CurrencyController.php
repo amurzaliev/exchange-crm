@@ -2,6 +2,7 @@
 
 namespace App\Controller\Profile;
 
+use App\Model\Controller\ControllerHandler;
 use App\Entity\Currency;
 use App\Form\CurrencyType;
 use App\Repository\CurrencyRepository;
@@ -10,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * Class CurrencyController
@@ -23,20 +25,13 @@ class CurrencyController extends BaseProfileController
      * @Route("/", name="profile_currency_index")
      * @Method("GET")
      *
-     * @param CurrencyRepository $currencyRepository
+     * @param ControllerHandler $controllerHandler
      * @return Response
      */
-    public function indexAction(CurrencyRepository $currencyRepository)
+    public function indexAction(ControllerHandler $controllerHandler)
     {
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            return $this->show404();
-        }
-
-        $currencies = $currencyRepository->findBy([
-            'user' => $this->getUser()
-        ]);
         return $this->render('profile/currency/index.html.twig', [
-            'currencies' => $currencies
+            'currencies' => $controllerHandler->getAllForRoles(Currency::class, $this->getUser()),
         ]);
     }
 
@@ -55,12 +50,11 @@ class CurrencyController extends BaseProfileController
         }
 
         $currency = new Currency();
-
         $form = $this->createForm(CurrencyType::class, $currency);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $currency->setUser($this->getUser());
             $manager->persist($currency);
             $manager->flush();

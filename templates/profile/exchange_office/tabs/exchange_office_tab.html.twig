@@ -1,0 +1,25 @@
+<form>
+    <div class="form-group">
+        <label for="exchangeOfficeName">Название</label>
+        <input type="email" class="form-control" id="exchangeOfficeName"
+               aria-describedby="exchangeOfficeNameHelp"
+               placeholder="Введите название обменного пункта"
+               value="{{ exchangeOffice.name }}">
+    </div>
+    <div class="form-group">
+        <label for="exchangeOfficeAddress">Адрес</label>
+        <input type="email" class="form-control" id="exchangeOfficeAddress"
+               aria-describedby="exchangeOfficeAddressHelp"
+               placeholder="Введите адрес обменного пункта"
+               value="{{ exchangeOffice.address }}">
+    </div>
+    <div class="form-group">
+        <label for="exchangeOfficeContact">Контакты</label>
+        <input type="email" class="form-control" id="exchangeOfficeContact"
+               aria-describedby="exchangeOfficeContactHelp"
+               placeholder="Введите контактный номер обменного пункта"
+               value="{{ exchangeOffice.contact }}">
+    </div>
+    <hr>
+    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+</form>

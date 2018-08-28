@@ -2,17 +2,16 @@
 
 namespace App\Controller\Profile;
 
+use App\Model\Controller\ControllerHandler;
 use App\Entity\Cashbox;
-use App\Entity\User;
 use App\Form\CashboxType;
-use App\Form\CurrencyRateType;
 use App\Repository\CashboxRepository;
-use App\Repository\CurrencyRateRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
 
 
 /**
@@ -27,23 +26,13 @@ class CashboxController extends BaseProfileController
      * @Route("/", name="profile_cashbox_index")
      * @Method("GET")
      *
-     * @param CashboxRepository $cashboxRepository
+     * @param ControllerHandler $controllerHandler
      * @return Response
      */
-    public function indexAction(CashboxRepository $cashboxRepository)
+    public function indexAction(ControllerHandler $controllerHandler)
     {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        if ($this->isGranted('ROLE_ADMIN')) {
-            $cashboxes = $cashboxRepository->findAll();
-        } elseif ($this->isGranted('ROLE_OWNER')) {
-            $cashboxes = $cashboxRepository->findBy(['user' => $user]);
-        } else {
-            $cashboxes = $cashboxRepository->findBy(['user' => $user->getStaff()->getOwner()]);
-        }
         return $this->render('profile/cashbox/index.html.twig', [
-            'cashboxes' => $cashboxes,
+            'cashboxes' => $controllerHandler->getAllForRoles(Cashbox::class, $this->getUser()),
         ]);
     }
 
