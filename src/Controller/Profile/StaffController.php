@@ -5,9 +5,12 @@ namespace App\Controller\Profile;
 use App\Entity\Staff;
 use App\Entity\User;
 use App\Form\UserStaffType;
+use App\Repository\ExchangeOfficeRepository;
+use App\Repository\PermissionGroupRepository;
 use App\Repository\StaffRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,12 +29,18 @@ class StaffController extends BaseProfileController
      * @Method("GET")
      *
      * @param StaffRepository $staffRepository
+     * @param PermissionGroupRepository $permissionGroupRepository
      * @return Response
      */
-    public function indexAction(StaffRepository $staffRepository)
+    public function indexAction(
+        StaffRepository $staffRepository,
+        PermissionGroupRepository $permissionGroupRepository
+    )
     {
         /** @var User $user */
         $user = $this->getUser();
+
+        $permissionGroups = $permissionGroupRepository->findAllByOwner($user);
 
         if ($this->isGranted('ROLE_ADMIN')) {
             $staffs = $staffRepository->findAll();
@@ -42,7 +51,62 @@ class StaffController extends BaseProfileController
         }
 
         return $this->render('profile/staff/index.html.twig', [
-            'staffs' => $staffs
+            'staffs' => $staffs,
+            'permissionGroups' => $permissionGroups
+        ]);
+    }
+
+    /**
+     * @Route("create-ajax", name="profile_staff_create_ajax")
+     * @Method("POST")
+     * @param Request $request
+     * @param ObjectManager $manager
+     * @param PermissionGroupRepository $permissionGroupRepository
+     * @return JsonResponse
+     */
+    public function createAjaxAction(
+        Request $request,
+        ObjectManager $manager,
+        PermissionGroupRepository $permissionGroupRepository
+    )
+    {
+        $message = null;
+        try {
+            $fullname = $request->get('fullname');
+            $username = $request->get('username');
+            $password = $request->get('password');
+            $enabled = $request->get('enabled');
+            $group = intval($request->get('group'));
+            $position = $request->get('position');
+            $permissionGroup = $permissionGroupRepository->find($group);
+
+            $user = new User();
+            $staff = new Staff();
+
+            $user->setFullName($fullname)
+                ->setUsername($username)
+                ->setPlainPassword($password)
+                ->setEnabled($enabled)
+            ;
+
+            $manager->persist($user);
+
+            $staff->setUser($user)
+                ->setOwner($this->getOwner())
+                ->setPermissionGroup($permissionGroup)
+                ->setPosition($position)
+                ->setCreatedAt(new \DateTime())
+                ->setUpdatedAt(new \DateTime())
+            ;
+
+            $manager->persist($staff);
+            $manager->flush();
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+        }
+
+        return new JsonResponse([
+            "message" => $message
         ]);
     }
 

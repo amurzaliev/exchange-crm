@@ -1,0 +1,63 @@
+<div class="modal fade" id="add-staff" tabindex="-1" role="dialog"
+     aria-labelledby="add-staff-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="add-staff-label">
+                      Добавление нового сотрудника
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post" class="modal-form-staff">
+                    <div class="form-group">
+                        <label for="fullname">ФИО</label>
+                        <input type="text" class="form-control" id="fullname" name="fullname"
+                               aria-describedby="fullnameHelp"
+                               placeholder="Введите ФИО"
+                               value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="username">Логин</label>
+                        <input type="text" class="form-control" id="username" name="username"
+                               aria-describedby="usernameHelp"
+                               placeholder="Введите логин"
+                               value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Пароль</label>
+                        <input type="password" class="form-control" id="password" name="password"
+                               placeholder="Введите пароль"
+                               value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="position">Должность</label>
+                        <input type="position" class="form-control" id="position" name="position"
+                               placeholder="Введите должность"
+                               value="">
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="enabled" name="enabled"
+                               value="">
+                        <label class="custom-control-label" for="enabled">Активный</label>
+                    </div>
+                    <hr>
+                    <label for="group" class="form-control-label">Группа привилегий</label>
+                    <select class="custom-select form-control" id="group" name="group">
+                        <option selected value="">Выберите группу привилегий</option>
+                        {% for permissionGroup in permissionGroups %}
+                            <option value="{{ permissionGroup.id }}">{{ permissionGroup.title }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary submit-staff-btn">
+                    Добавить
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
