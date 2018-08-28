@@ -1,0 +1,85 @@
+<table id="example2" class="table table-bordered balance">
+    <thead>
+    <tr>
+        <th colspan="3">Валюта</th>
+        <th colspan="2" class="purchase">Действие</th>
+    </tr>
+    <tr>
+        <th>Остаток</th>
+        <th>Название</th>
+        <th>Флаг</th>
+        <th>Сумма</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for cashbox in cashboxes %}
+        <tr class="cashbox-row cashbox-number-{{ cashbox.id }}">
+            <td class="cashbox-allAmount">
+                {{ cashbox.summa }}
+            </td>
+            <td>
+                {{ cashbox.name }}
+            </td>
+            <td>
+                <img style="width: 50px; height: 25px"
+                     src="{{ asset('uploads/images/currency/') }}{{ cashbox.icon }}">
+            </td>
+            <td>
+                <input type="number"
+                       class="cashbox-amount"
+                       data-cashbox-id="{{ cashbox.id }}"
+                       step="any"
+                       name="cashbox_amount_{{ cashbox.iso }}"
+                >
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td>Нет данных</td>
+        </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+
+<table id="example2" class="table table-bordered table-hover balance">
+    <tr>
+        <td></td>
+        <th>Обменный пункт:</th>
+        <td>{{ exchangeOffice.name }}</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <th>Сотрудник:</th>
+        <td>{{ app.user.email }}</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <th>Тип операции:</th>
+        <td>
+            <select id="type_transaction">
+                <option value="replenishment">Пополнение</option>
+                <option value="write_off">Списание</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <th>Примечание:</th>
+        <td><textarea id="notes"></textarea></td>
+    </tr>
+    <tr>
+        <td></td>
+        <th colspan="2">
+            <div class="box-message"></div>
+            <button title="Сохранить" id="save-transactions"
+                    class="btn btn-primary save-transactions" data-cashbox-id="0"
+                    data-cashbox-action="">
+                Выполнить операцию
+            </button>
+        </th>
+        <td></td>
+    </tr>
+</table>

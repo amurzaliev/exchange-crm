@@ -6,6 +6,7 @@ use App\Model\Controller\ControllerHandler;
 use App\Entity\Cashbox;
 use App\Entity\ExchangeOffice;
 use App\Form\ExchangeOfficeType;
+use App\Repository\CashboxRepository;
 use App\Repository\CurrencyRepository;
 use App\Repository\ExchangeOfficeRepository;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -45,7 +46,7 @@ class ExchangeOfficeController extends BaseProfileController
      * @param CurrencyRepository $currencyRepository
      * @return Response
      */
-    public function createAction(Request $request, ObjectManager $manager, CurrencyRepository $currencyRepository )
+    public function createAction(Request $request, ObjectManager $manager, CurrencyRepository $currencyRepository)
     {
         $exchangeOffice = new ExchangeOffice();
         $form = $this->createForm(ExchangeOfficeType::class, $exchangeOffice);
@@ -118,9 +119,14 @@ class ExchangeOfficeController extends BaseProfileController
      *
      * @param int $id
      * @param ExchangeOfficeRepository $exchangeOfficeRepository
+     * @param CashboxRepository $cashboxRepository
      * @return Response
      */
-    public function detailAction(int $id, ExchangeOfficeRepository $exchangeOfficeRepository)
+    public function detailAction(
+        int $id,
+        ExchangeOfficeRepository $exchangeOfficeRepository,
+        CashboxRepository $cashboxRepository
+    )
     {
         $exchangeOffice = $exchangeOfficeRepository->find($id);
 
@@ -132,8 +138,11 @@ class ExchangeOfficeController extends BaseProfileController
             return $this->show404();
         }
 
+        $cashboxes = $cashboxRepository->findByAll($exchangeOffice);
+
         return $this->render('profile/exchange_office/detail.html.twig', [
-                'officeRepository' => $exchangeOffice
+                'exchangeOffice' => $exchangeOffice,
+                'cashboxes' => $cashboxes
             ]
         );
 
