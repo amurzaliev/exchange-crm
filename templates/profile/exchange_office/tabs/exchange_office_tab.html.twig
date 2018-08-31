@@ -1,25 +1,60 @@
-<form>
+<form method="post" id="exchangeOfficeForm" novalidate="novalidate">
     <div class="form-group">
         <label for="exchangeOfficeName">Название</label>
-        <input type="email" class="form-control" id="exchangeOfficeName"
+        <input type="email" class="form-control" id="exchangeOfficeName" name="exchange_name"
                aria-describedby="exchangeOfficeNameHelp"
                placeholder="Введите название обменного пункта"
                value="{{ exchangeOffice.name }}">
     </div>
     <div class="form-group">
         <label for="exchangeOfficeAddress">Адрес</label>
-        <input type="email" class="form-control" id="exchangeOfficeAddress"
+        <input type="text" class="form-control" id="exchangeOfficeAddress" name="exchange_address"
                aria-describedby="exchangeOfficeAddressHelp"
                placeholder="Введите адрес обменного пункта"
                value="{{ exchangeOffice.address }}">
     </div>
     <div class="form-group">
         <label for="exchangeOfficeContact">Контакты</label>
-        <input type="email" class="form-control" id="exchangeOfficeContact"
+        <input type="text" class="form-control" id="exchangeOfficeContact" name="exchange_contact"
                aria-describedby="exchangeOfficeContactHelp"
                placeholder="Введите контактный номер обменного пункта"
                value="{{ exchangeOffice.contact }}">
     </div>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="exchangeOfficeActive" name="exchange_active"
+               aria-describedby="exchangeOfficeActiveHelp"
+                {{ exchangeOffice.active ? "value='1' checked" : '' }}>
+        <label for="exchangeOfficeActive" class="form-check-label">Активировать</label>
+    </div>
     <hr>
-    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+    <label for="selectCurrencies">Добавить кассы</label>
+    <p>Текущие кассы:
+        {% for cashbox in currencyCashboxes %}
+            <span class="badge badge-success"> {{ cashbox.currency.name }}</span>
+        {% endfor %}
+    </p>
+    <label for="selectStaffs" style="margin-left: 21.5%">Ваши сотрудники</label>
+    <br>
+    <select id="selectCurrencies" class="multipleSelectCurrencies" name="exchange_currencies" multiple>
+        {% for currency in currencies %}
+            {% if not currency.defaultCurrency %}
+                <option value="{{ currency.id }}">{{ currency.name }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+
+    <select id="selectStaffs" title="Персонал" class="multipleSelectStaffs" name="exchange_staffs" multiple>
+        {% for staff in staffs %}
+            <option value="{{ staff.id }}" {% if(exchangeOffice.staff(staff)) %}selected{% endif %}>
+                {{ staff.user.fullName }}
+            </option>
+        {% endfor %}
+    </select>
+    <input type="hidden" name="exchange_id" value="{{ exchangeOffice.id }}">
+    <button type="submit" style="margin-left: 6%; margin-bottom: 6%; padding: 20px 50px"
+            class="add_staff btn btn-primary ml-2"> Добавить сотрудника
+    </button>
+    <br>
+    <div class="exchangeOfficeSubmitMessage text-center"></div>
+    <button type="submit" class="btn btn-primary exchangeOfficeSubmitForm">Сохранить изменения</button>
 </form>
