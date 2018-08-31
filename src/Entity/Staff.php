@@ -186,4 +186,17 @@ class Staff
         return $this->exchangeOffices->contains($cashbox->getExchangeOffice());
     }
 
+    public function toArray()
+    {
+        $data = [
+            "fullname" => $this->user->getFullName(),
+            "username" => $this->user->getUsername(),
+            "enabled" => $this->user->isEnabled(),
+            "group" => $this->getPermissionGroup()->getId(),
+            "position" => $this->getPosition(),
+        ];
+
+        return $data;
+    }
+
 }

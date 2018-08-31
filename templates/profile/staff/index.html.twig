@@ -19,7 +19,7 @@
                     {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_OWNER') %}
                         <div class="box-header">
                             <h3 class="box-title">
-                                <a href="#" class="btn btn-block btn-success btn-lg"
+                                <a href="#" class="btn btn-block btn-success btn-lg created-staff"
                                    data-toggle="modal" data-target="#add-staff">
                                     Добавить
                                 </a>
@@ -45,26 +45,9 @@
                             </tr>
                             </thead>
                             <tbody>
+                            <div class="new-tr-block"></div>
                             {% for staff in staffs %}
-                                <tr>
-                                    <td>{{ staff.user.id }}</td>
-                                    <td>{{ staff.user.fullName }}</td>
-                                    <td>{{ staff.user.username }}</td>
-                                    <td>{{ staff.position }}</td>
-                                    <td>{{ staff.createdAt.format("d-m-Y H:i:s") }}</td>
-                                    <td>{{ staff.updatedAt.format("d-m-Y H:i:s") }}</td>
-                                    <td>
-                                        <a href="{{ path('profile_staff_detail', {'id' : staff.user.id }) }}"
-                                           class="btn btn-default" title="Просмотреть запись {{ staff.user.fullName }}">Просмотр
-                                            <i class="fa fa-fw fa-eye"></i></a>
-                                        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_OWNER') %}
-                                            <a href="{{ path('profile_staff_edit', {'id' : staff.user.id }) }}"
-                                               class="btn btn-primary"
-                                               title="Редактировать запись {{ staff.user.fullName }}"> Редактировать <i
-                                                        class="fa fa-fw fa-pencil"></i></a>
-                                        {% endif %}
-                                    </td>
-                                </tr>
+                                {{ include('profile/staff/ajax/list_block.html.twig', {'staff' : staff}) }}
                             {% else %}
                                 <tr>
                                     <td>Нет данных</td>
@@ -89,7 +72,19 @@
     <script>
         $(document).ready(function () {
 
-           $('.submit-staff-btn').on('click', function () {
+            $(".created-staff").on('click', function () {
+                $( '.modal-form-staff' ).each(function(){
+                    this.reset();
+                });
+
+                $(".submit-staff-btn")
+                    .removeClass("submit-edit-staff-btn")
+                    .addClass("submit-create-staff-btn")
+                    .html("Добавить");
+            });
+
+            $(document).on('click', '.submit-create-staff-btn', function () {
+
               var fullname = $('#fullname').val();
               var username = $('#username').val();
               var password = $('#password').val();
@@ -107,10 +102,85 @@
                   position:position
               };
 
+               $( '.modal-form-staff' ).each(function(){
+                   if (this.name === "enabled") {
+                       data[this.name] = $(this).prop('checked');
+                   } else {
+                       data[this.name] = $(this).val();
+                   }
+               });
+
               $.post('{{ path('profile_staff_create_ajax') }}', data, function (response) {
                   console.log(response);
-              }, 'json');
+                  $('.table tbody').prepend(response.blockList);
+                  $('.close').trigger('click');
+                  $( '.modal-form-staff' ).each(function(){
+                      this.reset();
+                  });
+
+              });
            });
+
+            $(document).on('click', '.get-edit-data-staff', function (e) {
+                e.preventDefault();
+
+                var stafId = $(this).attr('id');
+
+                $(".submit-staff-btn")
+                    .removeClass("submit-create-staff-btn")
+                    .addClass("submit-edit-staff-btn")
+                    .html("Сохранить");
+
+
+                $.post('{{ path('profile_staff_get_data') }}',  {stafId:stafId}, function (response) {
+                    console.log(response);
+                    $('#fullname').val(response.data.fullname);
+                    $('#username').val(response.data.username);
+                    $('#group').val(response.data.group);
+                    $('#position').val(response.data.position);
+                    $('#enabled').prop(response.data.enabled);
+
+                });
+                console.log(stafId);
+
+            });
+
+            $(document).on('click', '.submit-edit-staff-btn', function () {
+
+                var fullname = $('#fullname').val();
+                var username = $('#username').val();
+                var password = $('#password').val();
+                var enabled = $('#enabled').prop('checked');
+                var group = $('#group').val();
+                var position = $('#position').val();
+                var stafId = $('#staf_id').val();
+                var $rowStaff = $(".row-staff-"+stafId);
+
+                var data = {
+                    fullname:fullname,
+                    username:username,
+                    password:password,
+                    enabled:enabled,
+                    group:group,
+                    position:position,
+                    stafId:stafId
+                };
+
+                $.post('{{ path('profile_staff_edit_ajax') }}', data, function (response) {
+                    console.log(response);
+
+                    $rowStaff.find(".staff-fullName").html(fullname);
+                    $rowStaff.find(".staff-username").html(username);
+                    $rowStaff.find(".staff-position").html(position);
+                    $rowStaff.find(".staff-updatedAt").html(response.updatedAt);
+
+                    $('.close').trigger('click');
+                    $( '.modal-form-staff' ).each(function(){
+                        this.reset();
+                    });
+
+                });
+            });
 
 
         });
