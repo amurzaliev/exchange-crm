@@ -73,7 +73,7 @@ class SecurityContext extends RawMinkContext
     }
 
     /**
-     * @When /^я перехожу на просмотр обменного пункта "([^"]*)"$/
+     * @When /^я перехожу на панель управления обменным пунктом "([^"]*)"$/
      * @param $name
      */
     public function iViewExchangeOffice($name)
@@ -81,18 +81,6 @@ class SecurityContext extends RawMinkContext
         $path = $this->getContainer()
             ->get('router')
             ->generate('profile_exchange_office_detail', ['id' => $this->getExchangeOfficeIdByName($name)]);
-        $this->visitPath($path);
-    }
-
-    /**
-     * @When /^я перехожу на редактирование обменного пункта "([^"]*)"$/
-     * @param $name
-     */
-    public function iEditExchangeOffice($name)
-    {
-        $path = $this->getContainer()
-            ->get('router')
-            ->generate('profile_exchange_office_edit', ['id' => $this->getExchangeOfficeIdByName($name)]);
         $this->visitPath($path);
     }
 

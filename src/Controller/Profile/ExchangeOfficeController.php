@@ -15,6 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -110,12 +111,16 @@ class ExchangeOfficeController extends BaseProfileController
      * @param int $id
      * @param ExchangeOfficeRepository $exchangeOfficeRepository
      * @param CashboxRepository $cashboxRepository
+     * @param StaffRepository $staffRepository
+     * @param CurrencyRepository $currencyRepository
      * @return Response
      */
     public function detailAction(
         int $id,
         ExchangeOfficeRepository $exchangeOfficeRepository,
-        CashboxRepository $cashboxRepository
+        CashboxRepository $cashboxRepository,
+        StaffRepository $staffRepository,
+        CurrencyRepository $currencyRepository
     )
     {
         $exchangeOffice = $exchangeOfficeRepository->find($id);
@@ -129,10 +134,20 @@ class ExchangeOfficeController extends BaseProfileController
         }
 
         $cashboxes = $cashboxRepository->findByAll($exchangeOffice);
+        $staffs = $staffRepository->findByAllOwnerStaff($this->getUser());
+        $currencyCashboxes = $cashboxRepository->findByExchangeOffice($exchangeOffice);
+        $attachedCurrencies = [];
+        foreach ($currencyCashboxes as $currencyCashbox) {
+            $attachedCurrencies[] = $currencyCashbox->getCurrency()->getId();
+        }
+        $currencies = $currencyRepository->findAllExcept($attachedCurrencies);
 
         return $this->render('profile/exchange_office/detail.html.twig', [
                 'exchangeOffice' => $exchangeOffice,
-                'cashboxes' => $cashboxes
+                'cashboxes' => $cashboxes,
+                'currencyCashboxes' => $currencyCashboxes,
+                'staffs' => $staffs,
+                'currencies' => $currencies
             ]
         );
 
@@ -178,23 +193,21 @@ class ExchangeOfficeController extends BaseProfileController
             $cashbox->setExchangeOffice($exchangeOffice);
             $manager->persist($cashbox);
 
-            $cashboxIds =[];
+            $cashboxIds = [];
 
-            switch (array_key_exists('staffs',$data)){
+            switch (array_key_exists('staffs', $data)) {
                 case  true :
                     $staffs = $data['staffs'];
-                    foreach ($staffs as $staffId)
-                    {
+                    foreach ($staffs as $staffId) {
                         $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), (int)$staffId);
                         $exchange = $exchangeOffice->addStaff($staff);
                         $manager->persist($exchange);
                     }
             }
-            switch (array_key_exists('cashboxes', $data)){
+            switch (array_key_exists('cashboxes', $data)) {
                 case  true :
                     $cashboxes = $data['cashboxes'];
-                    foreach ($cashboxes as $cashboxId)
-                    {
+                    foreach ($cashboxes as $cashboxId) {
                         $cashboxChange = new Cashbox();
                         $currency = $currencyRepository->find($cashboxId);
                         $cashboxChange->setUser($this->getUser());
@@ -218,5 +231,79 @@ class ExchangeOfficeController extends BaseProfileController
 //            'url' =>  $exchangeOfficeId,
             'message' => $message
         ]);
+    }
+
+    /**
+     * @Route("/edit-ajax", name="profile_exchange_office_edit_ajax")
+     * @Method("POST")
+     *
+     * @param Request $request
+     * @param ObjectManager $manager
+     * @param ExchangeOfficeRepository $exchangeOfficeRepository
+     * @param CurrencyRepository $currencyRepository
+     * @param StaffRepository $staffRepository
+     * @return Response
+     */
+    public function editAjaxAction(
+        Request $request,
+        ObjectManager $manager,
+        ExchangeOfficeRepository $exchangeOfficeRepository,
+        CurrencyRepository $currencyRepository,
+        StaffRepository $staffRepository
+    )
+    {
+        $message = null;
+        $status = true;
+
+        try {
+            $data = $request->request->all();
+            $exchangeOffice = $exchangeOfficeRepository->find($data['exchange_id']);
+
+            if (!$exchangeOffice) {
+                throw new HttpException(404);
+            }
+
+            if (!$this->isGranted('EDIT', $exchangeOffice)) {
+                throw new HttpException(404);
+            }
+
+            $exchangeOffice->setName($data['exchange_name']);
+            $exchangeOffice->setActive($data['exchange_active']);
+            $exchangeOffice->setAddress($data['exchange_address']);
+            $exchangeOffice->setActive((int)$data['exchange_active']);
+
+            if (!empty($data['exchange_currencies'])) {
+                foreach ($data['exchange_currencies'] as $currencyId) {
+                    $cashbox = new Cashbox();
+                    $cashbox
+                        ->setCurrency($currencyRepository->find($currencyId))
+                        ->setUser($this->getUser())
+                        ->setExchangeOffice($exchangeOffice);
+                    $manager->persist($cashbox);
+                    $exchangeOffice->addCashbox($cashbox);
+                }
+            }
+
+            $exchangeOffice->removeAllStaffs();
+
+            if (!empty($data['exchange_staffs'])) {
+                foreach ($data['exchange_staffs'] as $staffId) {
+                    $staff = $staffRepository->find($staffId);
+                    if ($staff) {
+                        $exchangeOffice->addStaff($staff);
+                    }
+                }
+            }
+
+            $manager->persist($exchangeOffice);
+            $manager->flush();
+            $message = 'Данные успешно обновлены';
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+//            $message = 'Возникла ошибка сервера';
+        }
+
+        return new JsonResponse(['message' => $message, 'status' => $status]);
     }
 }

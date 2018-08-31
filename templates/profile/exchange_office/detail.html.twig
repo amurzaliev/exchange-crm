@@ -127,6 +127,49 @@
 
         $(function () {
 
+            /** --------------------------Exchange Office----------------------------- **/
+
+            $('.multipleSelectStaffs').fastselect();
+            $('.multipleSelectCurrencies').fastselect();
+            let exchangeOfficeSubmitMessage = $('.exchangeOfficeSubmitMessage');
+
+            $('.exchangeOfficeSubmitForm').on('click', function (e) {
+                e.preventDefault();
+                let data = {};
+
+                $.each($('#exchangeOfficeForm').find(':input, select'), function () {
+                    if ($(this).is(':checkbox')) {
+                        data[this.name] = $(this).is(':checked') ? 1 : 0;
+                    } else {
+                        data[this.name] = $(this).val();
+                    }
+                });
+
+                console.log(data);
+
+                $.post('{{ path('profile_exchange_office_edit_ajax') }}', data, function (data) {
+                })
+                    .done(function (data) {
+                        let color = 'danger';
+                        if (data.status) {
+                            color = 'success';
+                        }
+                        exchangeOfficeSubmitMessage.empty();
+                        exchangeOfficeSubmitMessage
+                            .append('<p class="text-' + color + '">' + data.message + '</p>');
+                        console.log(data);
+                    })
+
+                    .fail(function () {
+                        exchangeOfficeSubmitMessage.empty();
+                        exchangeOfficeSubmitMessage
+                            .append('<p class="text-danger">Ошибка сервера</p>');
+                        console.log(data);
+                    });
+            });
+
+            /** ---------------------------Balance--------------------------------- **/
+
             var cashboxAmount = $(".cashbox-amount");
             cashboxAmount.on("keyup", function () {
                 operations(this);
