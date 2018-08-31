@@ -58,4 +58,22 @@ class ExchangeOfficeRepository extends ServiceEntityRepository
             return null;
         }
     }
+
+
+    /**
+     * @param $exchangeId
+     * @return ExchangeOffice[]|null
+     */
+    public function findByAllExchange($exchangeId)
+    {
+        try {
+            return $this->createQueryBuilder('e')
+                ->where("e.id IN(:exchangeId)")
+                ->setParameter('exchangeId', $exchangeId)
+                ->getQuery()
+                ->getArrayResult();
+        } catch (NotFoundHttpException $e) {
+            return null;
+        }
+    }
 }
