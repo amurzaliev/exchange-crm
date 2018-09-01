@@ -9,6 +9,7 @@ use App\Form\ExchangeOfficeType;
 use App\Repository\CashboxRepository;
 use App\Repository\CurrencyRepository;
 use App\Repository\ExchangeOfficeRepository;
+use App\Repository\PermissionGroupRepository;
 use App\Repository\StaffRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -45,19 +46,25 @@ class ExchangeOfficeController extends BaseProfileController
      * @Method({"GET", "POST"})
      * @param StaffRepository $staffRepository
      * @param CurrencyRepository $currencyRepository
+     * @param PermissionGroupRepository $permissionGroupRepository
      * @return Response
      */
-    public function createAction(StaffRepository $staffRepository, CurrencyRepository $currencyRepository)
+    public function createAction(
+        StaffRepository $staffRepository,
+        CurrencyRepository $currencyRepository,
+        PermissionGroupRepository $permissionGroupRepository
+    )
     {
 
         $staffs = $staffRepository->findByAllOwnerStaff($this->getUser());
-
+        $permissionGroups = $permissionGroupRepository->findAllByOwner($this->getUser());
         $currencies = $currencyRepository->findAll();
 
 
         return $this->render('profile/exchange_office/create.html.twig', [
             'staffs' => $staffs,
-            'currencies' => $currencies
+            'currencies' => $currencies,
+            'permissionGroups' => $permissionGroups
         ]);
     }
 
@@ -113,6 +120,7 @@ class ExchangeOfficeController extends BaseProfileController
      * @param CashboxRepository $cashboxRepository
      * @param StaffRepository $staffRepository
      * @param CurrencyRepository $currencyRepository
+     * @param PermissionGroupRepository $permissionGroupRepository
      * @return Response
      */
     public function detailAction(
@@ -120,7 +128,8 @@ class ExchangeOfficeController extends BaseProfileController
         ExchangeOfficeRepository $exchangeOfficeRepository,
         CashboxRepository $cashboxRepository,
         StaffRepository $staffRepository,
-        CurrencyRepository $currencyRepository
+        CurrencyRepository $currencyRepository,
+        PermissionGroupRepository $permissionGroupRepository
     )
     {
         $exchangeOffice = $exchangeOfficeRepository->find($id);
@@ -141,13 +150,15 @@ class ExchangeOfficeController extends BaseProfileController
             $attachedCurrencies[] = $currencyCashbox->getCurrency()->getId();
         }
         $currencies = $currencyRepository->findAllExcept($attachedCurrencies);
+        $permissionGroups = $permissionGroupRepository->findAllByOwner($this->getUser());
 
         return $this->render('profile/exchange_office/detail.html.twig', [
                 'exchangeOffice' => $exchangeOffice,
                 'cashboxes' => $cashboxes,
                 'currencyCashboxes' => $currencyCashboxes,
                 'staffs' => $staffs,
-                'currencies' => $currencies
+                'currencies' => $currencies,
+                'permissionGroups' => $permissionGroups
             ]
         );
 

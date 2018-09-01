@@ -26,26 +26,28 @@
                     <div class="box-header with-border">
                         <h3 class="box-title">Добавления нового обменного пункта</h3>
                     </div>
-                    <div id="showMessage"  style="width: 90%; height: 50px" >
+                    <div id="showMessage" style="width: 90%; height: 50px">
                     </div>
                     <form>
                         <div class="form-group">
 
-                            <label for="exchange_office_name" >Название</label>
+                            <label for="exchange_office_name">Название</label>
                             <input type="text" name="name_exchange" id="exchange_office_name" class="form-control">
 
-                            <label for="exchange_office_address" >Адресс</label>
-                            <input type="text" name="address_exchange" id="exchange_office_address"  class="form-control" >
+                            <label for="exchange_office_address">Адресс</label>
+                            <input type="text" name="address_exchange" id="exchange_office_address"
+                                   class="form-control">
 
-                            <label for="exchange_office_contact" >Контакты</label>
-                            <input type="text" name="contact_exchange" id="exchange_office_contact"  class="form-control" >
+                            <label for="exchange_office_contact">Контакты</label>
+                            <input type="text" name="contact_exchange" id="exchange_office_contact"
+                                   class="form-control">
 
-                            <input type="checkbox"  name="active_exchange" id="exchange_office_active" >
-                            <label for="exchange_office_active" >Активировать</label>
+                            <input type="checkbox" name="active_exchange" id="exchange_office_active">
+                            <label for="exchange_office_active">Активировать</label>
                             <br>
                         </div>
-                        <label for="selectCahboxes" >Добавить кассы</label>
-                        <label for="selectStaffs" style="margin-left: 21.5%" >Ваши сотрудники</label>
+                        <label for="selectCahboxes">Добавить кассы</label>
+                        <label for="selectStaffs" style="margin-left: 21.5%">Ваши сотрудники</label>
                         <br>
                         <select id="selectCahboxes" class="multipleSelectCahboxes" name="cahboxes" multiple>
                             {% for currency in currencies %}
@@ -55,15 +57,22 @@
                             {% endfor %}
                         </select>
 
-                        <select id="selectStaffs"  title="Персонал" class="multipleSelectStaffs" name="staffs" multiple>
+                        <select id="selectStaffs" title="Персонал" class="multipleSelectStaffs" name="staffs" multiple>
                             {% for staff in staffs %}
                                 <option value="{{ staff.user.id }}">{{ staff.user.fullName }}</option>
                             {% endfor %}
                         </select>
-                        <button type="submit" style="margin-left: 6%; margin-bottom: 6%; padding: 20px 50px" class="add_staff btn btn-primary ml-2" > Добавить сотрудника </button>
+                        <button type="submit" style="margin-left: 6%; margin-bottom: 6%; padding: 20px 50px"
+                                class="add_staff btn btn-primary ml-2" data-toggle="modal" data-target="#add-staff">
+                            Добавить сотрудника
+                        </button>
                         <br>
-                        <button type="submit" class="save btn btn-primary ml-2" > Добавить </button>
+                        <button type="submit" class="save btn btn-primary ml-2"> Добавить</button>
                     </form>
+                    <!-- Modal -->
+                    <div class="form-staff">
+                        {{ include('profile/components/forms/modal_form_staff.html.twig', {'permissionGroups' : permissionGroups}) }}
+                    </div>
 
 
                 </div>
@@ -75,7 +84,7 @@
     </section>
 {% endblock %}
 
-{% block Javascript  %}
+{% block Javascript %}
 
     {{ parent() }}
 
@@ -85,14 +94,14 @@
         $('.multipleSelectStaffs').fastselect();
         $('.multipleSelectCahboxes').fastselect();
 
-        $(function() {
+        $(function () {
             $('.save').on('click', function (e) {
                 e.preventDefault()
-                let active  = 0;
-                if($('#exchange_office_active').is(':checked')){
+                let active = 0;
+                if ($('#exchange_office_active').is(':checked')) {
                     active = 1;
                 }
-                let datas ={
+                let datas = {
                     name: $('#exchange_office_name').val(),
                     address: $('#exchange_office_address').val(),
                     contact: $('#exchange_office_contact').val(),
@@ -104,10 +113,9 @@
                     type: "POST",
                     url: "{{ path('profile_exchange_office_create_ajax') }}",
                     data: datas,
-                    success: function (reason)
-                    {
+                    success: function (reason) {
                         console.log(reason)
-                        if(reason.message) {
+                        if (reason.message) {
                             let message = $(
                                 '<p class="text_message" style="color: red; text-align: center; font-size: large ">' + reason.message + '</p>'
                             )
@@ -120,22 +128,21 @@
                             }
                         }
 
-                        if(!reason.message){
+                        if (!reason.message) {
 
-                            let message = $('<h3 class="text_message" style="color: blue; text-align: center">Данные успешно сохранены</h3>' );
-                                    $('.text_message').remove();
-                                    $('#showMessage').append(message)
-                                    setTimeout(function () {
-                                        window.location.href = '/profile/exchange_office/'
-                                    }, 2000)
-
+                            let message = $('<h3 class="text_message" style="color: blue; text-align: center">Данные успешно сохранены</h3>');
+                            $('.text_message').remove();
+                            $('#showMessage').append(message)
+                            setTimeout(function () {
+                                window.location.href = '/profile/exchange_office/'
+                            }, 2000)
 
 
                         }
                     }
-                }).fail(function(reason){
-                    let errorMessage = $('<h3 class="text_message" style="color: red; text-align: center">Ошибка сервера</h3>' );
-                    if(reason){
+                }).fail(function (reason) {
+                    let errorMessage = $('<h3 class="text_message" style="color: red; text-align: center">Ошибка сервера</h3>');
+                    if (reason) {
                         if ($('#showMessage').children) {
                             $('.text_message').remove();
                             $('#showMessage').append(errorMessage)
@@ -147,9 +154,44 @@
                 });
 
 
+            });
 
+            /** -------------  Staff ---------------- **/
 
-            })
+            $('.add_staff').on('click', function (e) {
+                e.preventDefault();
+            });
+
+            $('.submit-staff-btn').on('click', function (e) {
+                e.preventDefault();
+                let data = {};
+
+                $.each($('.modal-form-staff').find(':input, select'), function () {
+                    if ($(this).is(':checkbox')) {
+                        data[this.name] = !!$(this).is(':checked');
+                    } else {
+                        data[this.name] = $(this).val();
+                    }
+                });
+
+                console.log(data);
+
+                $.post('{{ path('profile_staff_create_ajax') }}', data, function (response) {
+                    console.log(response);
+                    $('.close').trigger('click');
+                    $('.modal-form-staff').each(function () {
+                        this.reset();
+                    });
+                    $('#selectStaffs')
+                        .append("<option value='"
+                            + response.staffData.id + "'>"
+                            + response.staffData.fullname + "</option>");
+
+                    $('.fstResults').append("<span class='fstResultItem'>" + response.staffData.fullname + "</span>");
+
+                });
+
+            });
 
         })
     </script>

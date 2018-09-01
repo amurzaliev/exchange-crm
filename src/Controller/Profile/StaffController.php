@@ -110,12 +110,18 @@ class StaffController extends BaseProfileController
                 'staff' => $staffRepository->find($staff->getId())
             ])->getContent();
 
+            $staffData = [
+                'id' => $staff->getId(),
+                'fullname' => $staff->getUser()->getFullName()
+            ];
+
         } catch (\Exception $e) {
             $message = $e->getMessage();
         }
 
         return new JsonResponse([
             "message" => $message,
+            'staffData' => $staffData,
             'blockList' => $blockList
         ]);
     }
