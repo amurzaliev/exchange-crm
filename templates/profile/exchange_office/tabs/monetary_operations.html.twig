@@ -1,36 +1,34 @@
-{% extends "profile.layout.html.twig" %}
-
 {% block stylesheet %}
 
     <style>
-        .box-body tr th, td {
+        .money_operation .box-body tr th, td {
             text-align: center;
         }
 
-        td.sale, th.sale, td.sale input {
+        .money_operation  td.sale, th.sale, td.sale input {
             background: #4cd0936b;
         }
 
-        td.purchase, th.purchase, td.purchase input {
+        .money_operation td.purchase, th.purchase, td.purchase input {
             background: #0087a94d;
         }
 
-        td.currency, th.currency, td.currency input {
+        .money_operation td.currency, th.currency, td.currency input {
             background: #e9fb1e8c;
         }
 
-        .box-body tr td input {
+        .money_operation .box-body tr td input {
             width: 100px;
             border: 1px solid #5cb599;
             padding: 2px 2px;
             font-weight: bold;
         }
 
-        table tr {
+        .money_operation table tr {
             font-size: 18px;
         }
 
-        table tr td.active-cashbox {
+        .money_operation table tr td.active-cashbox {
             background: #f39c12 !important;
             color: white;
             border-right: 1px solid #f39c11;
@@ -38,21 +36,21 @@
             border-bottom: 3px solid #ce8510;
         }
 
-        table tr td.active-cashbox input {
+        .money_operation table tr td.active-cashbox input {
             border: 1px solid #a96d0e;
             background: #b7760d;
         }
 
-        textarea {
+        .money_operation textarea {
             width: 100%;
         }
 
-        .discount input {
+        .money_operation .discount input {
             float: left;
             border-right: none !important;
         }
 
-        .discount input + button {
+        .money_operation .discount input + button {
             background: white;
             padding: 6px 15px;
             cursor: pointer;
@@ -62,13 +60,13 @@
             border: 1px solid #dadada;
         }
 
-        .DefaultCurrency {
+        .money_operation .DefaultCurrency {
             color: #55840b;
             font-weight: bold;
             font-size: 24px;
         }
 
-        .discount_active {
+        .money_operation .discount_active {
             background: #e8e8e8;
             color: black;
             box-shadow: inset 1px 2px 6px 4px #bbbbbb;
@@ -79,7 +77,6 @@
 {% endblock %}
 
 {% block content %}
-
     <section class="content-header">
         <h1>
             Покупка и продажа валют
@@ -90,14 +87,14 @@
     </section>
 
     <!-- Main content -->
-    <section class="content">
+    <section class="content money_operation">
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
                     <!-- /.box-header -->
                     <div class="box-body">
                         <table id="example2" class="table table-bordered">
-                            <thead>
+                            {#<thead>#}
                             <tr>
                                 <th colspan="3">Валюта</th>
                                 <th colspan="2" class="purchase">Покупка</th>
@@ -117,9 +114,9 @@
                                 <th class="currency">Скидка</th>
                                 <th class="currency">Сумма</th>
                             </tr>
-                            </thead>
+                            {#</thead>#}
                             <tbody>
-                            {% for cashbox in cashboxs %}
+                            {% for cashbox in cashboxes %}
 
                                 {% if not cashbox.default_currency %}
                                     <tr class="cashbox-row cashbox-number-{{ cashbox.id }}">
@@ -166,12 +163,13 @@
                                         <td class="currency discount">
                                             <input
                                                     type="text"
+                                                    id="amount-{{ cashbox.id }}"
                                                     class="discount-form"
-                                                    data-cashbox-id="{{ cashbox.id }}"
-                                                    data-active="0"
+                                                    data-discount-cashbox-id="{{ cashbox.id }}"
+
                                             >
                                             <button data-active="1"
-                                                    class="btn btn-default btn_discount discount_active">%
+                                                    class="btn btn-default btn_discount discount_active activeBtn-{{ cashbox.id }}">%
                                             </button>
                                         </td>
                                         <td class="currency">
@@ -261,200 +259,3 @@
 
 {% endblock %}
 
-{% block Javascript %}
-
-    <script type="text/javascript">
-
-
-        $(function () {
-
-            $(".save-transactions").on("click", function (e) {
-                e.preventDefault();
-
-                var currency, national_currency, amount, data;
-                var cashboxId = $(this).data("cashbox-id");
-                var cashboxAction = $(this).data("cashbox-action");
-                var result = $('.form-result').val()
-                var cashboxNumberClass = ".cashbox-number-" + cashboxId;
-                var vip_client_id = $("#vip_client_id").val();
-                var notes = $("#notes").val();
-                var exchange_office_id = "{{ exchangeOffice.id }}";
-                var $boxMessage = $(".box-message");
-                var $btnSaveTransactions = $(".save-transactions");
-
-
-                if (cashboxAction === "sale") {
-                    currency = $(cashboxNumberClass + " .cashbox-sale").val();
-                    amount = $(cashboxNumberClass + " .sale .cashbox-form").val();
-                    // if (amountSale !== '') {
-                    //     descountCalculation = discount(cashboxId, cashboxNumberClass, amountSale, numberDiscount, btnActive);
-                    //     result = currencySale * amountSale - descountCalculation;
-                    //
-                    // }
-                } else if (cashboxAction === "purchase") {
-                    currency = $(cashboxNumberClass + " .cashbox-purchase").val();
-                    amount = $(cashboxNumberClass + " .purchase .cashbox-form").val();
-                    // if (amountPurchase !== '') {
-                    //
-                    //     descountCalculation = discount(cashboxId, cashboxNumberClass, amountPurchase, numberDiscount, btnActive);
-                    //     result = currencyPurchase * amountPurchase + parseFloat(descountCalculation);
-                    // }
-                }
-
-
-                national_currency = amount * currency;
-                console.log(national_currency)
-
-                data = {
-                    cashboxId,
-                    cashboxAction,
-                    currency,
-                    amount,
-                    national_currency,
-                    exchange_office_id,
-                    vip_client_id,
-                    notes,
-                };
-                $.post("{{ path('profile_monetary_operations_create') }}", data)
-                    .done(function (response) {
-
-
-                        if (response.status) {
-                            $(".cashbox-form").val("");
-                            $(".form-result").val("");
-                            $(".cashbox-row td").removeClass("active-cashbox");
-                            $boxMessage.html('<p class="bg-success">' + response.message + '</p>');
-                            $btnSaveTransactions.data("cashbox-id", 0);
-                            $btnSaveTransactions.data("cashbox-action", "");
-                            $(cashboxNumberClass + " .cashbox-allAmount").html(response.allAmount);
-                            $("#resultDefaultCurrencyAmount").html(response.resultDefaultCurrencyAmount);
-                        } else {
-                            $boxMessage.html('<p class="bg-danger">' + response.message + '</p>');
-                        }
-
-                    })
-                    .fail(function (response) {
-                        console.log(response);
-                    });
-
-            });
-
-            $(".cashbox-form").on("keyup", function () {
-
-                var cashboxAction = $(this).data("cashbox-action");
-                var cashboxId = $(this).data("cashbox-id");
-                var currency, result, descountCalculation;
-                var amount = $(this).val();
-
-                var discountNumber = $(this).parent().parent().children('.discount').children('.discount-form').val()
-                var discountField = $(this).parent().parent().children('.discount').children('.discount-form').data('cashbox-id')
-                var $btnSaveTransactions = $(".save-transactions");
-                var cashboxNumberClass = ".cashbox-number-" + cashboxId;
-                var $boxMessage = $(".box-message");
-                let btnActive = $(this).parent().parent().children('.discount').children('.btn_discount').attr('data-active')
-
-                $boxMessage.html("");
-                $(".cashbox-form").val("");
-                $(".form-result").val("");
-                $('.discount-form').val('')
-
-                if (cashboxId === discountField) {
-                    $(this).parent().parent().children('.discount').children('.discount-form').val(discountNumber)
-                }
-                $btnSaveTransactions.data("cashbox-id", cashboxId);
-                $btnSaveTransactions.data("cashbox-action", cashboxAction);
-                $(".cashbox-row td").removeClass("active-cashbox");
-                $(cashboxNumberClass + " td").addClass("active-cashbox");
-                $(this).val(amount);
-
-                if (cashboxAction === "sale") {
-                    $(".cashbox-row td.purchase").removeClass("active-cashbox");
-                    currency = $(".cashbox-number-" + cashboxId + " .cashbox-sale").val();
-
-                    if (discountNumber !== '') {
-                        descountCalculation = discount(cashboxId, cashboxNumberClass, amount, discountNumber, btnActive);
-                        result = currency * amount - descountCalculation;
-                    } else {
-
-                        result = currency * amount;
-                    }
-
-                } else if (cashboxAction === "purchase") {
-                    $(".cashbox-row td.sale").removeClass("active-cashbox");
-                    currency = $(".cashbox-number-" + cashboxId + " .cashbox-purchase").val();
-
-                    if (discountNumber !== '') {
-                        descountCalculation = discount(cashboxId, cashboxNumberClass, amount, discountNumber, btnActive);
-                        result = currency * amount + parseFloat(descountCalculation);
-                    } else {
-                        result = currency * amount;
-                    }
-                }
-
-                $(cashboxNumberClass + " .form-result").val(result);
-            });
-
-
-            $(".discount-form").on("keyup", function () {
-
-                var cashboxId = $(this).parent().parent().children('td').children('.cashbox-currency').data("cashbox-id");
-                let cashboxNumberClass = ".cashbox-number-" + cashboxId;
-
-                let amountPurchase = $(this).parent().parent().children('.purchase').children('.cashbox-form').val();
-                let amountSale = $(this).parent().parent().children('.sale').children('.cashbox-form').val();
-
-                let currencySale = $(".cashbox-number-" + cashboxId + " .cashbox-sale").val();
-                let currencyPurchase = $(".cashbox-number-" + cashboxId + " .cashbox-purchase").val();
-
-                let numberDiscount = $(this).val();
-                let result, descountCalculation;
-
-                let btnActive = $(this).parent().children('.btn_discount').attr('data-active')
-                if (amountSale !== '') {
-                    descountCalculation = discount(cashboxId, cashboxNumberClass, amountSale, numberDiscount, btnActive);
-                    result = currencySale * amountSale - descountCalculation;
-
-                }
-                else if (amountPurchase !== '') {
-
-                    descountCalculation = discount(cashboxId, cashboxNumberClass, amountPurchase, numberDiscount, btnActive);
-                    result = currencyPurchase * amountPurchase + parseFloat(descountCalculation);
-                }
-                $(cashboxNumberClass + " .form-result").val(result);
-            });
-
-            var discount = function (cashbox, cashboxNumberClass, amount, numberDiscount, btnActive) {
-                let cashboxId = cashbox
-                let currencySale = $(".cashbox-number-" + cashboxId + " .cashbox-sale").val();
-                let currencyPurchase = $(".cashbox-number-" + cashboxId + " .cashbox-purchase").val();
-                let discount;
-                if (numberDiscount !== '') {
-
-                    if (btnActive === '1') {
-                        let oneUnit = (currencySale - currencyPurchase) * (parseInt(numberDiscount) / 100);
-                        discount = amount * oneUnit;
-                        return discount;
-                    } else {
-                        return numberDiscount;
-                    }
-                } else {
-                    return 0;
-                }
-            }
-
-            $('.btn_discount').on('click', function () {
-                var data_active = $(this).attr('data-active');
-                if (data_active > 0) {
-                    $(this).removeClass('discount_active');
-                    $(this).attr('data-active', 0);
-                } else {
-                    $(this).addClass('discount_active');
-                    $(this).attr('data-active', 1);
-                }
-
-
-            })
-        });
-
-    </script>
-{% endblock %}

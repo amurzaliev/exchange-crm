@@ -10,6 +10,7 @@ use App\Repository\CashboxRepository;
 use App\Repository\CurrencyRepository;
 use App\Repository\ExchangeOfficeRepository;
 use App\Repository\StaffRepository;
+use App\Repository\VIPClientRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -115,7 +116,8 @@ class ExchangeOfficeController extends BaseProfileController
     public function detailAction(
         int $id,
         ExchangeOfficeRepository $exchangeOfficeRepository,
-        CashboxRepository $cashboxRepository
+        CashboxRepository $cashboxRepository,
+        VIPClientRepository $clientRepository
     )
     {
         $exchangeOffice = $exchangeOfficeRepository->find($id);
@@ -128,11 +130,22 @@ class ExchangeOfficeController extends BaseProfileController
             return $this->show404();
         }
 
+
+        $exchangeOffice = $exchangeOfficeRepository->findByOne($id, $this->getOwner());
+        $vipClients = $clientRepository->findByOwner($this->getOwner());
+
+        $defaultCurrency = $cashboxRepository->findByOneDefaultCurrency($exchangeOffice);
+        $defaultCurrencyAmount = $cashboxRepository->getAllAmount($defaultCurrency->getId(), $exchangeOffice)[0];
+
+
         $cashboxes = $cashboxRepository->findByAll($exchangeOffice);
 
         return $this->render('profile/exchange_office/detail.html.twig', [
                 'exchangeOffice' => $exchangeOffice,
-                'cashboxes' => $cashboxes
+                'cashboxes' => $cashboxes,
+                'vipClients' => $vipClients,
+                'defaultCurrencyAmount' => $defaultCurrencyAmount,
+                'defaultCurrency' => $defaultCurrency,
             ]
         );
 

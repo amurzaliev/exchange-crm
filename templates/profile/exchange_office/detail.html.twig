@@ -16,7 +16,7 @@
             font-size: 18px;
         }
 
-        .balance table tr td.active-cashbox input {
+        .balance table tr td.active-cashbox-balance input {
             border: 1px solid #a96d0e;
             background: #b7760d;
         }
@@ -25,16 +25,16 @@
             width: 100%;
         }
 
-        .balance .active-cashbox {
+        .balance .active-cashbox-balance {
             background: rgb(223, 138, 12);
             color: white;
         }
 
-        .balance .active-cashbox td {
+        .balance .active-cashbox-balance td {
             border-right: 1px solid #df8a0b !important;
         }
 
-        .balance .active-cashbox td input {
+        .balance .active-cashbox-balance td input {
             background: #ad6d0d;
             border: 1px solid #df8a0b !important;
         }
@@ -93,6 +93,11 @@
                                    role="tab"
                                    aria-controls="contact" aria-selected="false">Курсы валют</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="monetaryOperations-tab" data-toggle="tab" href="#monetaryOperations"
+                                   role="tab"
+                                   aria-controls="contact" aria-selected="false">Работа с обменнкой</a>
+                            </li>
                         </ul>
                     </div>
                     <!-- /.box-header -->
@@ -109,6 +114,9 @@
                                  aria-labelledby="currencyRate-tab">
                                 Курсы валют
                             </div>
+                            <div class="tab-pane fade" id="monetaryOperations" role="tabpanel" aria-labelledby="monetory_operations-tab">
+                                {% include 'profile/exchange_office/tabs/monetary_operations.html.twig' %}
+                            </div>
                         </div>
                     </div>
                     <!-- /.box-body -->
@@ -124,71 +132,11 @@
 {% block Javascript %}
 
     <script type="text/javascript">
-
         $(function () {
-
-            var cashboxAmount = $(".cashbox-amount");
-            cashboxAmount.on("keyup", function () {
-                operations(this);
+                $.getScript("/js/exchange_offices.js", function () {
+                balance("{{ exchangeOffice.id }}", "{{ path('profile_monetary_operations_balance_change') }}");
+                moneyOperation("{{ path('profile_monetary_operations_create') }}","{{ exchangeOffice.id }}")
             });
-
-            cashboxAmount.on("change", function () {
-                operations(this);
-            });
-
-            function operations(object) {
-                var cashboxId = $(object).data("cashbox-id");
-                var cashboxAmount = $(object).val();
-
-                if (cashboxAmount < 0) {
-                    cashboxAmount = 0;
-                }
-
-                $(".save-transactions").data("cashbox-id", cashboxId);
-
-                $(".cashbox-row").removeClass("active-cashbox");
-                $(".cashbox-amount").val("");
-                $(object).val(cashboxAmount);
-                $(".cashbox-number-" + cashboxId).addClass("active-cashbox");
-            }
         });
-
-        $(".save-transactions").on("click", function () {
-            var cashboxId = $(this).data("cashbox-id");
-            var cashboxNumberClass = ".cashbox-number-" + cashboxId;
-            var amount = $(cashboxNumberClass + " .cashbox-amount").val();
-            var exchange_office_id = "{{ exchangeOffice.id }}";
-            var $btnSaveTransactions = $(this);
-            var type_transaction = $("#type_transaction").val();
-            var notes = $("#notes").val();
-            var $boxMessage = $(".box-message");
-
-            var data = {
-                cashboxId,
-                amount,
-                exchange_office_id,
-                type_transaction,
-                notes,
-            };
-
-            $.post("{{ path('profile_monetary_operations_balance_change') }}", data)
-                .done(function (response) {
-                    console.log(response);
-
-                    if (response.status) {
-                        $(".cashbox-amount").val("");
-                        $(".cashbox-row").removeClass("active-cashbox");
-                        $boxMessage.html('<p class="bg-success">' + response.message + '</p>');
-                        $btnSaveTransactions.data("cashbox-id", 0);
-                        $(cashboxNumberClass + " .cashbox-allAmount").html(response.resultAmount);
-                    } else {
-                        $boxMessage.html('<p class="bg-danger">' + response.message + '</p>');
-                    }
-                })
-                .fail(function (response) {
-                    console.log(response);
-                });
-        });
-
     </script>
 {% endblock %}
