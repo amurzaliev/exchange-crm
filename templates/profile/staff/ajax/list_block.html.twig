@@ -1,0 +1,21 @@
+<tr class="row-staff-{{ staff.id }}">
+    <td>{{ staff.user.id }}</td>
+    <td class="staff-fullName">{{ staff.user.fullName }}</td>
+    <td class="staff-username">{{ staff.user.username }}</td>
+    <td class="staff-position">{{ staff.position }}</td>
+    <td>{{ staff.createdAt.format("d-m-Y H:i:s") }}</td>
+    <td class="staff-updatedAt">{{ staff.updatedAt.format("d-m-Y H:i:s") }}</td>
+    <td>
+        <a href="{{ path('profile_staff_detail', {'id' : staff.user.id }) }}"
+           class="btn btn-default" title="Просмотреть запись {{ staff.user.fullName }}">Просмотр
+            <i class="fa fa-fw fa-eye"></i></a>
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_OWNER') %}
+            <a href="#"
+               class="btn btn-primary get-edit-data-staff"
+               data-toggle="modal" data-target="#add-staff"
+               id="{{ staff.id }}"
+               title="Редактировать запись {{ staff.user.fullName }}"> Редактировать <i
+                        class="fa fa-fw fa-pencil"></i></a>
+        {% endif %}
+    </td>
+</tr>
