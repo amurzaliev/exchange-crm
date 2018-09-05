@@ -21,7 +21,7 @@
                             <h3 class="box-title">
                                 <a href="#" class="btn btn-block btn-success btn-lg created-staff"
                                    data-toggle="modal" data-target="#add-staff">
-                                    Добавить
+                                    создать
                                 </a>
                             </h3>
                         </div>
@@ -134,11 +134,13 @@
 
                 $.post('{{ path('profile_staff_get_data') }}',  {stafId:stafId}, function (response) {
                     console.log(response);
+                    console.log(stafId);
                     $('#fullname').val(response.data.fullname);
                     $('#username').val(response.data.username);
                     $('#group').val(response.data.group);
                     $('#position').val(response.data.position);
                     $('#enabled').prop(response.data.enabled);
+                    $('#staf_id').val(stafId);
 
                 });
                 console.log(stafId);
@@ -165,6 +167,8 @@
                     position:position,
                     stafId:stafId
                 };
+
+                console.log(data);
 
                 $.post('{{ path('profile_staff_edit_ajax') }}', data, function (response) {
                     console.log(response);

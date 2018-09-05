@@ -26,6 +26,7 @@ class BaseContext extends RawMinkContext implements TranslatableContext
             'Добавление курса валют' => 'profile_currency_rate_create',
             'Добавление валюты' => 'profile_currency_create',
             'Управление обменными пунктами' => 'profile_exchange_office_index',
+            'Управление персоналом' => 'profile_staff_index',
 
 
         ];
