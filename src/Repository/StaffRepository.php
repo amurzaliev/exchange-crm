@@ -38,17 +38,17 @@ class StaffRepository extends ServiceEntityRepository
 
     /**
      * @param User $owner
-     * @param int $staffId
+     * @param int $userId
      * @return Staff|null
      */
-    public function findByOneOwnerStaff(User $owner, int $staffId)
+    public function findByOneOwnerStaff(User $owner, int $userId)
     {
         try {
             return $this->createQueryBuilder('s')
                 ->andWhere('s.owner = :owner')
-                ->andWhere('s.id = :user')
+                ->andWhere('s.user = :user')
                 ->setParameter('owner', $owner)
-                ->setParameter('user', $staffId)
+                ->setParameter('user', $userId)
                 ->getQuery()
                 ->getOneOrNullResult();
         } catch (NonUniqueResultException $e) {

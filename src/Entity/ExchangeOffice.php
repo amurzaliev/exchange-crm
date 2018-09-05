@@ -221,11 +221,6 @@ class ExchangeOffice
         return $this;
     }
 
-    public function hasStaff(Staff $staff): bool
-    {
-        return $this->staffs->contains($staff);
-    }
-
     public function removeStaff(Staff $staff): self
     {
         if ($this->staffs->contains($staff)) {
@@ -233,16 +228,6 @@ class ExchangeOffice
             $staff->removeExchangeOffice($this);
         }
 
-        return $this;
-    }
-
-    public function removeAllStaffs(): self
-    {
-        foreach ($this->staffs as $staff) {
-            $staff->removeExchangeOffice($this);
-        }
-
-        $this->staffs->clear();
         return $this;
     }
 

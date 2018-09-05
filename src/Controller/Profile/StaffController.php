@@ -8,7 +8,6 @@ use App\Form\UserStaffType;
 use App\Repository\ExchangeOfficeRepository;
 use App\Repository\PermissionGroupRepository;
 use App\Repository\StaffRepository;
-use App\Repository\UserRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -63,21 +62,15 @@ class StaffController extends BaseProfileController
      * @param Request $request
      * @param ObjectManager $manager
      * @param PermissionGroupRepository $permissionGroupRepository
-     * @param StaffRepository $staffRepository
      * @return JsonResponse
      */
     public function createAjaxAction(
         Request $request,
         ObjectManager $manager,
-        PermissionGroupRepository $permissionGroupRepository,
-        StaffRepository $staffRepository
+        PermissionGroupRepository $permissionGroupRepository
     )
     {
         $message = null;
-        $blockList = null;
-        $user = new User();
-        $staff = new Staff();
-
         try {
             $fullname = $request->get('fullname');
             $username = $request->get('username');
@@ -86,6 +79,9 @@ class StaffController extends BaseProfileController
             $group = intval($request->get('group'));
             $position = $request->get('position');
             $permissionGroup = $permissionGroupRepository->find($group);
+
+            $user = new User();
+            $staff = new Staff();
 
             $user->setFullName($fullname)
                 ->setUsername($username)
@@ -105,24 +101,12 @@ class StaffController extends BaseProfileController
 
             $manager->persist($staff);
             $manager->flush();
-
-            $blockList = $this->render('profile/staff/ajax/list_block.html.twig', [
-                'staff' => $staffRepository->find($staff->getId())
-            ])->getContent();
-
-            $staffData = [
-                'id' => $staff->getId(),
-                'fullname' => $staff->getUser()->getFullName()
-            ];
-
         } catch (\Exception $e) {
             $message = $e->getMessage();
         }
 
         return new JsonResponse([
-            "message" => $message,
-            'staffData' => $staffData,
-            'blockList' => $blockList
+            "message" => $message
         ]);
     }
 
@@ -254,97 +238,6 @@ class StaffController extends BaseProfileController
 
         return $this->render('profile/staff/detail.html.twig', [
             'staff' => $staff
-        ]);
-    }
-
-    /**
-     * @Route("get_data", name="profile_staff_get_data")
-     * @Method({"GET"})
-     * @param Request $request
-     * @param StaffRepository $staffRepository
-     * @return RedirectResponse|Response
-     */
-    public function getDataAction(Request $request, StaffRepository $staffRepository)
-    {
-        $id = $request->get('stafId');
-
-        if ($this->isGranted('ROLE_ADMIN')) {
-            $staff = $staffRepository->find($id);
-        } elseif ($this->isGranted('ROLE_OWNER')) {
-            $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), $id);
-        } else {
-            $staff = $staffRepository->findByOneOwnerStaff($this->getOwner(), $id);
-        }
-
-        return new JsonResponse([
-            "message" => '',
-            'data' => $staff->toArray()
-        ]);
-    }
-
-    /**
-     * @Route("edit-ajax", name="profile_staff_edit_ajax")
-     * @Method("POST")
-     * @param Request $request
-     * @param ObjectManager $manager
-     * @param PermissionGroupRepository $permissionGroupRepository
-     * @param StaffRepository $staffRepository
-     * @param UserRepository $userRepository
-     * @return JsonResponse
-     */
-    public function editAjaxAction(
-        Request $request,
-        ObjectManager $manager,
-        PermissionGroupRepository $permissionGroupRepository,
-        StaffRepository $staffRepository,
-        UserRepository $userRepository
-    )
-    {
-        $message = null;
-        $blockList = null;
-        $updatedAt = new \DateTime();
-
-        try {
-            $fullname = $request->get('fullname');
-            $username = $request->get('username');
-            $password = $request->get('password');
-            $enabled = $request->get('enabled');
-            $group = intval($request->get('group'));
-            $position = $request->get('position');
-            $stafId = intval($request->get('stafId'));
-
-            $user = $userRepository->find($stafId);
-            $staff = $staffRepository->find($user->getStaff()->getId());
-            $permissionGroup = $permissionGroupRepository->find($group);
-
-            $user->setFullName($fullname)
-                ->setUsername($username)
-                ->setEnabled($enabled)
-            ;
-
-            if (!empty($password)) {
-                $user->setPlainPassword($password);
-            }
-
-            $manager->persist($user);
-
-            $staff->setUser($user)
-                ->setOwner($this->getOwner())
-                ->setPermissionGroup($permissionGroup)
-                ->setPosition($position)
-                ->setUpdatedAt($updatedAt)
-            ;
-
-            $manager->persist($staff);
-            $manager->flush();
-
-        } catch (\Exception $e) {
-            $message = $e->getMessage();
-        }
-
-        return new JsonResponse([
-            "message" => $message,
-            'updatedAt' => $updatedAt->format("d-m-Y H:i:s")
         ]);
     }
 }
