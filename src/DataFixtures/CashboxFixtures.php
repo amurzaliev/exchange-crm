@@ -12,51 +12,60 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class CashboxFixtures extends Fixture implements DependentFixtureInterface
 {
-    const CASHBOX_ONE = 'cashbox_one';
-    const CASHBOX_TWO = 'cashbox_two';
+    private static $cashboxes = [];
 
     public function load(ObjectManager $manager)
     {
-        /**
-         * @var User $owner
-         */
-        $owner = $this->getReference(UserFixtures::OWNER);
+        /** @var ExchangeOffice[] $exchangeOffices */
+        $exchangeOffices = [
+            $this->getReference(ExchangeOfficeFixtures::EXCHANGE_OFFICE_ONE),
+            $this->getReference(ExchangeOfficeFixtures::EXCHANGE_OFFICE_TWO),
+            $this->getReference(ExchangeOfficeFixtures::EXCHANGE_OFFICE_THREE),
+            $this->getReference(ExchangeOfficeFixtures::EXCHANGE_OFFICE_FOUR)
+        ];
 
-        /**
-         * @var ExchangeOffice $exchangeOffice
-         */
-        $exchangeOffice = $this->getReference(ExchangeOfficeFixtures::EXCHANGEOFFICE);
+        /** @var Currency $currencyUSD */
+        $currencyUSD = $this->getReference('usd');
+        /** @var Currency $currencyKGS */
+        $currencyKGS = $this->getReference('kgs');
+        /** @var Currency $currencyKZT */
+        $currencyKZT = $this->getReference('kzt');
+        /** @var Currency $currencyRUB */
+        $currencyRUB = $this->getReference('rub');
 
-        /**
-         * @var Currency $currency
-         */
-        $currency = $this->getReference('currency1');
-
-        /**
-         * @var Currency $currencySom
-         */
-        $currencySom = $this->getReference('currency6');
-
-        $cashbox = new Cashbox();
-        $cashbox->setUser($owner)
-            ->setExchangeOffice($exchangeOffice)
-            ->setCurrency($currency)
-            ->setCreatedAt(new \DateTime());
-        $manager->persist($cashbox);
-
-        $cashboxSom = new Cashbox();
-        $cashboxSom->setUser($owner)
-            ->setExchangeOffice($exchangeOffice)
-            ->setCurrency($currencySom)
-            ->setCreatedAt(new \DateTime());
-        $manager->persist($cashboxSom);
+        foreach ($exchangeOffices as $exchangeOffice) {
+            $cashboxKGS = $this->createCashboxByCurrency($currencyKGS, $exchangeOffice);
+            $manager->persist($cashboxKGS);
+            $cashboxUSD = $this->createCashboxByCurrency($currencyUSD, $exchangeOffice);
+            $manager->persist($cashboxUSD);
+            $cashboxKZT = $this->createCashboxByCurrency($currencyKZT, $exchangeOffice);
+            $manager->persist($cashboxKZT);
+            $cashboxRUB = $this->createCashboxByCurrency($currencyRUB, $exchangeOffice);
+            $manager->persist($cashboxRUB);
+        }
 
         $manager->flush();
-
-        $this->setReference(self::CASHBOX_ONE, $cashbox);
-        $this->setReference(self::CASHBOX_TWO, $cashboxSom);
     }
 
+    private function createCashboxByCurrency(Currency $currency, ExchangeOffice $exchangeOffice)
+    {
+        $cashbox = new Cashbox();
+        $cashbox
+            ->setUser($exchangeOffice->getUser())
+            ->setExchangeOffice($exchangeOffice)
+            ->setCurrency($currency);
+
+        $refId = "cashbox{$exchangeOffice->getId()}{$currency->getId()}";
+        $this->addReference($refId, $cashbox);
+        self::$cashboxes[] = $refId;
+
+        return $cashbox;
+    }
+
+    public static function getCashboxes(): array
+    {
+        return self::$cashboxes;
+    }
 
     /**
      * This method must return an array of fixtures classes
@@ -67,7 +76,6 @@ class CashboxFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return array(
-            UserFixtures::class,
             ExchangeOfficeFixtures::class,
             CurrencyFixtures::class
         );

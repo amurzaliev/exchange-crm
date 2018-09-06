@@ -73,6 +73,8 @@ class Staff
     public function __construct()
     {
         $this->exchangeOffices = new ArrayCollection();
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
     }
 
     public function getId(): ?int

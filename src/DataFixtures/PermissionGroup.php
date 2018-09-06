@@ -12,7 +12,7 @@ class PermissionGroup extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager)
     {
         /** @var User $user */
-        $user = $this->getReference(UserFixtures::OWNER);
+        $user = $this->getReference(UserFixtures::OWNER_ONE);
 
         $permissionGroup = new \App\Entity\PermissionGroup();
         $permissionGroup->setTitle('оператор')

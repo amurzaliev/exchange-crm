@@ -12,8 +12,8 @@ class UserFixtures extends Fixture
 {
 
     public const ADMIN = 'admin';
-    public const USER = 'user';
-    public const OWNER = 'owner';
+    public const OWNER_ONE = 'owner-one';
+    public const OWNER_TWO = 'owner-two';
 
     private $userPasswordEncoder;
 
@@ -36,27 +36,26 @@ class UserFixtures extends Fixture
         $manager->flush();
         $this->addReference(self::ADMIN, $admin);
 
-        $user = new User();
-        $user
-            ->setEmail('user@mail.ru')
-            ->setPlainPassword('12345')
-            ->setRoles(['ROLE_USER'])
-            ->setFullName('Пользователь А.А.')
-            ->setEnabled('true');
-        $manager->persist($user);
-        $manager->flush();
-
-        $this->addReference(self::USER, $user);
-
-        $owner = new User();
-        $owner
+        $owner1 = new User();
+        $owner1
             ->setEmail('owner@mail.ru')
             ->setPlainPassword('12345')
+            ->setRoles(['ROLE_OWNER'])
             ->setEnabled('true')
-            ->setFullName('Владелей А.А.');
-        $manager->persist($owner);
-        $manager->flush();
+            ->setFullName('Владелец 1');
+        $manager->persist($owner1);
+        $this->addReference(self::OWNER_ONE, $owner1);
 
-        $this->addReference(self::OWNER, $owner);
+        $owner2 = new User();
+        $owner2
+            ->setEmail('owner2@mail.ru')
+            ->setPlainPassword('12345')
+            ->setRoles(['ROLE_OWNER'])
+            ->setFullName('Владелец 2')
+            ->setEnabled('true');
+        $manager->persist($owner2);
+        $this->addReference(self::OWNER_TWO, $owner2);
+
+        $manager->flush();
     }
 }

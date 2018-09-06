@@ -58,7 +58,7 @@ class ExchangeOffice
     /**
      * @var Cashbox[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Cashbox", mappedBy="exchangeOffice")
+     * @ORM\OneToMany(targetEntity="App\Entity\Cashbox", mappedBy="exchangeOffice", cascade={"persist"})
      */
     private $cashboxes;
 

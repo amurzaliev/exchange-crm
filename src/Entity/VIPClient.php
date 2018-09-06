@@ -70,6 +70,8 @@ class VIPClient
     public function __construct()
     {
         $this->transactions = new ArrayCollection();
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
     }
 
     public function getId(): ?int

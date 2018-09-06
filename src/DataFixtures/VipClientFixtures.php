@@ -10,26 +10,34 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class VipClientFixtures extends Fixture implements DependentFixtureInterface
 {
-    const VIP_CLIENT_ONE = 'vipClient_one';
+    const VIP_CLIENT_ONE = 'vip-client-one';
+    const VIP_CLIENT_TWO = 'vip-client-one';
 
     public function load(ObjectManager $manager)
     {
-        /**
-         * @var User $owner
-         */
-        $owner = $this->getReference(UserFixtures::OWNER);
+        /** @var User $owner1 */
+        $owner1 = $this->getReference(UserFixtures::OWNER_ONE);
 
-        $vipClient= new VIPClient();
-        $vipClient->setUser($owner)
+        $vipClient1 = new VIPClient();
+        $vipClient1->setUser($owner1)
             ->setFullName('Гарри Поттер')
             ->setEmail('hpotter@mail.ru')
-            ->setPhone('996555555555')
-            ->setCreatedAt(new \DateTime());
+            ->setPhone('996555555555');
+        $manager->persist($vipClient1);
+        $this->setReference(self::VIP_CLIENT_ONE, $vipClient1);
 
-        $manager->persist($vipClient);
+        /** @var User $owner2 */
+        $owner2 = $this->getReference(UserFixtures::OWNER_TWO);
+
+        $vipClient2 = new VIPClient();
+        $vipClient2->setUser($owner2)
+            ->setFullName('Рон Визли')
+            ->setEmail('rwesley@mail.ru')
+            ->setPhone('99677512193');
+        $manager->persist($vipClient2);
+        $this->setReference(self::VIP_CLIENT_TWO, $vipClient2);
+
         $manager->flush();
-
-        $this->setReference(self::VIP_CLIENT_ONE, $vipClient);
     }
 
     /**
