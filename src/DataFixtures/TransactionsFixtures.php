@@ -11,7 +11,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class TransactionsFixtures extends Fixture implements DependentFixtureInterface
 {
-
     /**
      * Load data fixtures with the passed EntityManager
      *
@@ -19,24 +18,28 @@ class TransactionsFixtures extends Fixture implements DependentFixtureInterface
      */
     public function load(ObjectManager $manager)
     {
-        /** @var User $user */
-        $user = $this->getReference(UserFixtures::USER);
-        /** @var Cashbox $cashbox */
-        $cashbox = $this->getReference(CashboxFixtures::CASHBOX_TWO);
-        $transactions = new Transactions();
+        $cashboxes = CashboxFixtures::getCashboxes();
 
-        $transactions
-            ->setCreatedAt(new \DateTime())
-            ->setUpdateAt(new \DateTime())
-            ->setUser($user)
-            ->setсashboxTo($cashbox)
-            ->setAmount(6000000)
-            ->setNote("Стартовый каписал для Дефолтной кассы")
-            ->setBasicType(1)
-        ;
+        foreach ($cashboxes as $cashboxRefId) {
 
-        $manager->persist($transactions);
-        $manager->flush();
+            /** @var Cashbox $cashbox */
+            $cashbox = $this->getReference($cashboxRefId);
+
+            if ($cashbox->getCurrency()->getIso() === 'KGS') {
+                $transactions = new Transactions();
+                $transactions
+                    ->setCreatedAt(new \DateTime())
+                    ->setUpdateAt(new \DateTime())
+                    ->setUser($cashbox->getUser())
+                    ->setсashboxTo($cashbox)
+                    ->setAmount(6000000)
+                    ->setNote("Стартовый каписал для Дефолтной кассы")
+                    ->setBasicType(1);
+                $manager->persist($transactions);
+            }
+
+            $manager->flush();
+        }
     }
 
     /**
@@ -48,7 +51,6 @@ class TransactionsFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return array(
-            UserFixtures::class,
             CashboxFixtures::class
         );
     }

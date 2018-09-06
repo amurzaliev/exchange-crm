@@ -30,7 +30,7 @@ class Cashbox
     /**
      * @var ExchangeOffice
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ExchangeOffice", inversedBy="cashboxes")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ExchangeOffice", inversedBy="cashboxes", cascade={"persist"})
      */
     private $exchangeOffice;
 

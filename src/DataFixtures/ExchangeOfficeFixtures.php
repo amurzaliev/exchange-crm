@@ -11,24 +11,56 @@ use Doctrine\Common\Persistence\ObjectManager;
 class ExchangeOfficeFixtures extends Fixture implements DependentFixtureInterface
 {
 
-    public const EXCHANGEOFFICE = 'Обменный пункт №1';
+    public const EXCHANGE_OFFICE_ONE = 'exchange-office-one';
+    public const EXCHANGE_OFFICE_TWO = 'exchange-office-two';
+    public const EXCHANGE_OFFICE_THREE = 'exchange-office-three';
+    public const EXCHANGE_OFFICE_FOUR = 'exchange-office-four';
 
     public function load(ObjectManager $manager)
     {
-        /** @var User $owner */
-        $owner = $this->getReference(UserFixtures::OWNER);
+        /** @var User $owner1 */
+        $owner1 = $this->getReference(UserFixtures::OWNER_ONE);
+        /** @var User $owner2 */
+        $owner2 = $this->getReference(UserFixtures::OWNER_TWO);
 
-        $exchangeOffice = new ExchangeOffice();
-        $exchangeOffice->setName(self::EXCHANGEOFFICE)
+        $exchangeOffice4 = new ExchangeOffice();
+        $exchangeOffice4->setName('Обменный пункт Абдрахманова')
             ->setAddress('Абдрахманова, 125')
             ->setContact('0312545454, 0555545454')
             ->setActive('true')
-            ->setUser($owner);
-        $manager->persist($exchangeOffice);
+            ->setUser($owner1);
+        $manager->persist($exchangeOffice4);
+        $this->addReference(self::EXCHANGE_OFFICE_ONE, $exchangeOffice4);
+
+        $exchangeOffice4 = new ExchangeOffice();
+        $exchangeOffice4->setName('Обменный пункт Московская')
+            ->setAddress('Московская, 125')
+            ->setContact('0555665566')
+            ->setActive('true')
+            ->setUser($owner1);
+        $manager->persist($exchangeOffice4);
+        $this->addReference(self::EXCHANGE_OFFICE_TWO, $exchangeOffice4);
+
+        $exchangeOffice4 = new ExchangeOffice();
+        $exchangeOffice4->setName('Обменный пункт Киевская')
+            ->setAddress('Киевская, 16')
+            ->setContact('0555778877')
+            ->setActive('true')
+            ->setUser($owner2);
+        $manager->persist($exchangeOffice4);
+        $this->addReference(self::EXCHANGE_OFFICE_THREE, $exchangeOffice4);
+
+        $exchangeOffice4 = new ExchangeOffice();
+        $exchangeOffice4->setName('Обменный пункт Юнусалиева')
+            ->setAddress('Юнусалиева, 16')
+            ->setContact('0773658492')
+            ->setActive('true')
+            ->setUser($owner2);
+        $manager->persist($exchangeOffice4);
+        $this->addReference(self::EXCHANGE_OFFICE_FOUR, $exchangeOffice4);
 
         $manager->flush();
 
-        $this->addReference(self::EXCHANGEOFFICE, $exchangeOffice);
     }
 
     /**

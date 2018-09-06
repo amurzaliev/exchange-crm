@@ -46,8 +46,12 @@ class ExchangeOfficeVoter extends Voter
             return true;
         }
 
-        if ($exchangeOffice->getUser() === $user) {
-            return true;
+        if ($this->decisionManager->decide($token, ['ROLE_OWNER'])) {
+            if ($exchangeOffice->getUser() === $user) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         if ($this->decisionManager->decide($token, ['ROLE_USER'])) {

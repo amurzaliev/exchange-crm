@@ -9,7 +9,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * Class VipClientController
@@ -17,7 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  *
  * @Route("profile/vip_client")
  */
-class VipClientController extends Controller
+class VipClientController extends BaseProfileController
 {
     /**
      * @Route("/", name="profile_vip_client_index")
@@ -79,7 +78,7 @@ class VipClientController extends Controller
         ]);
 
         if (!$vipClient) {
-            return $this->render('profile/сomponents/error_messages/404.html.twig');
+            return $this->show404();
         }
 
         $form = $this->createForm(VIPClientType::class, $vipClient);
@@ -112,6 +111,11 @@ class VipClientController extends Controller
             'id' => $id,
             'user' => $this->getUser()
         ]);
+
+        if (!$vipClient) {
+            return $this->show404();
+        }
+
         return $this->render('profile/vip_client/detail.hml.twig',[
                 'vipClient'=> $vipClient
             ]

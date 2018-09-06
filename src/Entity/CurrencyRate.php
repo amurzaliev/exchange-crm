@@ -42,7 +42,7 @@ class CurrencyRate
     /**
      * @var Cashbox
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Cashbox", inversedBy="currencyRates")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Cashbox", inversedBy="currencyRates", cascade={"persist"})
      */
     private $cashboxCurrency;
 
