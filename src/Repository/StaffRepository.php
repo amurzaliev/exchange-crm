@@ -46,9 +46,9 @@ class StaffRepository extends ServiceEntityRepository
         try {
             return $this->createQueryBuilder('s')
                 ->andWhere('s.owner = :owner')
-                ->andWhere('s.user = :user')
+                ->andWhere('s.id = :userId')
                 ->setParameter('owner', $owner)
-                ->setParameter('user', $userId)
+                ->setParameter('userId', $userId)
                 ->getQuery()
                 ->getOneOrNullResult();
         } catch (NonUniqueResultException $e) {

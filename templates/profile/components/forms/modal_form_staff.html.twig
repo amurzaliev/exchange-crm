@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="add-staff-label">
-                      Добавление нового сотрудника
+                    Добавление нового сотрудника
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -51,6 +51,7 @@
                             <option value="{{ permissionGroup.id }}">{{ permissionGroup.title }}</option>
                         {% endfor %}
                     </select>
+                    <input type="hidden" class="form-control" id="staf_id" name="staf_id">
                 </form>
             </div>
             <div class="modal-footer">

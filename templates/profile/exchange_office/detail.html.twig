@@ -106,6 +106,10 @@
                             <div class="tab-pane fade active in" id="exchangeOffice" role="tabpanel"
                                  aria-labelledby="exchangeOffice-tab">
                                 {% include 'profile/exchange_office/tabs/exchange_office_tab.html.twig' %}
+                                <!-- Modal -->
+                                <div class="form-staff">
+                                    {{ include('profile/components/forms/modal_form_staff.html.twig', {'permissionGroups' : permissionGroups}) }}
+                                </div>
                             </div>
                             <div class="tab-pane fade" id="cashbox" role="tabpanel" aria-labelledby="cashbox-tab">
                                 {% include 'profile/exchange_office/tabs/balance_tab_html.twig' %}
@@ -133,7 +137,83 @@
 
     <script type="text/javascript">
         $(function () {
-                $.getScript("/js/exchange_offices.js", function () {
+            /** --------------------------Exchange Office----------------------------- **/
+
+            $('.multipleSelectStaffs').fastselect();
+            $('.multipleSelectCurrencies').fastselect();
+            let exchangeOfficeSubmitMessage = $('.exchangeOfficeSubmitMessage');
+
+            $('.exchangeOfficeSubmitForm').on('click', function (e) {
+                e.preventDefault();
+                let data = {};
+
+                $.each($('#exchangeOfficeForm').find(':input, select'), function () {
+                    if ($(this).is(':checkbox')) {
+                        data[this.name] = $(this).is(':checked') ? 1 : 0;
+                    } else {
+                        data[this.name] = $(this).val();
+                    }
+                });
+
+                console.log(data);
+
+                $.post('{{ path('profile_exchange_office_edit_ajax') }}', data, function (data) {
+                })
+                    .done(function (data) {
+                        let color = 'danger';
+                        if (data.status) {
+                            color = 'success';
+                        }
+                        exchangeOfficeSubmitMessage.empty();
+                        exchangeOfficeSubmitMessage
+                            .append('<p class="text-' + color + '">' + data.message + '</p>');
+                        console.log(data);
+                    })
+
+                    .fail(function () {
+                        exchangeOfficeSubmitMessage.empty();
+                        exchangeOfficeSubmitMessage
+                            .append('<p class="text-danger">Ошибка сервера</p>');
+                        console.log(data);
+                    });
+            });
+
+            $('.add_staff').on('click', function (e) {
+                e.preventDefault();
+            });
+
+            $('.submit-staff-btn').on('click', function (e) {
+                e.preventDefault();
+                let data = {};
+
+                $.each($('.modal-form-staff').find(':input, select'), function () {
+                    if ($(this).is(':checkbox')) {
+                        data[this.name] = !!$(this).is(':checked');
+                    } else {
+                        data[this.name] = $(this).val();
+                    }
+                });
+
+                console.log(data);
+
+                $.post('{{ path('profile_staff_create_ajax') }}', data, function (response) {
+                    console.log(response);
+                    $('.close').trigger('click');
+                    $('.modal-form-staff').each(function () {
+                        this.reset();
+                    });
+                    $('#selectStaffs')
+                        .append("<option value='"
+                            + response.staffData.id + "'>"
+                            + response.staffData.fullname + "</option>");
+
+                    $('.fstResults').append("<span class='fstResultItem'>" + response.staffData.fullname + "</span>");
+
+                });
+
+            });
+
+            $.getScript("/js/exchange_offices.js", function () {
                 balance("{{ exchangeOffice.id }}", "{{ path('profile_monetary_operations_balance_change') }}");
                 moneyOperation("{{ path('profile_monetary_operations_create') }}","{{ exchangeOffice.id }}")
             });
