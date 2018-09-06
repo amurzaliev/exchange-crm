@@ -194,11 +194,10 @@ class Staff
             "fullname" => $this->user->getFullName(),
             "username" => $this->user->getUsername(),
             "enabled" => $this->user->isEnabled(),
-            "group" => $this->getPermissionGroup()->getId(),
+            "group" => $this->getPermissionGroup() ? $this->getPermissionGroup()->getId() : null,
             "position" => $this->getPosition(),
         ];
 
         return $data;
     }
-
 }

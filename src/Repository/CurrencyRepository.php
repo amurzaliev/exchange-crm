@@ -63,7 +63,7 @@ class CurrencyRepository extends ServiceEntityRepository
         }
     }
 
-    public function findAllExcept(array $ids)
+    public function findAllExcept($ids)
     {
         if (empty($ids)) {
             return $this->findAll();

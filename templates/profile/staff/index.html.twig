@@ -21,7 +21,7 @@
                             <h3 class="box-title">
                                 <a href="#" class="btn btn-block btn-success btn-lg created-staff"
                                    data-toggle="modal" data-target="#add-staff">
-                                    Добавить
+                                    создать
                                 </a>
                             </h3>
                         </div>
@@ -85,41 +85,41 @@
 
             $(document).on('click', '.submit-create-staff-btn', function () {
 
-              var fullname = $('#fullname').val();
-              var username = $('#username').val();
-              var password = $('#password').val();
-              var enabled = $('#enabled').prop('checked');
-              var group = $('#group').val();
-              var position = $('#position').val();
+                var fullname = $('#fullname').val();
+                var username = $('#username').val();
+                var password = $('#password').val();
+                var enabled = $('#enabled').prop('checked');
+                var group = $('#group').val();
+                var position = $('#position').val();
 
 
-              var data = {
-                  fullname:fullname,
-                  username:username,
-                  password:password,
-                  enabled:enabled,
-                  group:group,
-                  position:position
-              };
+                var data = {
+                    fullname:fullname,
+                    username:username,
+                    password:password,
+                    enabled:enabled,
+                    group:group,
+                    position:position
+                };
 
-               $( '.modal-form-staff' ).each(function(){
-                   if (this.name === "enabled") {
-                       data[this.name] = $(this).prop('checked');
-                   } else {
-                       data[this.name] = $(this).val();
-                   }
-               });
+                $( '.modal-form-staff' ).each(function(){
+                    if (this.name === "enabled") {
+                        data[this.name] = $(this).prop('checked');
+                    } else {
+                        data[this.name] = $(this).val();
+                    }
+                });
 
-              $.post('{{ path('profile_staff_create_ajax') }}', data, function (response) {
-                  console.log(response);
-                  $('.table tbody').prepend(response.blockList);
-                  $('.close').trigger('click');
-                  $( '.modal-form-staff' ).each(function(){
-                      this.reset();
-                  });
+                $.post('{{ path('profile_staff_create_ajax') }}', data, function (response) {
+                    console.log(response);
+                    $('.table tbody').prepend(response.blockList);
+                    $('.close').trigger('click');
+                    $( '.modal-form-staff' ).each(function(){
+                        this.reset();
+                    });
 
-              });
-           });
+                });
+            });
 
             $(document).on('click', '.get-edit-data-staff', function (e) {
                 e.preventDefault();
@@ -134,11 +134,13 @@
 
                 $.post('{{ path('profile_staff_get_data') }}',  {stafId:stafId}, function (response) {
                     console.log(response);
+                    console.log(stafId);
                     $('#fullname').val(response.data.fullname);
                     $('#username').val(response.data.username);
                     $('#group').val(response.data.group);
                     $('#position').val(response.data.position);
                     $('#enabled').prop(response.data.enabled);
+                    $('#staf_id').val(stafId);
 
                 });
                 console.log(stafId);
@@ -165,6 +167,8 @@
                     position:position,
                     stafId:stafId
                 };
+
+                console.log(data);
 
                 $.post('{{ path('profile_staff_edit_ajax') }}', data, function (response) {
                     console.log(response);

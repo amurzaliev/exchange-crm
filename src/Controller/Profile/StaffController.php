@@ -58,7 +58,7 @@ class StaffController extends BaseProfileController
     }
 
     /**
-     * @Route("create-ajax", name="profile_staff_create_ajax")
+     * @Route("/create-ajax", name="profile_staff_create_ajax")
      * @Method("POST")
      * @param Request $request
      * @param ObjectManager $manager
@@ -258,15 +258,14 @@ class StaffController extends BaseProfileController
     }
 
     /**
-     * @Route("get_data", name="profile_staff_get_data")
-     * @Method({"GET"})
+     * @Route("/get_data", name="profile_staff_get_data")
      * @param Request $request
      * @param StaffRepository $staffRepository
      * @return RedirectResponse|Response
      */
     public function getDataAction(Request $request, StaffRepository $staffRepository)
     {
-        $id = $request->get('stafId');
+        $id = intval($request->get('stafId'));
 
         if ($this->isGranted('ROLE_ADMIN')) {
             $staff = $staffRepository->find($id);
@@ -283,7 +282,7 @@ class StaffController extends BaseProfileController
     }
 
     /**
-     * @Route("edit-ajax", name="profile_staff_edit_ajax")
+     * @Route("/edit-ajax", name="profile_staff_edit_ajax")
      * @Method("POST")
      * @param Request $request
      * @param ObjectManager $manager
@@ -313,8 +312,8 @@ class StaffController extends BaseProfileController
             $position = $request->get('position');
             $stafId = intval($request->get('stafId'));
 
-            $user = $userRepository->find($stafId);
-            $staff = $staffRepository->find($user->getStaff()->getId());
+            $staff = $staffRepository->find($stafId);
+            $user = $staff->getUser();
             $permissionGroup = $permissionGroupRepository->find($group);
 
             $user->setFullName($fullname)

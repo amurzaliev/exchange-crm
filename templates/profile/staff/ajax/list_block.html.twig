@@ -1,4 +1,4 @@
-<tr class="row-staff-{{ staff.user.id }}">
+<tr class="row-staff-{{ staff.id }}">
     <td>{{ staff.user.id }}</td>
     <td class="staff-fullName">{{ staff.user.fullName }}</td>
     <td class="staff-username">{{ staff.user.username }}</td>
@@ -13,7 +13,7 @@
             <a href="#"
                class="btn btn-primary get-edit-data-staff"
                data-toggle="modal" data-target="#add-staff"
-               id="{{ staff.user.id }}"
+               id="{{ staff.id }}"
                title="Редактировать запись {{ staff.user.fullName }}"> Редактировать <i
                         class="fa fa-fw fa-pencil"></i></a>
         {% endif %}

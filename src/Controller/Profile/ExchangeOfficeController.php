@@ -11,6 +11,7 @@ use App\Repository\CurrencyRepository;
 use App\Repository\ExchangeOfficeRepository;
 use App\Repository\PermissionGroupRepository;
 use App\Repository\StaffRepository;
+use App\Repository\VIPClientRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,25 +47,19 @@ class ExchangeOfficeController extends BaseProfileController
      * @Method({"GET", "POST"})
      * @param StaffRepository $staffRepository
      * @param CurrencyRepository $currencyRepository
-     * @param PermissionGroupRepository $permissionGroupRepository
      * @return Response
      */
-    public function createAction(
-        StaffRepository $staffRepository,
-        CurrencyRepository $currencyRepository,
-        PermissionGroupRepository $permissionGroupRepository
-    )
+    public function createAction(StaffRepository $staffRepository, CurrencyRepository $currencyRepository)
     {
 
         $staffs = $staffRepository->findByAllOwnerStaff($this->getUser());
-        $permissionGroups = $permissionGroupRepository->findAllByOwner($this->getUser());
+
         $currencies = $currencyRepository->findAll();
 
 
         return $this->render('profile/exchange_office/create.html.twig', [
             'staffs' => $staffs,
-            'currencies' => $currencies,
-            'permissionGroups' => $permissionGroups
+            'currencies' => $currencies
         ]);
     }
 
@@ -118,6 +113,7 @@ class ExchangeOfficeController extends BaseProfileController
      * @param int $id
      * @param ExchangeOfficeRepository $exchangeOfficeRepository
      * @param CashboxRepository $cashboxRepository
+     * @param VIPClientRepository $clientRepository
      * @param StaffRepository $staffRepository
      * @param CurrencyRepository $currencyRepository
      * @param PermissionGroupRepository $permissionGroupRepository
@@ -127,6 +123,7 @@ class ExchangeOfficeController extends BaseProfileController
         int $id,
         ExchangeOfficeRepository $exchangeOfficeRepository,
         CashboxRepository $cashboxRepository,
+        VIPClientRepository $clientRepository,
         StaffRepository $staffRepository,
         CurrencyRepository $currencyRepository,
         PermissionGroupRepository $permissionGroupRepository
@@ -142,7 +139,26 @@ class ExchangeOfficeController extends BaseProfileController
             return $this->show404();
         }
 
+
+        $exchangeOffice = $exchangeOfficeRepository->findByOne($id, $this->getOwner());
+        $vipClients = $clientRepository->findByOwner($this->getOwner());
+
+        $defaultCurrency = $cashboxRepository->findByOneDefaultCurrency($exchangeOffice);
+        $defaultCurrencyAmount = $cashboxRepository->getAllAmount($defaultCurrency->getId(), $exchangeOffice)[0];
+
+
         $cashboxes = $cashboxRepository->findByAll($exchangeOffice);
+
+        $exchangeOffice = $exchangeOfficeRepository->find($id);
+
+        if (!$exchangeOffice) {
+            return $this->show404();
+        }
+
+        if (!$this->isGranted('VIEW', $exchangeOffice)) {
+            return $this->show404();
+        }
+
         $staffs = $staffRepository->findByAllOwnerStaff($this->getUser());
         $currencyCashboxes = $cashboxRepository->findByExchangeOffice($exchangeOffice);
         $attachedCurrencies = [];
@@ -155,6 +171,9 @@ class ExchangeOfficeController extends BaseProfileController
         return $this->render('profile/exchange_office/detail.html.twig', [
                 'exchangeOffice' => $exchangeOffice,
                 'cashboxes' => $cashboxes,
+                'vipClients' => $vipClients,
+                'defaultCurrencyAmount' => $defaultCurrencyAmount,
+                'defaultCurrency' => $defaultCurrency,
                 'currencyCashboxes' => $currencyCashboxes,
                 'staffs' => $staffs,
                 'currencies' => $currencies,
@@ -162,86 +181,6 @@ class ExchangeOfficeController extends BaseProfileController
             ]
         );
 
-    }
-
-    /**
-     * @Route("/create_exchange_office_ajax", name="profile_exchange_office_create_ajax")
-     * @Method("POST")
-     * @param Request $request
-     * @param ObjectManager $manager
-     * @param CurrencyRepository $currencyRepository
-     * @param StaffRepository $staffRepository
-     * @return JsonResponse
-     */
-    public function createActionAjax(Request $request, ObjectManager $manager,
-                                     CurrencyRepository $currencyRepository,
-                                     StaffRepository $staffRepository
-    )
-    {
-        $data = $request->request->all();
-        $message = '';
-        $exchangeOfficeId = null;
-
-        try {
-            if (empty($data['name'])) {
-
-                throw new \Exception('Поле название обменного пункта не может быть пустым');
-            }
-
-
-            $exchangeOffice = new ExchangeOffice();
-            $exchangeOffice->setUser($this->getUser());
-            $exchangeOffice->setName($data['name']);
-            $exchangeOffice->setAddress($data['address']);
-            $exchangeOffice->setContact($data['contact']);
-            $exchangeOffice->setActive($data['active']);
-            $manager->persist($exchangeOffice);
-
-            $cashbox = new Cashbox();
-            $cashbox->setUser($this->getUser());
-            $currency = $currencyRepository->findByOneIso($this->getParameter('default.currency'));
-            $cashbox->setCurrency($currency);
-            $cashbox->setExchangeOffice($exchangeOffice);
-            $manager->persist($cashbox);
-
-            $cashboxIds = [];
-
-            switch (array_key_exists('staffs', $data)) {
-                case  true :
-                    $staffs = $data['staffs'];
-                    foreach ($staffs as $staffId) {
-                        $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), (int)$staffId);
-                        $exchange = $exchangeOffice->addStaff($staff);
-                        $manager->persist($exchange);
-                    }
-            }
-            switch (array_key_exists('cashboxes', $data)) {
-                case  true :
-                    $cashboxes = $data['cashboxes'];
-                    foreach ($cashboxes as $cashboxId) {
-                        $cashboxChange = new Cashbox();
-                        $currency = $currencyRepository->find($cashboxId);
-                        $cashboxChange->setUser($this->getUser());
-                        $cashboxChange->setCurrency($currency);
-                        $cashboxChange->setExchangeOffice($exchangeOffice);
-                        $manager->persist($cashboxChange);
-                        $cashboxIds[] = $cashboxChange->getId();
-                    }
-
-            }
-            $manager->flush();
-
-//            $exchangeOfficeId = $exchangeOffice->getId();
-
-        } catch (\Exception $e) {
-            $message = $e->getMessage();
-        }
-
-
-        return new JsonResponse([
-//            'url' =>  $exchangeOfficeId,
-            'message' => $message
-        ]);
     }
 
     /**
