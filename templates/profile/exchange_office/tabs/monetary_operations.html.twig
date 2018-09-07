@@ -1,261 +1,170 @@
-{% block stylesheet %}
+<!-- Main content -->
+<section class="content money_operation">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="example2" class="table table-bordered">
+                        {#<thead>#}
+                        <tr>
+                            <th colspan="3">Валюта</th>
+                            <th colspan="2" class="purchase">Покупка</th>
+                            <th colspan="2" class="sale">Продажа</th>
+                            <th colspan="2" class="currency">Нац. валюта <img style="width: 50px; height: 25px"
+                                                                              src="{{ asset('uploads/images/currency/') }}{{ defaultCurrency.currency.icon }}">
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Остаток</th>
+                            <th>Название</th>
+                            <th>Флаг</th>
+                            <th class="purchase">Курс</th>
+                            <th class="purchase">Сумма</th>
+                            <th class="sale">Курс</th>
+                            <th class="sale">Сумма</th>
+                            <th class="currency">Скидка</th>
+                            <th class="currency">Сумма</th>
+                        </tr>
+                        {#</thead>#}
+                        <tbody>
+                        {% for cashbox in cashboxes %}
 
-    <style>
-        .money_operation .box-body tr th, td {
-            text-align: center;
-        }
+                            {% if not cashbox.default_currency %}
+                                <tr class="cashbox-row cashbox-number-{{ cashbox.id }}">
+                                    <td class="cashbox-allAmount">
+                                        {{ cashbox.summa }}
+                                    </td>
+                                    <td>
+                                        {{ cashbox.name }}
+                                    </td>
+                                    <td>
+                                        <img style="width: 50px; height: 25px"
+                                             src="{{ asset('uploads/images/currency/') }}{{ cashbox.icon }}">
+                                    </td>
+                                    <td class="purchase">
+                                        <input type="text"
+                                               class="cashbox-currency cashbox-purchase"
+                                               value="{{ cashbox.purchase }}"
+                                               data-cashbox-id="{{ cashbox.id }}"
+                                               data-cashbox-action="purchase"
+                                        >
+                                    </td>
+                                    <td class="purchase">
+                                        <input type="number"
+                                               class="cashbox-form"
+                                               data-cashbox-id="{{ cashbox.id }}"
+                                               data-cashbox-action="purchase"
+                                        >
+                                    </td>
+                                    <td class="sale">
+                                        <input type="text"
+                                               class="cashbox-currency cashbox-sale"
+                                               value="{{ cashbox.sale }}"
+                                               data-cashbox-id="{{ cashbox.id }}"
+                                               data-cashbox-action="sale"
+                                        >
+                                    </td>
+                                    <td class="sale">
+                                        <input type="number"
+                                               class="cashbox-form"
+                                               data-cashbox-id="{{ cashbox.id }}"
+                                               data-cashbox-action="sale"
+                                        >
+                                    </td>
+                                    <td class="currency discount">
+                                        <input
+                                                type="text"
+                                                id="amount-{{ cashbox.id }}"
+                                                class="discount-form"
+                                                data-discount-cashbox-id="{{ cashbox.id }}"
 
-        .money_operation  td.sale, th.sale, td.sale input {
-            background: #4cd0936b;
-        }
-
-        .money_operation td.purchase, th.purchase, td.purchase input {
-            background: #0087a94d;
-        }
-
-        .money_operation td.currency, th.currency, td.currency input {
-            background: #e9fb1e8c;
-        }
-
-        .money_operation .box-body tr td input {
-            width: 100px;
-            border: 1px solid #5cb599;
-            padding: 2px 2px;
-            font-weight: bold;
-        }
-
-        .money_operation table tr {
-            font-size: 18px;
-        }
-
-        .money_operation table tr td.active-cashbox {
-            background: #f39c12 !important;
-            color: white;
-            border-right: 1px solid #f39c11;
-            border-top: 3px solid #ce8510;
-            border-bottom: 3px solid #ce8510;
-        }
-
-        .money_operation table tr td.active-cashbox input {
-            border: 1px solid #a96d0e;
-            background: #b7760d;
-        }
-
-        .money_operation textarea {
-            width: 100%;
-        }
-
-        .money_operation .discount input {
-            float: left;
-            border-right: none !important;
-        }
-
-        .money_operation .discount input + button {
-            background: white;
-            padding: 6px 15px;
-            cursor: pointer;
-            margin: 0 !important;
-            display: list-item;
-            border-radius: 0;
-            border: 1px solid #dadada;
-        }
-
-        .money_operation .DefaultCurrency {
-            color: #55840b;
-            font-weight: bold;
-            font-size: 24px;
-        }
-
-        .money_operation .discount_active {
-            background: #e8e8e8;
-            color: black;
-            box-shadow: inset 1px 2px 6px 4px #bbbbbb;
-            border: 1px solid #dadada;
-        }
-    </style>
-
-{% endblock %}
-
-{% block content %}
-    <section class="content-header">
-        <h1>
-            Покупка и продажа валют
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
-        </ol>
-    </section>
-
-    <!-- Main content -->
-    <section class="content money_operation">
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="box">
-                    <!-- /.box-header -->
-                    <div class="box-body">
-                        <table id="example2" class="table table-bordered">
-                            {#<thead>#}
-                            <tr>
-                                <th colspan="3">Валюта</th>
-                                <th colspan="2" class="purchase">Покупка</th>
-                                <th colspan="2" class="sale">Продажа</th>
-                                <th colspan="2" class="currency">Нац. валюта <img style="width: 50px; height: 25px"
-                                                                                  src="{{ asset('uploads/images/currency/') }}{{ defaultCurrency.currency.icon }}">
-                                </th>
-                            </tr>
-                            <tr>
-                                <th>Остаток</th>
-                                <th>Название</th>
-                                <th>Флаг</th>
-                                <th class="purchase">Курс</th>
-                                <th class="purchase">Сумма</th>
-                                <th class="sale">Курс</th>
-                                <th class="sale">Сумма</th>
-                                <th class="currency">Скидка</th>
-                                <th class="currency">Сумма</th>
-                            </tr>
-                            {#</thead>#}
-                            <tbody>
-                            {% for cashbox in cashboxes %}
-
-                                {% if not cashbox.default_currency %}
-                                    <tr class="cashbox-row cashbox-number-{{ cashbox.id }}">
-                                        <td class="cashbox-allAmount">
-                                            {{ cashbox.summa }}
-                                        </td>
-                                        <td>
-                                            {{ cashbox.name }}
-                                        </td>
-                                        <td>
-                                            <img style="width: 50px; height: 25px"
-                                                 src="{{ asset('uploads/images/currency/') }}{{ cashbox.icon }}">
-                                        </td>
-                                        <td class="purchase">
-                                            <input type="text"
-                                                   class="cashbox-currency cashbox-purchase"
-                                                   value="{{ cashbox.purchase }}"
-                                                   data-cashbox-id="{{ cashbox.id }}"
-                                                   data-cashbox-action="purchase"
-                                            >
-                                        </td>
-                                        <td class="purchase">
-                                            <input type="number"
-                                                   class="cashbox-form"
-                                                   data-cashbox-id="{{ cashbox.id }}"
-                                                   data-cashbox-action="purchase"
-                                            >
-                                        </td>
-                                        <td class="sale">
-                                            <input type="text"
-                                                   class="cashbox-currency cashbox-sale"
-                                                   value="{{ cashbox.sale }}"
-                                                   data-cashbox-id="{{ cashbox.id }}"
-                                                   data-cashbox-action="sale"
-                                            >
-                                        </td>
-                                        <td class="sale">
-                                            <input type="number"
-                                                   class="cashbox-form"
-                                                   data-cashbox-id="{{ cashbox.id }}"
-                                                   data-cashbox-action="sale"
-                                            >
-                                        </td>
-                                        <td class="currency discount">
-                                            <input
-                                                    type="text"
-                                                    id="amount-{{ cashbox.id }}"
-                                                    class="discount-form"
-                                                    data-discount-cashbox-id="{{ cashbox.id }}"
-
-                                            >
-                                            <button data-active="1"
-                                                    class="btn btn-default btn_discount discount_active activeBtn-{{ cashbox.id }}">%
-                                            </button>
-                                        </td>
-                                        <td class="currency">
-                                            <input class="form-result" type="text" disabled>
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            {% else %}
-                                <tr>
-                                    <td>Нет данных</td>
+                                        >
+                                        <button data-active="1"
+                                                class="btn btn-default btn_discount discount_active activeBtn-{{ cashbox.id }}">%
+                                        </button>
+                                    </td>
+                                    <td class="currency">
+                                        <input class="form-result" type="text" disabled>
+                                    </td>
                                 </tr>
-                            {% endfor %}
+                            {% endif %}
+                        {% else %}
+                            <tr>
+                                <td>Нет данных</td>
+                            </tr>
+                        {% endfor %}
 
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- /.box-body -->
+                        </tbody>
+                    </table>
                 </div>
-                <!-- /.box -->
-
-                <div class="box">
-                    <!-- /.box-header -->
-                    <div class="box-body">
-                        <table id="example2" class="table table-bordered table-hover">
-                            <tr>
-                                <td></td>
-                                <th>Обменный пункт:</th>
-                                <td>{{ exchangeOffice.name }}</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <th>Сотрудник:</th>
-                                <td>{{ app.user.email }}</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <th><img style="width: 50px; height: 25px"
-                                         src="{{ asset('uploads/images/currency/') }}{{ defaultCurrency.currency.icon }}">
-                                    Остаток Нац. валюты:
-                                </th>
-                                <td class="DefaultCurrency"
-                                    id="resultDefaultCurrencyAmount">{{ defaultCurrencyAmount.summa }}</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <th>VIP клиенты:</th>
-                                <td>
-                                    <select id="vip_client_id">
-                                        <option value="">Выбрать клиента</option>
-                                        {% for vipClient in vipClients %}
-                                            <option value="{{ vipClient.id }}">{{ vipClient.fullName }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <th>Примечание:</th>
-                                <td><textarea id="notes"></textarea></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <th colspan="2">
-                                    <div class="box-message"></div>
-                                    <a href="#" class="btn btn-success save-transactions" data-cashbox-action="">
-                                        Сохранить
-                                    </a>
-                                </th>
-                                <td></td>
-                            </tr>
-                        </table>
-                    </div>
-                    <!-- /.box-body -->
-                </div>
-                <!-- /.box -->
-
+                <!-- /.box-body -->
             </div>
-            <!-- /.col -->
+            <!-- /.box -->
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="example2" class="table table-bordered table-hover">
+                        <tr>
+                            <td></td>
+                            <th>Обменный пункт:</th>
+                            <td>{{ exchangeOffice.name }}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <th>Сотрудник:</th>
+                            <td>{{ app.user.email }}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <th><img style="width: 50px; height: 25px"
+                                     src="{{ asset('uploads/images/currency/') }}{{ defaultCurrency.currency.icon }}">
+                                Остаток Нац. валюты:
+                            </th>
+                            <td class="DefaultCurrency"
+                                id="resultDefaultCurrencyAmount">{{ defaultCurrencyAmount.summa }}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <th>VIP клиенты:</th>
+                            <td>
+                                <select id="vip_client_id">
+                                    <option value="">Выбрать клиента</option>
+                                    {% for vipClient in vipClients %}
+                                        <option value="{{ vipClient.id }}">{{ vipClient.fullName }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <th>Примечание:</th>
+                            <td><textarea id="notes"></textarea></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <th colspan="2">
+                                <div class="box-message"></div>
+                                <a href="#" class="btn btn-success save-transactions" data-cashbox-action="">
+                                    Сохранить
+                                </a>
+                            </th>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+
         </div>
-        <!-- /.row -->
-    </section>
-
-
-{% endblock %}
-
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
