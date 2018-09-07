@@ -1,5 +1,4 @@
-{% extends "profile.layout.html.twig" %}
-
+{% extends "layouts/profile.layout.html.twig" %}
 
 {% block content %}
 
@@ -57,14 +56,13 @@
 
                         <select id="selectStaffs"  title="Персонал" class="multipleSelectStaffs" name="staffs" multiple>
                             {% for staff in staffs %}
-                                <option value="{{ staff.user.id }}">{{ staff.user.fullName }}</option>
+                                <option value="{{ staff.id }}">{{ staff.user.fullName }}</option>
                             {% endfor %}
                         </select>
                         <button type="submit" style="margin-left: 6%; margin-bottom: 6%; padding: 20px 50px" class="add_staff btn btn-primary ml-2" > Добавить сотрудника </button>
                         <br>
                         <button type="submit" class="save btn btn-primary ml-2" > Добавить </button>
                     </form>
-
 
                 </div>
                 <!-- /.box -->
@@ -123,11 +121,11 @@
                         if(!reason.message){
 
                             let message = $('<h3 class="text_message" style="color: blue; text-align: center">Данные успешно сохранены</h3>' );
-                                    $('.text_message').remove();
-                                    $('#showMessage').append(message)
-                                    setTimeout(function () {
-                                        window.location.href = '/profile/exchange_office/'
-                                    }, 2000)
+                            $('.text_message').remove();
+                            $('#showMessage').append(message)
+                            setTimeout(function () {
+                                window.location.href = '/profile/exchange_office/'
+                            }, 2000)
 
 
 

@@ -221,7 +221,7 @@ class StaffController extends BaseProfileController
             return $this->redirectToRoute('profile_staff_index');
         }
 
-        return $this->render('profile/staff/edit.html.twig', [
+        return $this->render('profile/sstaff/edit.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -265,7 +265,7 @@ class StaffController extends BaseProfileController
      */
     public function getDataAction(Request $request, StaffRepository $staffRepository)
     {
-        $id = $request->get('stafId');
+        $id = intval($request->get('stafId'));
 
         if ($this->isGranted('ROLE_ADMIN')) {
             $staff = $staffRepository->find($id);

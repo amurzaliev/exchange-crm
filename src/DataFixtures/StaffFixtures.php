@@ -13,83 +13,67 @@ class StaffFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
+        /** @var User $owner1 */
+        $owner1 = $this->getReference(UserFixtures::OWNER_ONE);
 
-        /** @var User $owner */
-        $owner = $this->getReference(UserFixtures::OWNER);
-        /** @var ExchangeOffice $exchangeOffice */
-        $exchangeOffice = $this->getReference(ExchangeOfficeFixtures::EXCHANGEOFFICE);
-
-        //Сотрудник 1
-        $user1 = new User();
-        $user1
-            ->setUsername("staff_1")
-            ->setPlainPassword("12345")
-            ->setRoles(['ROLE_USER'])
-            ->setFullName('Иванов А.А')
-            ->setEnabled('true')
-        ;
-
+        $user1 = $this->createUser('staff_1', '12345', 'Иванов А.А');
+        $staff1 = $this->createStaff($owner1, $user1, 'Администратор');
         $manager->persist($user1);
-
-        $staff1 = new Staff();
-        $staff1
-            ->setOwner($owner)
-            ->setUser($user1)
-            ->setPosition("Администратор")
-            ->setCreatedAt(new \DateTime())
-            ->setUpdatedAt(new \DateTime())
-            ->addExchangeOffice($exchangeOffice)
-        ;
         $manager->persist($staff1);
 
-        //Сотрудник 2
-
-        $user2 = new User();
-        $user2
-            ->setUsername("staff_2")
-            ->setPlainPassword("12345")
-            ->setRoles(['ROLE_USER'])
-            ->setFullName('Петров А.А')
-            ->setEnabled('true')
-        ;
-
+        $user2 = $this->createUser('staff_2', '12345', 'Петров А.А');
+        $staff2 = $this->createStaff($owner1, $user2, 'Кассир');
         $manager->persist($user2);
-
-        $staff2 = new Staff();
-        $staff2
-            ->setOwner($owner)
-            ->setUser($user2)
-            ->setPosition("Кассир")
-            ->setCreatedAt(new \DateTime())
-            ->setUpdatedAt(new \DateTime())
-        ;
         $manager->persist($staff2);
 
-        //Сотрудник 3
-
-        $user3 = new User();
-        $user3
-            ->setUsername("staff_3")
-            ->setPlainPassword("12345")
-            ->setRoles(['ROLE_USER'])
-            ->setFullName('Сидоров А.А')
-            ->setEnabled('true')
-        ;
-
+        $user3 = $this->createUser('staff_3', '12345', 'Сидоров А.А');
+        $staff3 = $this->createStaff($owner1, $user3, 'Кассир');
         $manager->persist($user3);
-
-        $staff3 = new Staff();
-        $staff3
-            ->setOwner($owner)
-            ->setUser($user3)
-            ->setPosition("Партнер")
-            ->setCreatedAt(new \DateTime())
-            ->setUpdatedAt(new \DateTime())
-        ;
         $manager->persist($staff3);
 
-        $manager->flush();
+        /** @var User $owner2 */
+        $owner2 = $this->getReference(UserFixtures::OWNER_TWO);
 
+        $user4 = $this->createUser('staff_4', '12345', 'Глушков А.А');
+        $staff4 = $this->createStaff($owner2, $user4, 'Администратор');
+        $manager->persist($user4);
+        $manager->persist($staff4);
+
+        $user5 = $this->createUser('staff_5', '12345', 'Козлов А.А');
+        $staff5 = $this->createStaff($owner2, $user5, 'Кассир');
+        $manager->persist($user5);
+        $manager->persist($staff5);
+
+        $user6 = $this->createUser('staff_6', '12345', 'Игнатьевич А.А');
+        $staff6 = $this->createStaff($owner2, $user6, 'Кассир');
+        $manager->persist($user6);
+        $manager->persist($staff6);
+
+        $manager->flush();
+    }
+
+    private function createUser(string $username, string $plainPassword, string $fullname)
+    {
+        $user = new User();
+        $user
+            ->setUsername($username)
+            ->setPlainPassword($plainPassword)
+            ->setRoles(['ROLE_USER'])
+            ->setFullName($fullname)
+            ->setEnabled('true');
+
+        return $user;
+    }
+
+    private function createStaff(User $owner, User $user, string $position)
+    {
+        $staff = new Staff();
+        $staff
+            ->setOwner($owner)
+            ->setUser($user)
+            ->setPosition($position);
+
+        return $staff;
     }
 
     /**

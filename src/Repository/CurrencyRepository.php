@@ -63,5 +63,18 @@ class CurrencyRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAllExcept($ids)
+    {
+        if (empty($ids)) {
+            return $this->findAll();
+        }
+
+        $qb = $this->createQueryBuilder('c');
+
+        return $qb->andWhere($qb->expr()->notIn('c.id', $ids))
+            ->getQuery()
+            ->getResult();
+    }
+
 
 }

@@ -8,10 +8,8 @@
 
 namespace App\DataFixtures;
 
-
 use App\Entity\Cashbox;
 use App\Entity\CurrencyRate;
-use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -25,19 +23,30 @@ class CurrencyRateFixtures extends Fixture implements DependentFixtureInterface
      */
     public function load(ObjectManager $manager)
     {
-        /** @var User $user */
-        $user = $this->getReference(UserFixtures::OWNER);
-        /** @var Cashbox $cashbox */
-        $cashbox = $this->getReference(CashboxFixtures::CASHBOX_ONE);
+        $cashboxes = CashboxFixtures::getCashboxes();
 
-        $currencyRate = new CurrencyRate();
-        $currencyRate
-            ->setPurchase(68.05)
-            ->setSale(68.15)
-            ->setUser($user)
-            ->setCashboxCurrency($cashbox);
+        $rates = [
+            'USD' => [68.05, 68.15],
+            'KZT' => [0.181, 0.188],
+            'RUB' => [1.01, 1.02]
+        ];
 
-        $manager->persist($currencyRate);
+        foreach ($cashboxes as $cashboxRefId) {
+
+            /** @var Cashbox $cashbox */
+            $cashbox = $this->getReference($cashboxRefId);
+
+            if ($cashbox->getCurrency()->getIso() !== 'KGS') {
+                $currencyRate = new CurrencyRate();
+                $currencyRate
+                    ->setPurchase($rates[$cashbox->getCurrency()->getIso()][0])
+                    ->setSale($rates[$cashbox->getCurrency()->getIso()][1])
+                    ->setUser($cashbox->getUser())
+                    ->setCashboxCurrency($cashbox);
+                $manager->persist($currencyRate);
+            }
+        }
+
         $manager->flush();
     }
 

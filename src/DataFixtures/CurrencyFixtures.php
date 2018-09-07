@@ -41,7 +41,7 @@ class CurrencyFixtures extends Fixture implements DependentFixtureInterface, Con
                 ->setImageFile(new UploadedFile($item['image'], $item['id'], null,null,null,true))
                 ->setUser($this->getReference(UserFixtures::ADMIN));
 
-            $this->setReference($item['id'], $currency);
+            $this->addReference($item['id'], $currency);
             $manager->persist($currency);
         }
         $manager->flush();
@@ -74,7 +74,7 @@ class CurrencyFixtures extends Fixture implements DependentFixtureInterface, Con
 
         return [
             [
-                'id' => 'currency1',
+                'id' => 'usd',
                 'image' => $fixturesPath . 'currency1.png',
                 'name' => 'Доллар США',
                 'iso' => 'USD',
@@ -85,7 +85,7 @@ class CurrencyFixtures extends Fixture implements DependentFixtureInterface, Con
                 'defaultCurrency' => false
             ],
             [
-                'id' => 'currency2',
+                'id' => 'kzt',
                 'image' => $fixturesPath . 'currency2.png',
                 'name' => 'Тенге',
                 'iso' => 'KZT',
@@ -96,7 +96,7 @@ class CurrencyFixtures extends Fixture implements DependentFixtureInterface, Con
                 'defaultCurrency' => false
             ],
             [
-                'id' => 'currency3',
+                'id' => 'eur',
                 'image' => $fixturesPath . 'currency3.png',
                 'name' => 'Евро',
                 'iso' => 'EUR',
@@ -107,7 +107,7 @@ class CurrencyFixtures extends Fixture implements DependentFixtureInterface, Con
                 'defaultCurrency' => false
             ],
             [
-                'id' => 'currency4',
+                'id' => 'rub',
                 'image' => $fixturesPath . 'currency4.png',
                 'name' => 'Рубль',
                 'iso' => 'RUB',
@@ -118,7 +118,7 @@ class CurrencyFixtures extends Fixture implements DependentFixtureInterface, Con
                 'defaultCurrency' => false
             ],
             [
-                'id' => 'currency5',
+                'id' => 'cny',
                 'image' => $fixturesPath . 'currency5.png',
                 'name' => 'Юань',
                 'iso' => 'CNY',
@@ -129,7 +129,7 @@ class CurrencyFixtures extends Fixture implements DependentFixtureInterface, Con
                 'defaultCurrency' => false
             ],
             [
-                'id' => 'currency6',
+                'id' => 'kgs',
                 'image' => $fixturesPath . 'currency6.png',
                 'name' => 'Сом',
                 'iso' => 'KGS',

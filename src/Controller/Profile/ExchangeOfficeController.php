@@ -9,6 +9,7 @@ use App\Form\ExchangeOfficeType;
 use App\Repository\CashboxRepository;
 use App\Repository\CurrencyRepository;
 use App\Repository\ExchangeOfficeRepository;
+use App\Repository\PermissionGroupRepository;
 use App\Repository\StaffRepository;
 use App\Repository\VIPClientRepository;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -16,6 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -45,19 +47,24 @@ class ExchangeOfficeController extends BaseProfileController
      * @Method({"GET", "POST"})
      * @param StaffRepository $staffRepository
      * @param CurrencyRepository $currencyRepository
+     * @param PermissionGroupRepository $permissionGroupRepository
      * @return Response
      */
-    public function createAction(StaffRepository $staffRepository, CurrencyRepository $currencyRepository)
+    public function createAction(
+        StaffRepository $staffRepository,
+        CurrencyRepository $currencyRepository,
+        PermissionGroupRepository $permissionGroupRepository
+    )
     {
-
         $staffs = $staffRepository->findByAllOwnerStaff($this->getUser());
-
+        $permissionGroups = $permissionGroupRepository->findAllByOwner($this->getUser());
         $currencies = $currencyRepository->findAll();
 
 
         return $this->render('profile/exchange_office/create.html.twig', [
             'staffs' => $staffs,
-            'currencies' => $currencies
+            'currencies' => $currencies,
+            'permissionGroups' => $permissionGroups
         ]);
     }
 
@@ -111,13 +118,20 @@ class ExchangeOfficeController extends BaseProfileController
      * @param int $id
      * @param ExchangeOfficeRepository $exchangeOfficeRepository
      * @param CashboxRepository $cashboxRepository
+     * @param VIPClientRepository $clientRepository
+     * @param StaffRepository $staffRepository
+     * @param CurrencyRepository $currencyRepository
+     * @param PermissionGroupRepository $permissionGroupRepository
      * @return Response
      */
     public function detailAction(
         int $id,
         ExchangeOfficeRepository $exchangeOfficeRepository,
         CashboxRepository $cashboxRepository,
-        VIPClientRepository $clientRepository
+        VIPClientRepository $clientRepository,
+        StaffRepository $staffRepository,
+        CurrencyRepository $currencyRepository,
+        PermissionGroupRepository $permissionGroupRepository
     )
     {
         $exchangeOffice = $exchangeOfficeRepository->find($id);
@@ -140,12 +154,35 @@ class ExchangeOfficeController extends BaseProfileController
 
         $cashboxes = $cashboxRepository->findByAll($exchangeOffice);
 
+        $exchangeOffice = $exchangeOfficeRepository->find($id);
+
+        if (!$exchangeOffice) {
+            return $this->show404();
+        }
+
+        if (!$this->isGranted('VIEW', $exchangeOffice)) {
+            return $this->show404();
+        }
+
+        $staffs = $staffRepository->findByAllOwnerStaff($this->getUser());
+        $currencyCashboxes = $cashboxRepository->findByExchangeOffice($exchangeOffice);
+        $attachedCurrencies = [];
+        foreach ($currencyCashboxes as $currencyCashbox) {
+            $attachedCurrencies[] = $currencyCashbox->getCurrency()->getId();
+        }
+        $currencies = $currencyRepository->findAllExcept($attachedCurrencies);
+        $permissionGroups = $permissionGroupRepository->findAllByOwner($this->getUser());
+
         return $this->render('profile/exchange_office/detail.html.twig', [
                 'exchangeOffice' => $exchangeOffice,
                 'cashboxes' => $cashboxes,
                 'vipClients' => $vipClients,
                 'defaultCurrencyAmount' => $defaultCurrencyAmount,
                 'defaultCurrency' => $defaultCurrency,
+                'currencyCashboxes' => $currencyCashboxes,
+                'staffs' => $staffs,
+                'currencies' => $currencies,
+                'permissionGroups' => $permissionGroups
             ]
         );
 
@@ -160,9 +197,11 @@ class ExchangeOfficeController extends BaseProfileController
      * @param StaffRepository $staffRepository
      * @return JsonResponse
      */
-    public function createActionAjax(Request $request, ObjectManager $manager,
-                                     CurrencyRepository $currencyRepository,
-                                     StaffRepository $staffRepository
+    public function createActionAjax(
+        Request $request,
+        ObjectManager $manager,
+        CurrencyRepository $currencyRepository,
+        StaffRepository $staffRepository
     )
     {
         $data = $request->request->all();
@@ -174,7 +213,6 @@ class ExchangeOfficeController extends BaseProfileController
 
                 throw new \Exception('Поле название обменного пункта не может быть пустым');
             }
-
 
             $exchangeOffice = new ExchangeOffice();
             $exchangeOffice->setUser($this->getUser());
@@ -191,45 +229,107 @@ class ExchangeOfficeController extends BaseProfileController
             $cashbox->setExchangeOffice($exchangeOffice);
             $manager->persist($cashbox);
 
-            $cashboxIds =[];
 
-            switch (array_key_exists('staffs',$data)){
-                case  true :
-                    $staffs = $data['staffs'];
-                    foreach ($staffs as $staffId)
-                    {
-                        $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), (int)$staffId);
-                        $exchange = $exchangeOffice->addStaff($staff);
-                        $manager->persist($exchange);
-                    }
+            if (array_key_exists('staffs', $data)) {
+                foreach ($data['staffs'] as $staffId) {
+                    $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), (int)$staffId);
+                    $exchange = $exchangeOffice->addStaff($staff);
+                    $manager->persist($exchange);
+                }
             }
-            switch (array_key_exists('cashboxes', $data)){
-                case  true :
-                    $cashboxes = $data['cashboxes'];
-                    foreach ($cashboxes as $cashboxId)
-                    {
-                        $cashboxChange = new Cashbox();
-                        $currency = $currencyRepository->find($cashboxId);
-                        $cashboxChange->setUser($this->getUser());
-                        $cashboxChange->setCurrency($currency);
-                        $cashboxChange->setExchangeOffice($exchangeOffice);
-                        $manager->persist($cashboxChange);
-                        $cashboxIds[] = $cashboxChange->getId();
-                    }
 
+            if (array_key_exists('cashboxes', $data)) {
+                foreach ($data['cashboxes'] as $cashboxId) {
+                    $cashboxChange = new Cashbox();
+                    $currency = $currencyRepository->find($cashboxId);
+                    $cashboxChange->setUser($this->getUser());
+                    $cashboxChange->setCurrency($currency);
+                    $cashboxChange->setExchangeOffice($exchangeOffice);
+                    $manager->persist($cashboxChange);
+                }
             }
+
             $manager->flush();
-
-//            $exchangeOfficeId = $exchangeOffice->getId();
 
         } catch (\Exception $e) {
             $message = $e->getMessage();
         }
 
-
         return new JsonResponse([
-//            'url' =>  $exchangeOfficeId,
             'message' => $message
         ]);
+    }
+
+    /**
+     * @Route("/edit-ajax", name="profile_exchange_office_edit_ajax")
+     * @Method("POST")
+     *
+     * @param Request $request
+     * @param ObjectManager $manager
+     * @param ExchangeOfficeRepository $exchangeOfficeRepository
+     * @param CurrencyRepository $currencyRepository
+     * @param StaffRepository $staffRepository
+     * @return Response
+     */
+    public function editAjaxAction(
+        Request $request,
+        ObjectManager $manager,
+        ExchangeOfficeRepository $exchangeOfficeRepository,
+        CurrencyRepository $currencyRepository,
+        StaffRepository $staffRepository
+    )
+    {
+        $message = null;
+        $status = true;
+
+        try {
+            $data = $request->request->all();
+            $exchangeOffice = $exchangeOfficeRepository->find($data['exchange_id']);
+
+            if (!$exchangeOffice) {
+                throw new HttpException(404);
+            }
+
+            if (!$this->isGranted('EDIT', $exchangeOffice)) {
+                throw new HttpException(404);
+            }
+
+            $exchangeOffice->setName($data['exchange_name']);
+            $exchangeOffice->setActive($data['exchange_active']);
+            $exchangeOffice->setAddress($data['exchange_address']);
+            $exchangeOffice->setActive((int)$data['exchange_active']);
+
+            if (!empty($data['exchange_currencies'])) {
+                foreach ($data['exchange_currencies'] as $currencyId) {
+                    $cashbox = new Cashbox();
+                    $cashbox
+                        ->setCurrency($currencyRepository->find($currencyId))
+                        ->setUser($this->getUser())
+                        ->setExchangeOffice($exchangeOffice);
+                    $manager->persist($cashbox);
+                    $exchangeOffice->addCashbox($cashbox);
+                }
+            }
+
+            $exchangeOffice->removeAllStaffs();
+
+            if (!empty($data['exchange_staffs'])) {
+                foreach ($data['exchange_staffs'] as $staffId) {
+                    $staff = $staffRepository->find($staffId);
+                    if ($staff) {
+                        $exchangeOffice->addStaff($staff);
+                    }
+                }
+            }
+
+            $manager->persist($exchangeOffice);
+            $manager->flush();
+            $message = 'Данные успешно обновлены';
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+        }
+
+        return new JsonResponse(['message' => $message, 'status' => $status]);
     }
 }

@@ -1,4 +1,4 @@
-{% extends "profile.layout.html.twig" %}
+{% extends "layouts/profile.layout.html.twig" %}
 {% block content %}
 
     <section class="content-header">
@@ -28,9 +28,9 @@
                         <p>Название группы: {{ permissionGroup.title }}</p>
                         {% for  permission in permissionGroup.toArrayPermissions %}
                             {% if(permission['status']) %}
-                                 <p>Имеет привелегии: {{ permission.title }}</p>
+                                <p>Имеет привелегии: {{ permission.title }}</p>
                             {% endif %}
-                            {% endfor %}
+                        {% endfor %}
                     </div>
                     <!-- /.box-body -->
                 </div>
