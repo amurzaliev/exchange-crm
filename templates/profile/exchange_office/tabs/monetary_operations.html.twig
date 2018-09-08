@@ -5,7 +5,7 @@
             text-align: center;
         }
 
-        .money_operation  td.sale, th.sale, td.sale input {
+        .money_operation td.sale, th.sale, td.sale input {
             background: #4cd0936b;
         }
 
@@ -71,6 +71,14 @@
             color: black;
             box-shadow: inset 1px 2px 6px 4px #bbbbbb;
             border: 1px solid #dadada;
+        }
+
+        .created-VIP{
+            width: 200px;
+            font-size: 16px;
+            text-align: center;
+            margin-left: 25%;
+
         }
     </style>
 
@@ -169,7 +177,8 @@
 
                                             >
                                             <button data-active="1"
-                                                    class="btn btn-default btn_discount discount_active activeBtn-{{ cashbox.id }}">%
+                                                    class="btn btn-default btn_discount discount_active activeBtn-{{ cashbox.id }}">
+                                                %
                                             </button>
                                         </td>
                                         <td class="currency">
@@ -226,6 +235,11 @@
                                             <option value="{{ vipClient.id }}">{{ vipClient.fullName }}</option>
                                         {% endfor %}
                                     </select>
+                                    <hr>
+                                    <a href="#" class="btn btn-block btn-success btn-lg created-VIP"
+                                       data-toggle="modal" data-target="#add-vip-client">
+                                        Добавить VIP клиента
+                                    </a>
                                 </td>
                                 <td></td>
                             </tr>
@@ -250,6 +264,8 @@
                 </div>
                 <!-- /.box -->
 
+                {{ include('profile/components/forms/modal_form_vip_client.html.twig') }}
+
             </div>
             <!-- /.col -->
         </div>
@@ -258,4 +274,3 @@
 
 
 {% endblock %}
-

@@ -94,7 +94,8 @@
                                    aria-controls="contact" aria-selected="false">Курсы валют</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="monetaryOperations-tab" data-toggle="tab" href="#monetaryOperations"
+                                <a class="nav-link" id="monetaryOperations-tab" data-toggle="tab"
+                                   href="#monetaryOperations"
                                    role="tab"
                                    aria-controls="contact" aria-selected="false">Работа с обменнкой</a>
                             </li>
@@ -118,7 +119,8 @@
                                  aria-labelledby="currencyRate-tab">
                                 Курсы валют
                             </div>
-                            <div class="tab-pane fade" id="monetaryOperations" role="tabpanel" aria-labelledby="monetory_operations-tab">
+                            <div class="tab-pane fade" id="monetaryOperations" role="tabpanel"
+                                 aria-labelledby="monetory_operations-tab">
                                 {% include 'profile/exchange_office/tabs/monetary_operations.html.twig' %}
                             </div>
                         </div>
@@ -215,7 +217,42 @@
 
             $.getScript("/js/exchange_offices.js", function () {
                 balance("{{ exchangeOffice.id }}", "{{ path('profile_monetary_operations_balance_change') }}");
-                moneyOperation("{{ path('profile_monetary_operations_create') }}","{{ exchangeOffice.id }}")
+                moneyOperation("{{ path('profile_monetary_operations_create') }}", "{{ exchangeOffice.id }}")
+            });
+
+            $(".created-VIP").on('click', function () {
+                $('.modal-form-vip-client').each(function () {
+                    this.reset();
+                });
+
+                $(".submit-vip-btn")
+                    .addClass("submit-create-vip-btn")
+                    .html("Добавить");
+            });
+
+            $(document).on('click', '.submit-create-vip-btn', function () {
+
+                var fullName = $('#fullName').val();
+                var email = $('#email').val();
+                var phone = $('#phone').val();
+
+                var data = {
+                    fullName: fullName,
+                    email: email,
+                    phone: phone
+                };
+
+                $.post('{{ path('profile_vip_client_create_ajax') }}', data, function (response) {
+                    console.log(response);
+                    $('.close').trigger('click');
+                    $('.modal-form-vip-client').each(function () {
+                        this.reset();
+                    });
+                    var select = $('#vip_client_id');
+                    select.append('<option value="' + response.id + '">' + response.fullname + '</option>')
+
+
+                })
             });
         });
     </script>

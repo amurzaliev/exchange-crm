@@ -1,0 +1,45 @@
+<div class="modal fade" id="add-vip-client" tabindex="-1" role="dialog"
+     aria-labelledby="add-vip-client-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="add-vip-client-label">
+                    Добавление VIP клиента
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post" class="modal-form-vip-client">
+                    <div class="form-group">
+                        <label for="fullName">ФИО</label>
+                        <input type="text" class="form-control" id="fullName" name="fullName"
+                               aria-describedby="fullNameHelp"
+                               placeholder="Введите ФИО"
+                               value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="text" class="form-control" id="email" name="email"
+                               aria-describedby="emailHelp"
+                               placeholder="Введите e-mail"
+                               value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Номер телефона</label>
+                        <input type="phone" class="form-control" id="phone" name="phone"
+                               placeholder="Введите номер телефона"
+                               value="">
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary submit-vip-btn">
+                    Добавить
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -6,6 +6,7 @@ use App\Entity\VIPClient;
 use App\Form\VIPClientType;
 use App\Repository\VIPClientRepository;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -56,6 +57,49 @@ class VipClientController extends BaseProfileController
             'form' => $form->createView()
         ]);
     }
+
+    /**
+     * @param Request $request
+     * @param ObjectManager $manager
+     * @Route("/create_ajax", name="profile_vip_client_create_ajax")
+     * @return JsonResponse
+     */
+    public function createAjaxAction(Request $request, ObjectManager $manager)
+    {
+        $message = null;
+        $VIPClient = new VIPClient();
+
+        try {
+            $fullName = $request->get('fullName');
+            $email = $request->get('email');
+            $phone = $request->get('phone');
+
+            $VIPClient->setFullName($fullName)
+                ->setEmail($email)
+                ->setPhone($phone)
+            ;
+
+            $VIPClient->setUser($this->getUser());
+            $VIPClient->setCreatedAt(new \DateTime());
+
+
+            $manager->persist($VIPClient);
+            $manager->flush();
+
+            $response = [
+                'id' => $VIPClient->getId(),
+                'fullname' => $VIPClient->getFullName()
+            ];
+
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+        }
+
+        return new JsonResponse($response);
+
+    }
+
+
 
     /**
      * @Route("/{id}/edit", name="profile_vip_client_edit")
