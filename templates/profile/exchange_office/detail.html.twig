@@ -1,4 +1,4 @@
-{% extends "profile.layout.html.twig" %}
+{% extends "layouts/profile.layout.html.twig" %}
 
 {% block stylesheet %}
     <style>
@@ -38,101 +38,159 @@
             background: #ad6d0d;
             border: 1px solid #df8a0b !important;
         }
+        .form-check-input {
+            margin-top: 0;
+            margin-left: 0;
+        }
+        .money_operation .box-body tr th, td {
+            text-align: center;
+        }
+
+        .money_operation  td.sale, th.sale, td.sale input {
+            background: #4cd0936b;
+        }
+
+        .money_operation td.purchase, th.purchase, td.purchase input {
+            background: #0087a94d;
+        }
+
+        .money_operation td.currency, th.currency, td.currency input {
+            background: #e9fb1e8c;
+        }
+
+        .money_operation .box-body tr td input {
+            width: 80px;
+            border: 1px solid #5cb599;
+            padding: 2px 2px;
+            font-weight: bold;
+        }
+
+        .money_operation table tr {
+            font-size: 17px;
+        }
+
+        .money_operation table tr td.active-cashbox {
+            background: #f39c12 !important;
+            color: white;
+            border-right: 1px solid #f39c11;
+            border-top: 3px solid #ce8510;
+            border-bottom: 3px solid #ce8510;
+        }
+
+        .money_operation table tr td.active-cashbox input {
+            border: 1px solid #a96d0e;
+            background: #b7760d;
+        }
+
+        .money_operation textarea {
+            width: 100%;
+        }
+
+        .money_operation .discount input {
+            float: left;
+            border-right: none !important;
+        }
+
+        .money_operation .discount input + button {
+            background: white;
+            padding: 2px 11px;
+            cursor: pointer;
+            margin: 0 !important;
+            display: list-item;
+            font-size: 13px;
+            border-radius: 0;
+            border: 1px solid #dadada;
+        }
+
+        .money_operation .DefaultCurrency {
+            color: #55840b;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .money_operation .discount_active {
+            background: #e8e8e8 !important;
+            color: black;
+            box-shadow: inset 1px 2px 6px 4px #bbbbbb;
+            border: 1px solid #dadada;
+        }
     </style>
 {% endblock %}
 
 {% block content %}
-
-    <section class="content-header">
-        <h1>
-            {{ exchangeOffice.name }}
-            <small>Управление обменным пунктом</small>
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ path('profile_index') }}"><i class="fa fa-dashboard"></i> Главная</a></li>
-            <li><a href="{{ path('profile_exchange_office_index') }}"><i class="fa fa-list"></i> Список обменных
-                    пунктов</a></li>
-        </ol>
-    </section>
-
-    <!-- Main content -->
-    <section class="content">
-
-        <div style="margin: 1em 0 1em 0;">
-            <a href="{{ path('profile_exchange_office_index') }}"
-               class="btn btn-primary">
-                Список обменных пунктов <i class="fa fa-fw fa-list"></i>
-            </a>
-            <a href="{{ path('profile_exchange_office_create') }}"
-               class="btn btn-success">
-                Добавить обменный пункт <i class="fa fa-fw fa-plus"></i>
-            </a>
-        </div>
-
-        <div class="row">
-            <!--/.col (left) -->
-            <!-- right column -->
-            <div class="col-md-12">
-                <!-- /.box -->
-                <!-- general form elements disabled -->
-                <div class="box box-warning">
-                    <div class="box-header">
-                        <ul class="nav nav-tabs" id="exchangeOfficeTabMenu" role="tablist">
-                            <li class="nav-item active">
-                                <a class="nav-link" id="exchangeOffice-tab" data-toggle="tab"
-                                   href="#exchangeOffice" role="tab"
-                                   aria-controls="exchangeOffice"
-                                   aria-selected="true">Информация об обменном пункте</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="cashbox-tab" data-toggle="tab" href="#cashbox" role="tab"
-                                   aria-controls="profile" aria-selected="false">Валютные кассы и баланс</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="currencyRate-tab" data-toggle="tab" href="#currencyRate"
-                                   role="tab"
-                                   aria-controls="contact" aria-selected="false">Курсы валют</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="monetaryOperations-tab" data-toggle="tab"
-                                   href="#monetaryOperations"
-                                   role="tab"
-                                   aria-controls="contact" aria-selected="false">Работа с обменнкой</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- /.box-header -->
-                    <div class="box-body">
-                        <div class="tab-content" id="exchangeOfficeTabContent">
-                            <div class="tab-pane fade active in" id="exchangeOffice" role="tabpanel"
-                                 aria-labelledby="exchangeOffice-tab">
-                                {% include 'profile/exchange_office/tabs/exchange_office_tab.html.twig' %}
-                                <!-- Modal -->
-                                <div class="form-staff">
-                                    {{ include('profile/components/forms/modal_form_staff.html.twig', {'permissionGroups' : permissionGroups}) }}
+    <div class="row">
+        <div class="col-12">
+            <div class="section-content">
+                <div class="content-head">
+                    <h4 class="content-title">Управление обменным пунктом</h4><!-- /.content-title -->
+                    <div class="float-right">
+                        <a href="{{ path('profile_exchange_office_index') }}"
+                           class="btn btn-primary">
+                            Список обменных пунктов <i class="fa fa-fw fa-list"></i>
+                        </a>
+                        <a href="{{ path('profile_exchange_office_create') }}"
+                           class="btn btn-success">
+                            Добавить обменный пункт <i class="fa fa-fw fa-plus"></i>
+                        </a>
+                    </div><!-- /.corner-content -->
+                    <div class="clearfix"></div>
+                </div><!-- /.content-head -->
+                <div class="content-details show">
+                    <!-- general form elements disabled -->
+                    <div class="box box-warning">
+                        <div class="box-header">
+                            <ul class="nav nav-tabs" id="exchangeOfficeTabMenu" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="exchangeOffice-tab" data-toggle="tab"
+                                       href="#exchangeOffice" role="tab"
+                                       aria-controls="exchangeOffice"
+                                       aria-selected="true">Информация об обменном пункте</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="cashbox-tab" data-toggle="tab" href="#cashbox" role="tab"
+                                       aria-controls="profile" aria-selected="false">Валютные кассы и баланс</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="currencyRate-tab" data-toggle="tab" href="#currencyRate"
+                                       role="tab"
+                                       aria-controls="contact" aria-selected="false">Курсы валют</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="monetaryOperations-tab" data-toggle="tab" href="#monetaryOperations"
+                                       role="tab"
+                                       aria-controls="contact" aria-selected="false">Работа с обменнкой</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="tab-content" id="exchangeOfficeTabContent">
+                                <div class="tab-pane fade in active show" id="exchangeOffice" role="tabpanel"
+                                     aria-labelledby="exchangeOffice-tab">
+                                    {% include 'profile/exchange_office/tabs/exchange_office_tab.html.twig' %}
+                                    <!-- Modal -->
+                                    <div class="form-staff">
+                                        {{ include('profile/components/forms/modal_form_staff.html.twig', {'permissionGroups' : permissionGroups}) }}
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="cashbox" role="tabpanel" aria-labelledby="cashbox-tab">
+                                    {% include 'profile/exchange_office/tabs/balance_tab_html.twig' %}
+                                </div>
+                                <div class="tab-pane fade" id="currencyRate" role="tabpanel"
+                                     aria-labelledby="currencyRate-tab">
+                                    Курсы валют
+                                </div>
+                                <div class="tab-pane fade" id="monetaryOperations" role="tabpanel" aria-labelledby="monetory_operations-tab">
+                                    {% include 'profile/exchange_office/tabs/monetary_operations.html.twig' %}
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="cashbox" role="tabpanel" aria-labelledby="cashbox-tab">
-                                {% include 'profile/exchange_office/tabs/balance_tab_html.twig' %}
-                            </div>
-                            <div class="tab-pane fade" id="currencyRate" role="tabpanel"
-                                 aria-labelledby="currencyRate-tab">
-                                Курсы валют
-                            </div>
-                            <div class="tab-pane fade" id="monetaryOperations" role="tabpanel"
-                                 aria-labelledby="monetory_operations-tab">
-                                {% include 'profile/exchange_office/tabs/monetary_operations.html.twig' %}
-                            </div>
                         </div>
+                        <!-- /.box-body -->
                     </div>
-                    <!-- /.box-body -->
-                </div>
-                <!-- /.box -->
+                </div><!-- /.content-details -->
             </div>
-            <!--/.col (right) -->
         </div>
-        <!-- /.row -->
-    </section>
+    </div>
 {% endblock %}
 
 {% block Javascript %}

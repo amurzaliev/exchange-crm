@@ -1,43 +1,21 @@
-{% extends "profile.layout.html.twig" %}
+{% extends "layouts/profile.layout.html.twig" %}
+
 {% block content %}
-
-    <section class="content-header">
-        <h1>
-            Данные группы привилегий
-            <small>Инофрмация</small>
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ path('profile_index') }}"><i class="fa fa-dashboard"></i> Главная</a></li>
-        </ol>
-    </section>
-
-    <!-- Main content -->
-    <section class="content">
-        <div class="row">
-            <!--/.col (left) -->
-            <!-- right column -->
-            <div class="col-md-12">
-                <!-- /.box -->
-                <!-- general form elements disabled -->
-                <div class="box box-warning">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Просмотр групп</h3>
-                    </div>
-                    <!-- /.box-header -->
-                    <div class="box-body">
-                        <p>Название группы: {{ permissionGroup.title }}</p>
-                        {% for  permission in permissionGroup.toArrayPermissions %}
-                            {% if(permission['status']) %}
-                                 <p>Имеет привелегии: {{ permission.title }}</p>
-                            {% endif %}
-                            {% endfor %}
-                    </div>
-                    <!-- /.box-body -->
-                </div>
-                <!-- /.box -->
+    <div class="row">
+        <div class="col-12">
+            <div class="section-content">
+                <div class="content-head">
+                    <h4 class="content-title">Просмотр группы привилегий</h4><!-- /.content-title -->
+                </div><!-- /.content-head -->
+                <div class="content-details show">
+                    <p>Название группы: {{ permissionGroup.title }}</p>
+                    {% for  permission in permissionGroup.toArrayPermissions %}
+                        {% if(permission['status']) %}
+                            <p>Имеет привелегии: {{ permission.title }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div><!-- /.content-details -->
             </div>
-            <!--/.col (right) -->
         </div>
-        <!-- /.row -->
-    </section>
+    </div>
 {% endblock %}
