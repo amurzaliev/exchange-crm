@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class IndexController extends Controller
 {
     /**
-     * @Route("/profile/", name="profile_index")
+     * @Route("/profile", name="profile_index")
      */
     public function indexAction()
     {

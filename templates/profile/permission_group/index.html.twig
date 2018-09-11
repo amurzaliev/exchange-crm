@@ -1,68 +1,74 @@
-{% extends "layouts/profile.layout.html.twig" %}
-
+{% extends "profile.layout.html.twig" %}
 {% block content %}
-    <div class="row">
-        <div class="col-12">
-            <div class="section-content">
-                <div class="content-head">
-                    <h4 class="content-title">Список групп привелегий</h4><!-- /.content-title -->
+
+    <section class="content-header">
+        <h1>
+            Группы привелегий
+            <small>Список</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
                     {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_OWNER') %}
-                    <div class="float-right">
-                        <a href="{{ path('profile_permission_group_create') }}">
-                            <button type="button" class="btn btn-success">
-                                <i class="fa fa-plus-square"></i> Добавить
-                            </button>
-                        </a>
-                    </div><!-- /.corner-content -->
-                    <div class="clearfix"></div>
+                        <div class="box-header">
+                            <h3 class="box-title">
+                                <a href="{{ path('profile_permission_group_create') }}" class="btn btn-block btn-success btn-lg">
+                                    Добавить
+                                </a>
+                            </h3>
+                        </div>
                     {% endif %}
-                </div><!-- /.content-head -->
-                <div class="content-details show">
-                    <table id="data-table" class="table data-table table-striped table-bordered">
-                        <thead>
-                        <tr>
-                            <th>#id</th>
-                            <th>Наименование</th>
-                            <th>Альяс</th>
-                            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_OWNER') %}
-                                <th>Действние</th>
-                            {% endif %}
-                        </tr>
-                        </thead>
-
-                        <tbody>
-                        {% for permissionGroup in permissionGroups %}
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
                             <tr>
-                                <td>{{ permissionGroup.id }}</td>
-                                <td>{{ permissionGroup.title }}</td>
-                                <td>{{ permissionGroup.alias }}</td>
+                                <th>#id</th>
+                                <th>Наименование</th>
+                                <th>Альяс</th>
                                 {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_OWNER') %}
-                                    <td>
-
-                                        <div class="dropdown background">
-                                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fa fa-window-maximize"></i>
-                                                Действие
-                                            </button>
-                                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                                <a href="{{ path('profile_permission_group_detail', {'id' : permissionGroup.id }) }}" class="dropdown-item"  title="Просмотреть запись {{ permissionGroup.title }}"><i class="fa fa-eye"></i> Просмотр </a>
-                                                <a href="{{ path('profile_permission_group_edit', {'id' : permissionGroup.id }) }}" class="dropdown-item" title="Редактировать запись {{ permissionGroup.title }}"><i class="fa fa-pencil-square-o"></i> Редактировать </a>
-                                            </div>
-                                        </div>
-                                    </td>
+                                    <th>Действние</th>
                                 {% endif %}
                             </tr>
-                        {% else %}
-                            <tr>
-                                <td>Нет данных</td>
-                            </tr>
-                        {% endfor %}
+                            </thead>
+                            <tbody>
+                            {% for permissionGroup in permissionGroups %}
+                                <tr>
+                                    <td>{{ permissionGroup.id }}</td>
+                                    <td>{{ permissionGroup.title }}</td>
+                                    <td>{{ permissionGroup.alias }}</td>
+                                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_OWNER') %}
+                                    <td>
+                                        <a href="{{ path('profile_permission_group_detail', {'id' : permissionGroup.id }) }}" class="btn btn-default"  title="Просмотреть запись {{ permissionGroup.title }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
+                                        <a href="{{ path('profile_permission_group_edit', {'id' : permissionGroup.id }) }}" class="btn btn-primary" title="Редактировать запись {{ permissionGroup.title }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td>Нет данных</td>
+                                </tr>
+                            {% endfor %}
 
-                        </tbody>
-                    </table>
-                </div><!-- /.content-details -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+
             </div>
+            <!-- /.col -->
         </div>
+        <!-- /.row -->
+    </section>
 
-    </div>
+
 {% endblock %}

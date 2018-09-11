@@ -1,55 +1,68 @@
-{% extends "layouts/profile.layout.html.twig" %}
-
+{% extends "profile.layout.html.twig" %}
 {% block content %}
-    <div class="row">
-        <div class="col-12">
-            <div class="section-content">
-                <div class="content-head">
-                    <h4 class="content-title">Управление VIP клиентами</h4><!-- /.content-title -->
-                    <div class="float-right">
-                        <a href="{{ path('profile_vip_client_create') }}">
-                            <button type="button" class="btn btn-success">
-                                <i class="fa fa-plus-square"></i> Добавить
-                            </button>
-                        </a>
-                    </div><!-- /.corner-content -->
-                    <div class="clearfix"></div>
-                </div><!-- /.content-head -->
-                <div class="content-details show">
-                    <table id="data-table" class="table data-table table-striped table-bordered">
-                        <thead>
-                        <tr>
-                            <th>#id</th>
-                            <th>ФИО</th>
-                            <th>E-mail</th>
-                            <th>Номер телефона</th>
-                            <th>Дата создания</th>
-                            <th>Действие</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for vipClient in vipClients %}
-                            <tr>
-                                <td>{{ vipClient.id }}</td>
-                                <td>{{ vipClient.fullName }}</td>
-                                <td>{{ vipClient.email }}</td>
-                                <td>{{ vipClient.phone }}</td>
-                                <td>{{ vipClient.createdAt|date('d-m-Y') }}</td>
-                                <td>
-                                    <a href="{{ path('profile_vip_client_detail', {'id' : vipClient.id}) }}" class="btn btn-default"  title="Просмотреть запись {{ vipClient.fullName }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
-                                    <a href="{{ path('profile_vip_client_edit', {'id' : vipClient.id }) }}" class="btn btn-primary" title="Редактировать запись {{ vipClient.fullName }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td>Нет данных</td>
-                            </tr>
-                        {% endfor %}
+    <section class="content-header">
+        <h1>
+            Управление VIP клиентами
+            <small>Список</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+        </ol>
+    </section>
 
-                        </tbody>
-                    </table>
-                </div><!-- /.content-details -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">
+                            <a href="{{ path('profile_vip_client_create') }}" class="btn btn-block btn-success btn-lg">
+                                Добавить
+                            </a>
+                        </h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>#id</th>
+                                <th>ФИО</th>
+                                <th>E-mail</th>
+                                <th>Номер телефона</th>
+                                <th>Действие</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for vipClient in vipClients %}
+                                <tr>
+                                    <td>{{ vipClient.id }}</td>
+                                    <td>{{ vipClient.fullName }}</td>
+                                    <td>{{ vipClient.email }}</td>
+                                    <td>{{ vipClient.phone }}</td>
+                                    <td>
+                                        <a href="{{ path('profile_vip_client_detail', {'id' : vipClient.id}) }}" class="btn btn-default"  title="Просмотреть запись {{ vipClient.fullName }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
+                                        <a href="{{ path('profile_vip_client_edit', {'id' : vipClient.id }) }}" class="btn btn-primary" title="Редактировать запись {{ vipClient.fullName }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
+
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td>Нет данных</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+
             </div>
+            <!-- /.col -->
         </div>
-    </div>
+        <!-- /.row -->
+    </section>
+
 {% endblock %}

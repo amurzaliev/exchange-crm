@@ -1,68 +1,76 @@
-{% extends "layouts/profile.layout.html.twig" %}
-
+{% extends "profile.layout.html.twig" %}
 {% block content %}
-    <div class="row">
-        <div class="col-12">
-            <div class="section-content">
-                <div class="content-head">
-                    <h4 class="content-title">Управление валютами</h4><!-- /.content-title -->
-                    <div class="float-right">
-                        <a href="{{ path('profile_currency_create') }}">
-                            <button type="button" class="btn btn-success">
-                                <i class="fa fa-plus-square"></i> Добавить
-                            </button>
-                        </a>
-                    </div><!-- /.corner-content -->
-                    <div class="clearfix"></div>
-                </div><!-- /.content-head -->
-                <div class="content-details show">
-                    <table id="data-table" class="table data-table table-striped table-bordered">
-                        <thead>
-                        <tr>
-                            <th>#id</th>
-                            <th>Наименование<br> вылюты</th>
-                            <th>Иконка</th>
-                            <th>ISO-код</th>
-                            <th>Колличество<br> знаков после<br> запятой</th>
-                            <th>Разделитель<br> точности</th>
-                            <th>Разделитель<br> тысячных</th>
-                            <th>Действия</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for currency in currencies %}
-                            <tr>
-                                <td>{{ currency.id }}</td>
-                                <td>{{ currency.name }}</td>
-                                <td><img style="width: 50px; height: 25px" src="{{ vich_uploader_asset(currency, 'imageFile') }}"></td>
-                                <td>{{ currency.iso }}</td>
-                                <td>{{ currency.decimals }}</td>
-                                <td>{{ currency.decimalSeparator }}</td>
-                                <td>{{ currency.thousandSeparator }}</td>
-                                <td>
 
-                                    <div class="dropdown background">
-                                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-window-maximize"></i>
-                                            Действие
-                                        </button>
-                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                            <a href="{{ path('profile_currency_detail', {'id' : currency.id }) }}" class="dropdown-item"  title="Просмотреть запись {{ currency.name }}"><i class="fa fa-eye"></i> Просмотр </a>
-                                            <a href="{{ path('profile_currency_edit', {'id' : currency.id }) }}" class="dropdown-item" title="Редактировать запись {{ currency.name }}"><i class="fa fa-pencil-square-o"></i> Редактировать </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td>Нет данных</td>
-                            </tr>
-                        {% endfor %}
+    <section class="content-header">
+        <h1>
+            Управление валютами
+            <small>Список</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+        </ol>
+    </section>
 
-                        </tbody>
-                    </table>
-                </div><!-- /.content-details -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">
+                            <a href="{{ path('profile_currency_create') }}" class="btn btn-block btn-success btn-lg">
+                                Добавить
+                            </a>
+                        </h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>#id</th>
+                                <th>Наименование вылюты</th>
+                                <th>Иконка</th>
+                                <th>ISO-код</th>
+                                <th>Колличество знаков псле запятой</th>
+                                <th>Разделитель точности</th>
+                                <th>Разделитель тысячных</th>
+                                <th>Действия</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for currency in currencies %}
+                                <tr>
+                                    <td>{{ currency.id }}</td>
+                                    <td>{{ currency.name }}</td>
+                                    <td><img style="width: 50px; height: 25px" src="{{ vich_uploader_asset(currency, 'imageFile') }}"></td>
+                                    <td>{{ currency.iso }}</td>
+                                    <td>{{ currency.decimals }}</td>
+                                    <td>{{ currency.decimalSeparator }}</td>
+                                    <td>{{ currency.thousandSeparator }}</td>
+                                    <td>
+                                        <a href="{{ path('profile_currency_detail',{'id' : currency.id }) }}" title="Просмотреть запись {{ currency.name }}" class="btn btn-default">Просмотр <i class="fa fa-fw fa-eye"></i></a>
+                                        <a href="{{ path('profile_currency_edit', {'id' : currency.id }) }}"  title="Редактировать запись {{ currency.name }}" class="btn btn-primary"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td>Нет данных</td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+
             </div>
+            <!-- /.col -->
         </div>
-    </div>
+        <!-- /.row -->
+    </section>
+
+
 {% endblock %}

@@ -47,24 +47,19 @@ class ExchangeOfficeController extends BaseProfileController
      * @Method({"GET", "POST"})
      * @param StaffRepository $staffRepository
      * @param CurrencyRepository $currencyRepository
-     * @param PermissionGroupRepository $permissionGroupRepository
      * @return Response
      */
-    public function createAction(
-        StaffRepository $staffRepository,
-        CurrencyRepository $currencyRepository,
-        PermissionGroupRepository $permissionGroupRepository
-    )
+    public function createAction(StaffRepository $staffRepository, CurrencyRepository $currencyRepository)
     {
+
         $staffs = $staffRepository->findByAllOwnerStaff($this->getUser());
-        $permissionGroups = $permissionGroupRepository->findAllByOwner($this->getUser());
+
         $currencies = $currencyRepository->findAll();
 
 
         return $this->render('profile/exchange_office/create.html.twig', [
             'staffs' => $staffs,
-            'currencies' => $currencies,
-            'permissionGroups' => $permissionGroups
+            'currencies' => $currencies
         ]);
     }
 
@@ -189,78 +184,6 @@ class ExchangeOfficeController extends BaseProfileController
     }
 
     /**
-     * @Route("/create_exchange_office_ajax", name="profile_exchange_office_create_ajax")
-     * @Method("POST")
-     * @param Request $request
-     * @param ObjectManager $manager
-     * @param CurrencyRepository $currencyRepository
-     * @param StaffRepository $staffRepository
-     * @return JsonResponse
-     */
-    public function createActionAjax(
-        Request $request,
-        ObjectManager $manager,
-        CurrencyRepository $currencyRepository,
-        StaffRepository $staffRepository
-    )
-    {
-        $data = $request->request->all();
-        $message = '';
-        $exchangeOfficeId = null;
-
-        try {
-            if (empty($data['name'])) {
-
-                throw new \Exception('Поле название обменного пункта не может быть пустым');
-            }
-
-            $exchangeOffice = new ExchangeOffice();
-            $exchangeOffice->setUser($this->getUser());
-            $exchangeOffice->setName($data['name']);
-            $exchangeOffice->setAddress($data['address']);
-            $exchangeOffice->setContact($data['contact']);
-            $exchangeOffice->setActive($data['active']);
-            $manager->persist($exchangeOffice);
-
-            $cashbox = new Cashbox();
-            $cashbox->setUser($this->getUser());
-            $currency = $currencyRepository->findByOneIso($this->getParameter('default.currency'));
-            $cashbox->setCurrency($currency);
-            $cashbox->setExchangeOffice($exchangeOffice);
-            $manager->persist($cashbox);
-
-
-            if (array_key_exists('staffs', $data)) {
-                foreach ($data['staffs'] as $staffId) {
-                    $staff = $staffRepository->findByOneOwnerStaff($this->getUser(), (int)$staffId);
-                    $exchange = $exchangeOffice->addStaff($staff);
-                    $manager->persist($exchange);
-                }
-            }
-
-            if (array_key_exists('cashboxes', $data)) {
-                foreach ($data['cashboxes'] as $cashboxId) {
-                    $cashboxChange = new Cashbox();
-                    $currency = $currencyRepository->find($cashboxId);
-                    $cashboxChange->setUser($this->getUser());
-                    $cashboxChange->setCurrency($currency);
-                    $cashboxChange->setExchangeOffice($exchangeOffice);
-                    $manager->persist($cashboxChange);
-                }
-            }
-
-            $manager->flush();
-
-        } catch (\Exception $e) {
-            $message = $e->getMessage();
-        }
-
-        return new JsonResponse([
-            'message' => $message
-        ]);
-    }
-
-    /**
      * @Route("/edit-ajax", name="profile_exchange_office_edit_ajax")
      * @Method("POST")
      *
@@ -328,6 +251,7 @@ class ExchangeOfficeController extends BaseProfileController
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage();
+//            $message = 'Возникла ошибка сервера';
         }
 
         return new JsonResponse(['message' => $message, 'status' => $status]);
