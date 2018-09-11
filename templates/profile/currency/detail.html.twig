@@ -1,55 +1,32 @@
 {% extends "layouts/profile.layout.html.twig" %}
 
 {% block content %}
-
-    <section class="content-header">
-        <h1>
-            Данные вылюты
-            <small>Инофрмация</small>
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ path('profile_index') }}"><i class="fa fa-dashboard"></i> Главная</a></li>
-        </ol>
-    </section>
-
-    <!-- Main content -->
-    <section class="content">
-        <div class="row">
-            <!--/.col (left) -->
-            <!-- right column -->
-            <div class="col-md-12">
-                <!-- /.box -->
-                <!-- general form elements disabled -->
-                <div class="box box-warning">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Информация о валюте</h3>
-                    </div>
-                    <!-- /.box-header -->
-                    <div class="box-body">
-                        <p>Название валюты: {{ currency.name }}</p>
-                        <br>
-                        <p>Название iso-кода: {{ currency.iso }}</p>
-                        <br>
-                        <p>Символьное обозначение: {{ currency.symbolDesignation }}</p>
-                        <br>
-                        <p>Колличество знкаов после запятой: {{ currency.decimals}}</p>
-                        <br>
-                        <p>Разделитель точности: < {{ currency.decimalSeparator}} ></p>
-                        <br>
-                        <p>Разделитель тысячных: < {{ currency.thousandSeparator }} ></p>
-                        <br>
-                        <p>Время создание: {{ currency.createAt|date('d-m-Y') }}</p>
-                        <br>
-                        <p>Время обновления: {{ currency.updatedAt|date('d-m-Y') }}</p>
-                        <br>
-                        <img  src="{{ vich_uploader_asset(currency, 'imageFile') }}">
-                    </div>
-                    <!-- /.box-body -->
-                </div>
-                <!-- /.box -->
+    <div class="row">
+        <div class="col-12">
+            <div class="section-content">
+                <div class="content-head">
+                    <h4 class="content-title">Информация о валюте</h4><!-- /.content-title -->
+                </div><!-- /.content-head -->
+                <div class="content-details show">
+                    <p><b>Название валюты: </b> {{ currency.name }}</p>
+                    <br>
+                    <p><b>Название iso-кода: </b> {{ currency.iso }}</p>
+                    <br>
+                    <p><b>Символьное обозначение: </b> {{ currency.symbolDesignation }}</p>
+                    <br>
+                    <p><b>Колличество знкаов после запятой: </b> {{ currency.decimals}}</p>
+                    <br>
+                    <p><b>Разделитель точности: </b> < {{ currency.decimalSeparator}} ></p>
+                    <br>
+                    <p><b>Разделитель тысячных: </b> < {{ currency.thousandSeparator }} ></p>
+                    <br>
+                    <p><b>Время создание: </b> {{ currency.createAt|date('d-m-Y') }}</p>
+                    <br>
+                    <p><b>Время обновления: </b> {{ currency.updatedAt|date('d-m-Y') }}</p>
+                    <br>
+                    <img  src="{{ vich_uploader_asset(currency, 'imageFile') }}">
+                </div><!-- /.content-details -->
             </div>
-            <!--/.col (right) -->
         </div>
-        <!-- /.row -->
-    </section>
+    </div>
 {% endblock %}
