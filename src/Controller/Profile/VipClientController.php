@@ -99,8 +99,6 @@ class VipClientController extends BaseProfileController
 
     }
 
-
-
     /**
      * @Route("/{id}/edit", name="profile_vip_client_edit")
      * @param Request $request

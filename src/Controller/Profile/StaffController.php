@@ -221,7 +221,7 @@ class StaffController extends BaseProfileController
             return $this->redirectToRoute('profile_staff_index');
         }
 
-        return $this->render('profile/staff/edit.html.twig', [
+        return $this->render('profile/sstaff/edit.html.twig', [
             'form' => $form->createView()
         ]);
     }
