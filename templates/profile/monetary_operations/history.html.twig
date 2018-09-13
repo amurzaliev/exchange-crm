@@ -1,4 +1,4 @@
-{% extends "profile.layout.html.twig" %}
+{% extends "layouts/profile.layout.html.twig" %}
 
 {% block stylesheet %}
     <style>
@@ -10,111 +10,96 @@
 
 {% block content %}
 
-    <section class="content-header">
-        <h1>
-            История транзакций
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
-        </ol>
-    </section>
+    <div class="row">
+        <div class="col-12">
+            <div class="section-content">
+                <div class="content-head">
+                    <h4 class="content-title">История транзакций</h4><!-- /.content-title -->
+                </div><!-- /.content-head -->
+                <div class="content-details show">
 
-    <!-- Main content -->
-    <section class="content">
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="box">
-                    <!-- /.box-header -->
-                    <div class="box-body">
+                    <div class="filter" style="margin-bottom: 2rem;">
+                        <p>Настройте фильтр для поиска записей транзакций</p>
+                        <form action="{{ path('profile_monetary_operations_history') }}" method="get"
+                              class="form-inline" id="filter-form">
 
-                        <div class="filter" style="margin-bottom: 2rem;">
-                            <h4>Настройте фильтр для поиска записей транзакций</h4>
-                            <form action="{{ path('profile_monetary_operations_history') }}" method="get"
-                                  class="form-inline" id="filter-form">
-
-                                <div class="form-group">
-                                    <select name="exchangeOffices" id="exchangeOffices"
-                                            multiple>
-                                        {% for exchangeOffice in exchangeOffices %}
-                                            <option value="{{ exchangeOffice.id }}"
-                                                    {% if filter.exchangeOffices is defined %}
-                                                        {{ (exchangeOffice.id in filter.exchangeOffices) ? 'selected' }}
-                                                    {% endif %}>
-                                                {{ exchangeOffice.name }}
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <select name="currencies" id="currencies" multiple>
-                                        {% for currency in currencies %}
-                                            <option value="{{ currency.id }}"
-                                                    {% if filter.currencies is defined %}
-                                                        {{ (currency.id in filter.currencies) ? 'selected' }}
-                                                    {% endif %}>
-                                                {{ currency.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <select name="transactionTypes"
-                                            id="transactionTypes" multiple>
-                                        <option value="cashboxTo"
-                                                {% if filter.transactionTypes is defined %}
-                                                    {{ ('cashboxTo' in filter.transactionTypes) ? 'selected' }}
+                            <div class="form-group">
+                                <select name="exchangeOffices" id="exchangeOffices"
+                                        multiple>
+                                    {% for exchangeOffice in exchangeOffices %}
+                                        <option value="{{ exchangeOffice.id }}"
+                                                {% if filter.exchangeOffices is defined %}
+                                                    {{ (exchangeOffice.id in filter.exchangeOffices) ? 'selected' }}
                                                 {% endif %}>
-                                            Пополнение</option>
-                                        <option value="cashboxFrom"
-                                                {% if filter.transactionTypes is defined %}
-                                                    {{ ('cashboxFrom' in filter.transactionTypes) ? 'selected' }}
+                                            {{ exchangeOffice.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <select name="currencies" id="currencies" multiple>
+                                    {% for currency in currencies %}
+                                        <option value="{{ currency.id }}"
+                                                {% if filter.currencies is defined %}
+                                                    {{ (currency.id in filter.currencies) ? 'selected' }}
                                                 {% endif %}>
-                                            Снятие</option>
-                                    </select>
-                                </div>
+                                            {{ currency.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
 
-                                <div class="form-group">
-                                    <select name="operators" id="operators" multiple>
-                                        {% for staff in staffs %}
-                                            <option value="{{ staff.id }}"
-                                                    {% if filter.staffs is defined %}
-                                                        {{ (staff.id in filter.staffs) ? 'selected' }}
-                                                    {% endif %}>
-                                                {{ staff.user.fullname }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </form>
-                        </div>
+                            <div class="form-group">
+                                <select name="transactionTypes"
+                                        id="transactionTypes" multiple>
+                                    <option value="cashboxTo"
+                                            {% if filter.transactionTypes is defined %}
+                                                {{ ('cashboxTo' in filter.transactionTypes) ? 'selected' }}
+                                            {% endif %}>
+                                        Пополнение</option>
+                                    <option value="cashboxFrom"
+                                            {% if filter.transactionTypes is defined %}
+                                                {{ ('cashboxFrom' in filter.transactionTypes) ? 'selected' }}
+                                            {% endif %}>
+                                        Снятие</option>
+                                </select>
+                            </div>
 
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr>
-                                <th>Обменный пункт</th>
-                                <th>Валюта</th>
-                                <th>Тип операции</th>
-                                <th>Оператор</th>
-                                <th>Сумма, сом.</th>
-                                <th>Дата</th>
-                                <th>Комментарий</th>
-                            </tr>
-                            </thead>
-                            <tbody id="historyBlockList">
-                            {{ blockList|raw }}
-                            </tbody>
-                        </table>
+                            <div class="form-group">
+                                <select name="operators" id="operators" multiple>
+                                    {% for staff in staffs %}
+                                        <option value="{{ staff.id }}"
+                                                {% if filter.staffs is defined %}
+                                                    {{ (staff.id in filter.staffs) ? 'selected' }}
+                                                {% endif %}>
+                                            {{ staff.user.fullname }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </form>
                     </div>
-                    <!-- /.box-body -->
-                </div>
-                <!-- /.box -->
 
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Обменный пункт</th>
+                            <th>Валюта</th>
+                            <th>Тип операции</th>
+                            <th>Оператор</th>
+                            <th>Сумма, сом.</th>
+                            <th>Дата</th>
+                            <th>Комментарий</th>
+                        </tr>
+                        </thead>
+                        <tbody id="historyBlockList">
+                        {{ blockList|raw }}
+                        </tbody>
+                    </table>
+
+                </div><!-- /.content-details -->
             </div>
-            <!-- /.col -->
         </div>
-        <!-- /.row -->
-    </section>
-
+    </div>
 
 {% endblock %}
 
