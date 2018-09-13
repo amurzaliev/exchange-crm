@@ -1,0 +1,15 @@
+{% for transaction in transactions %}
+    <tr>
+        <td>{{ transaction.exchangeOffice.name }}</td>
+        <td>{{ transaction.cashboxFrom ? transaction.cashboxFrom.currency.iso : transaction.cashboxTo.currency.iso }}</td>
+        <td>
+            {{ transaction.cashboxFrom ? 'Списание' : 'Пополнение' }}
+        </td>
+        <td>{{ transaction.user.fullname }}</td>
+        <td>{{ transaction.amount|number_format(2, '.', ' ') }}</td>
+        <td>{{ transaction.updateAt|date('d/m/Y') }}</td>
+        <td>{{ transaction.note }}</td>
+    </tr>
+{% else %}
+    <p>Нет данных</p>
+{% endfor %}

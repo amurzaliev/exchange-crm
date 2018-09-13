@@ -174,7 +174,7 @@ class TransactionsHandler extends ModelHandler
             case "up" :
                 $transactions
                     ->setBasicType(1)
-                    ->setсashboxTo($cashbox);
+                    ->setCashboxTo($cashbox);
                 $resultAmount = $this->countNumberAfterPoint($resultAmount + $amount);
                 break;
             case "down":

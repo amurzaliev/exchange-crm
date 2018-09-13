@@ -5,7 +5,7 @@
             text-align: center;
         }
 
-        .money_operation  td.sale, th.sale, td.sale input {
+        .money_operation td.sale, th.sale, td.sale input {
             background: #4cd0936b;
         }
 
@@ -104,6 +104,7 @@
                                 </th>
                             </tr>
                             <tr>
+                                <th>История</th>
                                 <th>Остаток</th>
                                 <th>Название</th>
                                 <th>Флаг</th>
@@ -120,6 +121,14 @@
 
                                 {% if not cashbox.default_currency %}
                                     <tr class="cashbox-row cashbox-number-{{ cashbox.id }}">
+                                        <td>
+                                            <a href="{{ path('profile_monetary_operations_history', {
+                                                exchangeOffices: [cashbox.exchange_office_id],
+                                                currencies: [cashbox.currency_id]
+                                            }) }}">
+                                                Отчет
+                                            </a>
+                                        </td>
                                         <td class="cashbox-allAmount">
                                             {{ cashbox.summa }}
                                         </td>
@@ -169,7 +178,8 @@
 
                                             >
                                             <button data-active="1"
-                                                    class="btn btn-default btn_discount discount_active activeBtn-{{ cashbox.id }}">%
+                                                    class="btn btn-default btn_discount discount_active activeBtn-{{ cashbox.id }}">
+                                                %
                                             </button>
                                         </td>
                                         <td class="currency">

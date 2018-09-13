@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Transactions;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -19,21 +20,50 @@ class TransactionsRepository extends ServiceEntityRepository
         parent::__construct($registry, Transactions::class);
     }
 
-//    /**
-//     * @return Transactions[] Returns an array of Transactions objects
-//     */
-    /*
-    public function findByExampleField($value)
+    public function getAllTransactionsByFilter(User $owner, array $filter)
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        if (empty($filter['exchangeOffices'])) {
+            return null;
+        }
 
+        $qb = $this->createQueryBuilder('t');
+
+        $qb
+            ->join('t.exchangeOffice', 'e')
+            ->andWhere('e.user = :owner')
+            ->setParameter('owner', $owner)
+            ->andWhere($qb->expr()->in('t.exchangeOffice', $filter['exchangeOffices']));
+
+        if (!empty($filter['currencies'])) {
+            $qb
+                ->leftJoin('t.cashboxFrom', 'cf')
+                ->leftJoin('t.cashboxTo', 'ct')
+                ->andWhere(
+                    $qb->expr()->in('cf.currency', $filter['currencies']) . ' OR ' .
+                    $qb->expr()->in('ct.currency', $filter['currencies'])
+                );
+        }
+
+        if (!empty($filter['transactionTypes']) && count($filter['transactionTypes']) === 1) {
+
+            switch ($filter['transactionTypes'][0]) {
+                case 'cashboxTo':
+                    $qb->andWhere($qb->expr()->isNull('t.cashboxFrom'));
+                    break;
+                case 'cashboxFrom':
+                    $qb->andWhere($qb->expr()->isNull('t.cashboxTo'));
+                    break;
+            }
+
+        }
+
+        if (!empty($filter['operators'])) {
+            $qb->andWhere($qb->expr()->in('t.user', $filter['operators']));
+        }
+
+        return $qb
+            ->orderBy('t.updateAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

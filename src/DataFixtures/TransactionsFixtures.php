@@ -31,10 +31,11 @@ class TransactionsFixtures extends Fixture implements DependentFixtureInterface
                     ->setCreatedAt(new \DateTime())
                     ->setUpdateAt(new \DateTime())
                     ->setUser($cashbox->getUser())
-                    ->setсashboxTo($cashbox)
+                    ->setCashboxTo($cashbox)
                     ->setAmount(6000000)
                     ->setNote("Стартовый каписал для Дефолтной кассы")
-                    ->setBasicType(1);
+                    ->setBasicType(1)
+                    ->setExchangeOffice($cashbox->getExchangeOffice());
                 $manager->persist($transactions);
             }
 

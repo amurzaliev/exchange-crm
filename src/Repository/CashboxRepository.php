@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Cashbox;
 use App\Entity\ExchangeOffice;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\NonUniqueResultException;
@@ -48,7 +49,7 @@ class CashboxRepository extends ServiceEntityRepository
                         FROM 
                             transactions t  
                         WHERE 
-                            t.сashbox_to_id = c.id
+                            t.cashbox_to_id = c.id
                             AND 
                             t.basic_type = 1
                     ) - (
@@ -57,7 +58,7 @@ class CashboxRepository extends ServiceEntityRepository
                         FROM 
                             transactions t  
                         WHERE 
-                            t.сashbox_from_id = c.id
+                            t.cashbox_from_id = c.id
                             AND 
                             t.basic_type = 2
                     ) as summa,
@@ -122,8 +123,7 @@ class CashboxRepository extends ServiceEntityRepository
                 ->setParameter("exchangeOffice", $exchangeOffice)
                 ->setParameter("defaultCurrency", true)
                 ->getQuery()
-                ->getOneOrNullResult()
-            ;
+                ->getOneOrNullResult();
         } catch (NonUniqueResultException $e) {
             return null;
         }
@@ -134,7 +134,7 @@ class CashboxRepository extends ServiceEntityRepository
      * @param string $currency
      * @return Cashbox|null
      */
-    public function findByCurrencyName( string $currency)
+    public function findByCurrencyName(string $currency)
     {
         try {
             return $this->createQueryBuilder('c')
@@ -162,7 +162,7 @@ class CashboxRepository extends ServiceEntityRepository
                         FROM 
                             transactions t  
                         WHERE 
-                            t.сashbox_to_id = c.id
+                            t.cashbox_to_id = c.id
                             AND 
                             t.basic_type = 1
                     ) - (
@@ -171,7 +171,7 @@ class CashboxRepository extends ServiceEntityRepository
                         FROM 
                             transactions t  
                         WHERE 
-                            t.сashbox_from_id = c.id
+                            t.cashbox_from_id = c.id
                             AND 
                             t.basic_type = 2
                     ) as summa
@@ -218,7 +218,7 @@ class CashboxRepository extends ServiceEntityRepository
      * @param int $exchangeOfficeId
      * @return Cashbox | null
      */
-    public function findByCashboxes( int $exchangeOfficeId)
+    public function findByCashboxes(int $exchangeOfficeId)
     {
         try {
             return $this->createQueryBuilder('c')
@@ -229,8 +229,15 @@ class CashboxRepository extends ServiceEntityRepository
         } catch (NotFoundResourceException $e) {
             return null;
         }
+    }
 
-
-
+    public function findAllByOwner(User $owner)
+    {
+        return $this->createQueryBuilder('c')
+            ->join('c.exchangeOffice', 'e')
+            ->andWhere('e.user = :owner')
+            ->setParameter('owner', $owner)
+            ->getQuery()
+            ->getResult();
     }
 }

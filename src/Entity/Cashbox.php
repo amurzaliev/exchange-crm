@@ -65,14 +65,14 @@ class Cashbox
     /**
      * @var Transactions[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Transactions", mappedBy="сashboxFrom")
+     * @ORM\OneToMany(targetEntity="App\Entity\Transactions", mappedBy="cashboxFrom")
      */
     private $TransactionsFrom;
 
     /**
      * @var Transactions[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Transactions", mappedBy="сashboxTo")
+     * @ORM\OneToMany(targetEntity="App\Entity\Transactions", mappedBy="cashboxTo")
      */
     private $transactionsTo;
 

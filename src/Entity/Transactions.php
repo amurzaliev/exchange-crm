@@ -23,14 +23,14 @@ class Transactions
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Cashbox", inversedBy="TransactionsFrom")
      */
-    private $сashboxFrom;
+    private $cashboxFrom;
 
     /**
      * @var Cashbox
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Cashbox", inversedBy="transctionsTo")
      */
-    private $сashboxTo;
+    private $cashboxTo;
 
     /**
      * @var int
@@ -120,24 +120,24 @@ class Transactions
 
     public function getCashboxFrom(): ?Cashbox
     {
-        return $this->сashboxFrom;
+        return $this->cashboxFrom;
     }
 
-    public function setCashboxFrom(?Cashbox $сashboxFrom): self
+    public function setCashboxFrom(?Cashbox $cashboxFrom): self
     {
-        $this->сashboxFrom = $сashboxFrom;
+        $this->cashboxFrom = $cashboxFrom;
 
         return $this;
     }
 
-    public function getсashboxTo(): ?Cashbox
+    public function getCashboxTo(): ?Cashbox
     {
-        return $this->сashboxTo;
+        return $this->cashboxTo;
     }
 
-    public function setсashboxTo(?Cashbox $сashboxTo): self
+    public function setCashboxTo(?Cashbox $cashboxTo): self
     {
-        $this->сashboxTo = $сashboxTo;
+        $this->cashboxTo = $cashboxTo;
 
         return $this;
     }
