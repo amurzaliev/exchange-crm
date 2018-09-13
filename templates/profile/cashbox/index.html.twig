@@ -1,4 +1,4 @@
-{% extends "profile.layout.html.twig" %}
+{% extends 'layouts/profile.layout.html.twig' %}
 {% block content %}
     <section class="content-header">
         <h1>
@@ -47,7 +47,7 @@
 
                                         <a href="{{ path('profile_cashbox_detail', {'id' : cashbox.id}) }}" class="btn btn-default"  title="Просмотреть запись {{ cashbox.currency.name }}">Просмотр <i class="fa fa-fw fa-eye"></i></a>
                                         {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_OWNER') %}
-                                        <a href="{{ path('profile_cashbox_edit', {'id' : cashbox.id }) }}" class="btn btn-primary" title="Редактировать запись {{ cashbox.currency.name }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
+                                            <a href="{{ path('profile_cashbox_edit', {'id' : cashbox.id }) }}" class="btn btn-primary" title="Редактировать запись {{ cashbox.currency.name }}"> Редактировать <i class="fa fa-fw fa-pencil"></i></a>
                                         {% endif %}
                                         <a href="{{ path('profile_currency_rate_detail', {'id' : cashbox.id }) }}" class="btn btn-warning" title="Просмотреть курс валюты {{ cashbox.currency.name }} "> Курс валюты <i class="fa fa-fw fa-eye"></i></a>
                                     </td>
