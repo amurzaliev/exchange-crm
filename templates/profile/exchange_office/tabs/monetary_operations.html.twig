@@ -8,7 +8,7 @@
                     <table id="example2" class="table table-bordered">
                         {#<thead>#}
                         <tr>
-                            <th colspan="3">Валюта</th>
+                            <th colspan="4">Валюта</th>
                             <th colspan="2" class="purchase">Покупка</th>
                             <th colspan="2" class="sale">Продажа</th>
                             <th colspan="2" class="currency">Нац. валюта <img style="width: 50px; height: 25px"
@@ -16,6 +16,7 @@
                             </th>
                         </tr>
                         <tr>
+                            <th></th>
                             <th>Остаток</th>
                             <th>Название</th>
                             <th>Флаг</th>
@@ -32,6 +33,12 @@
 
                             {% if not cashbox.default_currency %}
                                 <tr class="cashbox-row cashbox-number-{{ cashbox.id }}">
+                                    <td>
+                                        <a href="{{ path('profile_monetary_operations_history', {
+                                            exchangeOffices: [cashbox.exchange_office_id],
+                                            currencies: [cashbox.currency_id]
+                                        }) }}">Операции</a>
+                                    </td>
                                     <td class="cashbox-allAmount">
                                         {{ cashbox.summa }}
                                     </td>

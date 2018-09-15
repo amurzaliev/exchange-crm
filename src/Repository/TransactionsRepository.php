@@ -61,9 +61,24 @@ class TransactionsRepository extends ServiceEntityRepository
             $qb->andWhere($qb->expr()->in('t.user', $filter['operators']));
         }
 
+        if (!empty($filter['dateFrom'])) {
+            $qb
+                ->andWhere('t.createdAt >= :dateFrom')
+                ->setParameter('dateFrom', \DateTime::createFromFormat('d/m/Y', $filter['dateFrom']));
+        }
+
+        if (!empty($filter['dateTo'])) {
+            $qb
+                ->andWhere('t.createdAt <= :dateTo')
+                ->setParameter('dateTo', \DateTime::createFromFormat('d/m/Y', $filter['dateTo']));
+        }
+
+        $maxResult = $filter['maxResult'] ?? 5;
+
         return $qb
             ->orderBy('t.updateAt', 'DESC')
             ->getQuery()
+            ->setMaxResults($maxResult)
             ->getResult();
     }
 }
