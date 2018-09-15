@@ -73,7 +73,7 @@ class TransactionsRepository extends ServiceEntityRepository
                 ->setParameter('dateTo', \DateTime::createFromFormat('d/m/Y', $filter['dateTo']));
         }
 
-        $maxResult = $filter['maxResult'] ?? 5;
+        $maxResult = $filter['maxResult'] ?? 15;
 
         return $qb
             ->orderBy('t.updateAt', 'DESC')
