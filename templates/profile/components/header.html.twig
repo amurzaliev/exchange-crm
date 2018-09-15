@@ -23,11 +23,12 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <img src="{{ asset('profile/images/avatar/1.jpg') }}" class="rounded-circle float-left mr-2" alt="User Image">
                     <span class="status"></span>
-                    <h4 class="name">{{ app.user.fullname }}</h4>
+                    <h4 class="name">Макс</h4>
                 </a>
                 <ul class="dropdown-menu">
+                    <li><a href="#"><i class="fa fa-user"></i> Мой профиль</a></li>
                     <li><a href="#"><i class="fa fa-gears"></i> Настройки</a></li>
-                    <li><a href="{{ path('fos_user_security_logout') }}"><i class="fa fa-power-off"></i> Выход</a></li>
+                    <li><a href="/logout"><i class="fa fa-power-off"></i> Выход</a></li>
                 </ul>
             </div>
 

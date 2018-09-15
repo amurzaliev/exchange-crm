@@ -1,80 +1,68 @@
-{% extends "profile.layout.html.twig" %}
+{% extends "layouts/profile.layout.html.twig" %}
+
+{% block stylesheet %}
+<style>
+    .custom-file-input {
+        opacity: 1;
+    }
+    .form-control {
+        margin-bottom: 15px !important;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="section-content">
+                <div class="content-head">
+                    <h4 class="content-title">Редактирование валюты</h4><!-- /.content-title -->
+                </div><!-- /.content-head -->
+                <div class="content-details show">
+                    {{ form_start(form) }}
 
-    <section class="content-header">
-        <h1>
-            Валюта
-            <small>Редактирование</small>
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ path('profile_index') }}"><i class="fa fa-dashboard"></i> Главная</a></li>
-        </ol>
-    </section>
+                    {{ form_label(form.name, 'Название') }}
+                    {{ form_errors(form.name) }}
+                    {{ form_widget(form.name) }}
+                    {{ form_help(form.name) }}
 
-    <!-- Main content -->
-    <section class="content">
-        <div class="row">
-            <!--/.col (left) -->
-            <!-- right column -->
-            <div class="col-md-12">
-                <!-- /.box -->
-                <!-- general form elements disabled -->
-                <div class="box box-warning">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Редактирование валюты</h3>
-                    </div>
-                    <!-- /.box-header -->
+                    {{ form_label(form.imageFile, 'Иконка') }}
+                    {{ form_errors(form.imageFile) }}
+                    {{ form_widget(form.imageFile) }}
+                    {{ form_help(form.imageFile) }}
+                    <br>
+                    {{ form_label(form.iso, 'Iso-код') }}
+                    {{ form_errors(form.iso) }}
+                    {{ form_widget(form.iso) }}
+                    {{ form_help(form.iso) }}
 
-                    <div class="box-body">
-                        {{ form_start(form) }}
+                    {{ form_label(form.symbolDesignation, 'Символьное отображение') }}
+                    {{ form_errors(form.symbolDesignation) }}
+                    {{ form_widget(form.symbolDesignation) }}
+                    {{ form_help(form.symbolDesignation) }}
 
-                        {{ form_label(form.name, 'Название') }}
-                        {{ form_errors(form.name) }}
-                        {{ form_widget(form.name) }}
-                        {{ form_help(form.name) }}
+                    {{ form_label(form.decimals, 'Коллличество знаков после запятой') }}
+                    {{ form_errors(form.decimals) }}
+                    {{ form_widget(form.decimals) }}
+                    {{ form_help(form.decimals) }}
 
-                        {{ form_label(form.imageFile, 'Иконка') }}
-                        {{ form_errors(form.imageFile) }}
-                        {{ form_widget(form.imageFile) }}
-                        {{ form_help(form.imageFile) }}
+                    {{ form_label(form.decimalSeparator, 'Разделитель точности') }}
+                    {{ form_errors(form.decimalSeparator) }}
+                    {{ form_widget(form.decimalSeparator) }}
+                    {{ form_help(form.decimalSeparator) }}
 
-                        {{ form_label(form.iso, 'Iso-код') }}
-                        {{ form_errors(form.iso) }}
-                        {{ form_widget(form.iso) }}
-                        {{ form_help(form.iso) }}
+                    {{ form_label(form.thousandSeparator, 'Розделитель тысячных') }}
+                    {{ form_errors(form.thousandSeparator) }}
+                    {{ form_widget(form.thousandSeparator) }}
+                    {{ form_help(form.thousandSeparator) }}
 
-                        {{ form_label(form.symbolDesignation, 'Символьное отображение') }}
-                        {{ form_errors(form.symbolDesignation) }}
-                        {{ form_widget(form.symbolDesignation) }}
-                        {{ form_help(form.symbolDesignation) }}
-
-                        {{ form_label(form.decimals, 'Коллличество знаков после запятой') }}
-                        {{ form_errors(form.decimals) }}
-                        {{ form_widget(form.decimals) }}
-                        {{ form_help(form.decimals) }}
-
-                        {{ form_label(form.decimalSeparator, 'Разделитель точности') }}
-                        {{ form_errors(form.decimalSeparator) }}
-                        {{ form_widget(form.decimalSeparator) }}
-                        {{ form_help(form.decimalSeparator) }}
-
-                        {{ form_label(form.thousandSeparator, 'Розделитель тысячных') }}
-                        {{ form_errors(form.thousandSeparator) }}
-                        {{ form_widget(form.thousandSeparator) }}
-                        {{ form_help(form.thousandSeparator) }}
-
-                        <hr>
-                        {{ form_row(form.save, {'label' : 'Сохранить', 'attr' : {
-                            'class' : 'btn btn-primary btn-lg'
-                        }}) }}
-                        {{ form_end(form) }}
-                    </div>
-                    <!-- /.box-body -->
-                </div>
-                <!-- /.box -->
+                    <hr>
+                    {{ form_row(form.save, {'label' : 'Сохранить', 'attr' : {
+                        'class' : 'btn btn-primary btn-lg'
+                    }}) }}
+                    {{ form_end(form) }}
+                </div><!-- /.content-details -->
             </div>
-            <!--/.col (right) -->
         </div>
-        <!-- /.row -->
-    </section>
+    </div>
 {% endblock %}

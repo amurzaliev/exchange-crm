@@ -1,59 +1,37 @@
-{% extends "profile.layout.html.twig" %}
+{% extends "layouts/profile.layout.html.twig" %}
+
 {% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="section-content">
+                <div class="content-head">
+                    <h4 class="content-title">Редактирование VIP клиента</h4><!-- /.content-title -->
+                </div><!-- /.content-head -->
+                <div class="content-details show">
+                    {{ form_start(form) }}
 
-    <section class="content-header">
-        <h1>
-            VIP клиент
-            <small>Редактирование</small>
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ path('profile_index') }}"><i class="fa fa-dashboard"></i> Главная</a></li>
-        </ol>
-    </section>
+                    {{ form_label(form.fullName, 'ФИО') }}
+                    {{ form_errors(form.fullName) }}
+                    {{ form_widget(form.fullName) }}
+                    {{ form_help(form.fullName) }}
 
-    <!-- Main content -->
-    <section class="content">
-        <div class="row">
-            <!--/.col (left) -->
-            <!-- right column -->
-            <div class="col-md-12">
-                <!-- /.box -->
-                <!-- general form elements disabled -->
-                <div class="box box-warning">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Редактирование VIP клиента</h3>
-                    </div>
-                    <!-- /.box-header -->
-                    <div class="box-body">
-                        {{ form_start(form) }}
+                    {{ form_label(form.email, 'E-mail') }}
+                    {{ form_errors(form.email) }}
+                    {{ form_widget(form.email) }}
+                    {{ form_help(form.email) }}
 
-                        {{ form_label(form.fullName, 'ФИО') }}
-                        {{ form_errors(form.fullName) }}
-                        {{ form_widget(form.fullName) }}
-                        {{ form_help(form.fullName) }}
+                    {{ form_label(form.phone, 'Контакты') }}
+                    {{ form_errors(form.phone) }}
+                    {{ form_widget(form.phone) }}
+                    {{ form_help(form.phone) }}
 
-                        {{ form_label(form.email, 'E-mail') }}
-                        {{ form_errors(form.email) }}
-                        {{ form_widget(form.email) }}
-                        {{ form_help(form.email) }}
-
-                        {{ form_label(form.phone, 'Контакты') }}
-                        {{ form_errors(form.phone) }}
-                        {{ form_widget(form.phone) }}
-                        {{ form_help(form.phone) }}
-
-                        <hr>
-                        {{ form_widget(form.save, {'label' : 'Сохранить', 'attr' : {
-                            'class' : 'btn btn-primary btn-lg'
-                        }}) }}
-                        {{ form_end(form) }}
-                    </div>
-                    <!-- /.box-body -->
-                </div>
-                <!-- /.box -->
+                    <hr>
+                    {{ form_widget(form.save, {'label' : 'Сохранить', 'attr' : {
+                        'class' : 'btn btn-primary btn-lg'
+                    }}) }}
+                    {{ form_end(form) }}
+                </div><!-- /.content-details -->
             </div>
-            <!--/.col (right) -->
         </div>
-        <!-- /.row -->
-    </section>
+    </div>
 {% endblock %}

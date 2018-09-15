@@ -1,55 +1,40 @@
-{% extends "profile.layout.html.twig" %}
+{% extends "layouts/profile.layout.html.twig" %}
+{% block stylesheet %}
+    <style>
+        .form-check-input {
+            margin-top: 0;
+            margin-left: 0;
+        }
+    </style>
+{% endblock %}
 {% block content %}
-
-    <section class="content-header">
-        <h1>
-            Группы привилегий
-            <small>Редактирования</small>
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
-        </ol>
-    </section>
-
-    <!-- Main content -->
-    <section class="content">
-        <div class="row">
-            <!--/.col (left) -->
-            <!-- right column -->
-            <div class="col-md-12">
-                <!-- /.box -->
-                <!-- general form elements disabled -->
-                <div class="box box-warning">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Редактирования Группы привилегий</h3>
-                    </div>
-                    <!-- /.box-header -->
-                    <div class="box-body">
-                        {{ form_start(form) }}
-                        {{ form_row(form.title) }}
-                        {{ form_row(form.alias) }}
-                        <h3>Список пиривилегий</h3>
-                        {{ form_row(form.create_personal, {'attr' : {
-                            'class' : 'minimal'
-                        }}) }}
-                        {{ form_row(form.edit_personal, {'attr' : {
-                            'class' : 'minimal'
-                        }}) }}
-                        {{ form_row(form.view_personal, {'attr' : {
-                            'class' : 'minimal'
-                        }}) }}
-                        <hr>
-                        {{ form_row(form.save, {'label' : 'Сохранить', 'attr' : {
-                            'class' : 'btn btn-primary btn-lg'
-                        }}) }}
-                        {{ form_end(form) }}
-                    </div>
-                    <!-- /.box-body -->
-                </div>
-                <!-- /.box -->
+    <div class="row">
+        <div class="col-12">
+            <div class="section-content">
+                <div class="content-head">
+                    <h4 class="content-title">Редактирования Группы привилегий</h4><!-- /.content-title -->
+                </div><!-- /.content-head -->
+                <div class="content-details show">
+                    {{ form_start(form) }}
+                    {{ form_row(form.title) }}
+                    {{ form_row(form.alias) }}
+                    <h3>Список пиривилегий</h3>
+                    {{ form_row(form.create_personal, {'attr' : {
+                        'class' : 'minimal'
+                    }}) }}
+                    {{ form_row(form.edit_personal, {'attr' : {
+                        'class' : 'minimal'
+                    }}) }}
+                    {{ form_row(form.view_personal, {'attr' : {
+                        'class' : 'minimal'
+                    }}) }}
+                    <hr>
+                    {{ form_row(form.save, {'label' : 'Сохранить', 'attr' : {
+                        'class' : 'btn btn-primary btn-lg'
+                    }}) }}
+                    {{ form_end(form) }}
+                </div><!-- /.content-details -->
             </div>
-            <!--/.col (right) -->
         </div>
-        <!-- /.row -->
-    </section>
+    </div>
 {% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Currency;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\NonUniqueResultException;
@@ -72,6 +73,17 @@ class CurrencyRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('c');
 
         return $qb->andWhere($qb->expr()->notIn('c.id', $ids))
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAllByOwner(User $owner)
+    {
+        return $this->createQueryBuilder('c')
+            ->join('c.cashboxes', 'b')
+            ->join('b.exchangeOffice', 'e')
+            ->andWhere('e.user = :owner')
+            ->setParameter('owner', $owner)
             ->getQuery()
             ->getResult();
     }
