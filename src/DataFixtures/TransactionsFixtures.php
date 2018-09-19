@@ -33,7 +33,7 @@ class TransactionsFixtures extends Fixture implements DependentFixtureInterface
                     ->setUser($cashbox->getUser())
                     ->setCashboxTo($cashbox)
                     ->setAmount(6000000)
-                    ->setNote("Стартовый каписал для Дефолтной кассы")
+                    ->setNote("Стартовый капитал для Дефолтной кассы {$cashbox->getExchangeOffice()->getName()}")
                     ->setBasicType(1)
                     ->setExchangeOffice($cashbox->getExchangeOffice());
                 $manager->persist($transactions);

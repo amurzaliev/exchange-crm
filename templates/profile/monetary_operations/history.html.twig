@@ -1,6 +1,7 @@
 {% extends "layouts/profile.layout.html.twig" %}
 
 {% block stylesheet %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <style>
         .fstControls, .fstResults, .fstSingleMode {
             font-size: 10px;
@@ -24,7 +25,7 @@
                               class="form-inline" id="filter-form">
 
                             <div class="form-group">
-                                <select name="exchangeOffices" id="exchangeOffices"
+                                <select name="exchangeOffices[]" id="exchangeOffices"
                                         multiple>
                                     {% for exchangeOffice in exchangeOffices %}
                                         <option value="{{ exchangeOffice.id }}"
@@ -38,7 +39,7 @@
                             </div>
 
                             <div class="form-group">
-                                <select name="currencies" id="currencies" multiple>
+                                <select name="currencies[]" id="currencies" multiple>
                                     {% for currency in currencies %}
                                         <option value="{{ currency.id }}"
                                                 {% if filter.currencies is defined %}
@@ -50,23 +51,25 @@
                             </div>
 
                             <div class="form-group">
-                                <select name="transactionTypes"
+                                <select name="transactionTypes[]"
                                         id="transactionTypes" multiple>
                                     <option value="cashboxTo"
                                             {% if filter.transactionTypes is defined %}
                                                 {{ ('cashboxTo' in filter.transactionTypes) ? 'selected' }}
                                             {% endif %}>
-                                        Пополнение</option>
+                                        Пополнение
+                                    </option>
                                     <option value="cashboxFrom"
                                             {% if filter.transactionTypes is defined %}
                                                 {{ ('cashboxFrom' in filter.transactionTypes) ? 'selected' }}
                                             {% endif %}>
-                                        Снятие</option>
+                                        Снятие
+                                    </option>
                                 </select>
                             </div>
 
                             <div class="form-group">
-                                <select name="operators" id="operators" multiple>
+                                <select name="operators[]" id="operators" multiple>
                                     {% for staff in staffs %}
                                         <option value="{{ staff.id }}"
                                                 {% if filter.staffs is defined %}
@@ -75,6 +78,16 @@
                                             {{ staff.user.fullname }}</option>
                                     {% endfor %}
                                 </select>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="dateFrom" name="dateFrom"
+                                       placeholder="Начальная дата">
+                            </div>
+
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="dateTo" name="dateTo"
+                                       placeholder="Конечная дата">
                             </div>
                         </form>
                     </div>
@@ -96,6 +109,8 @@
                         </tbody>
                     </table>
 
+                    <p id="loading" class="text-center"></p>
+
                 </div><!-- /.content-details -->
             </div>
         </div>
@@ -105,16 +120,20 @@
 
 {% block Javascript %}
 
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <script>
         $(function () {
+
+            $('#dateFrom').datepicker({dateFormat: 'dd/mm/yy'});
+            $('#dateTo').datepicker({dateFormat: 'dd/mm/yy'});
 
             $('#exchangeOffices').fastselect({placeholder: 'Обменные пункты', noResultsText: 'Нет данных'});
             $('#currencies').fastselect({placeholder: 'Валюты', noResultsText: 'Нет данных'});
             $('#transactionTypes').fastselect({placeholder: 'Тип операции', noResultsText: 'Нет данных'});
             $('#operators').fastselect({placeholder: 'Операторы', noResultsText: 'Нет данных'});
 
-            $('#exchangeOffices, #currencies, #transactionTypes, #operators').on('change', function () {
-                let data = {};
+            let getFormData = function () {
                 $.each($('#filter-form').find(':input, select'), function () {
                     if ($(this).is(':checkbox')) {
                         data[this.name] = !!$(this).is(':checked');
@@ -122,21 +141,47 @@
                         data[this.name] = $(this).val();
                     }
                 });
+            };
 
+            let getDataRequest = function () {
                 $.get('{{ path('profile_monetary_operations_history_ajax') }}', data, function (response) {
+                    console.log(response.message);
                     history.pushState(null, null, '{{ path('profile_monetary_operations_history') }}' + '?' + $.param(data));
                     let historyBlockList = $('#historyBlockList');
                     historyBlockList.empty();
                     historyBlockList.append(response.blockList);
-
                 });
+            };
+
+            let data = {};
+            getFormData();
+            data.maxResult = 15;
+
+            $('#exchangeOffices, #currencies, #transactionTypes, #operators, #dateFrom, #dateTo').on('change', function () {
+                getFormData();
+                getDataRequest();
             });
 
             $(window).on('popstate', function (e) {
                 window.location.replace(e.currentTarget.location.href);
             });
 
-        });
+            $(window).scroll(function () {
+                if ($(window).scrollTop() + $(window).height() === $(document).height()) {
+                    data.maxResult = data.maxResult + 10;
+                    getDataRequest();
+                }
+            });
+
+            $(document).ajaxStart(function () {
+                $("#loading").append('Загрузка...');
+            });
+            $(document).ajaxComplete(function () {
+                $("#loading").empty();
+            });
+
+        })
+        ;
     </script>
 
 {% endblock %}

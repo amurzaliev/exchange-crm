@@ -178,8 +178,6 @@ class MonetaryOperationsController extends BaseProfileController
         $user = $this->getOwner();
         $filter = $request->query->all();
 
-        dump($filter);
-
         $exchangeOffices = $exchangeOfficeRepository->findByAllOwnersExchange($user);
         $currencies = $currencyRepository->findAllByOwner($user);
         $staffs = $staffRepository->findByAllOwnerStaff($user);
@@ -226,7 +224,6 @@ class MonetaryOperationsController extends BaseProfileController
             $status = false;
             $message = $e->getMessage();
         }
-
 
         return new JsonResponse([
             'blockList' => $blockList,
