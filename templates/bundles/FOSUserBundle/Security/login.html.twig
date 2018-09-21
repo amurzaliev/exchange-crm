@@ -1,7 +1,5 @@
 {% extends "layout.html.twig" %}
 
 {% block fos_user_content %}
-    <div>
-        {{ include('@FOSUser/Security/login_content.html.twig') }}
-    </div>
+    {{ include('@FOSUser/Security/login_content.html.twig') }}
 {% endblock fos_user_content %}

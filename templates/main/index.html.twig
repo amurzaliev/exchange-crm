@@ -4,72 +4,252 @@
 
 {% block body %}
     {% block header %}{{ parent() }}{% endblock %}
-    <div class="container">
+    <div id="hero" class="hero-section">
 
-        <div class="row">
-            <img class="col-sm-4" style="max-width: 100%" src="{{ asset('img/3.jpg') }}">
-            <p class="col-sm-4" style="text-align:center; margin-top: 100px;">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam aspernatur at blanditiis, delectus facere iste nam nemo omnis quis ratione. Dicta ducimus error ex itaque optio perferendis quia repudiandae? A accusamus assumenda at aut debitis deleniti dolorum et facere fugiat illo inventore ipsa laboriosam minima mollitia nam nemo nisi nobis nulla odit omnis optio possimus provident quas quia quidem quis quisquam ratione rem repellat repellendus reprehenderit sint, tempore totam ullam ut veritatis voluptatum. Aliquam asperiores assumenda delectus iure perspiciatis possimus provident suscipit temporibus tenetur voluptas. Eveniet fugiat illo, incidunt laboriosam laudantium libero magni modi, molestias nisi optio provident quo ut!
-            </p>
-        </div>
+        <div id="hero-carousel" class="hero-carousel carousel carousel-fade slide" data-ride="carousel"
+             data-interval="10000">
 
-        <div class="about">
-            <div class="container">
-                <h1>Наши главные принципы</h1>
-                <div class="row">
-                    <div class="col-sm">
-                        <div>
-                            <i class="fas fa-lock"></i>
-                            <div class="card-body">
-                                <h4 >Безопасность</h4>
-                                <p>Здесь описание того насколько мы заботимся о безопасности наших пользователей и тд.</p>
-                            </div>
-                        </div>
+            <div class="figure-holder-wrapper">
+                <div class="container">
+                    <div class="row justify-content-end">
+                        <div class="figure-holder">
+                            <img class="figure-image img-fluid" src="{{ asset('assets/landing/images/imac.png') }}"
+                                 alt="image"/>
+                        </div><!--//figure-holder-->
+                    </div><!--//row-->
+                </div><!--//container-->
+            </div><!--//figure-holder-wrapper-->
+
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li class="active" data-slide-to="0" data-target="#hero-carousel"></li>
+                <li data-slide-to="1" data-target="#hero-carousel"></li>
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner">
+
+                <div class="carousel-item item-1 active">
+                    <div class="item-content container">
+                        <div class="item-content-inner">
+
+                            <h2 class="heading">Система управления валютными операциями</h2>
+                            <p class="intro">Зарегестрируйтесь и попробуйте бесплатную версию уже сейчас</p>
+                            <a class="btn btn-primary btn-cta"
+                               href="{{ path('fos_user_registration_register') }}"
+                               target="_blank">Регистрация</a>
+
+                        </div><!--//item-content-inner-->
+                    </div><!--//item-content-->
+                </div><!--//item-->
+
+                <div class="carousel-item item-2">
+                    <div class="item-content container">
+                        <div class="item-content-inner">
+
+                            <h2 class="heading">В чем преимущества?</h2>
+                            <p class="intro">Exchange CRM позволяет Вам управлять и формировать отчеты по всем валютным
+                                операциям Ващих обменных пунктов</p>
+                            <a class="btn btn-primary btn-cta"
+                               href="#features">Что внутри?</a>
+
+                        </div><!--//item-content-inner-->
                     </div>
+                </div><!--//item-->
 
-                    <div class="col-sm">
-                        <div>
-                            <i class="fas fa-thumbs-up"></i>
-                            <div class="card-body">
-                                <h4>Удобство</h4>
-                                <p>Здесь мы рассказываем об удобстве эксплуатации нашего софта и тд.</p>
-                            </div>
-                        </div>
-                    </div>
+            </div><!--//carousel-inner-->
 
-                    <div class="col-sm">
-                        <div>
-                            <i class="fas fa-cogs"></i>
-                            <div class="card-body">
-                                <h4 >Функциональность</h4>
-                                <p >Здесь мы говорим насколько функционален наш продукт и тд.</p>
-                            </div>
-                        </div>
-                    </div>
+        </div><!--//carousel-->
+    </div><!--//hero-->
+
+    <div id="about" class="about-section">
+        <div class="container text-center">
+            <h2 class="section-title">Что такое Exchange CRM?</h2>
+            <p class="intro">Данной сервис является инструментом управления валютными операциями для валедельцев
+                обменных пукнтов.</p>
+
+            <div class="items-wrapper row">
+                <div class="item col-md-4 col-12">
+                    <div class="item-inner">
+                        <div class="figure-holder">
+                            <img class="figure-image" src="{{ asset('assets/landing/images/figure-1.png') }}"
+                                 alt="image">
+                        </div><!--//figure-holder-->
+                        <h3 class="item-title">Забудьте о бумажной отчетности</h3>
+                        <div class="item-desc">
+                            Наш сервис позваоляет Вам вести электронный учет всех Ваших валютных операций в обменных
+                            пукнтах.
+                        </div><!--//item-desc-->
+                    </div><!--//item-inner-->
+                </div><!--//item-->
+                <div class="item col-md-4 col-12">
+                    <div class="item-inner">
+                        <div class="figure-holder">
+                            <img class="figure-image" src="{{ asset('assets/landing/images/figure-2.png') }}"
+                                 alt="image">
+                        </div><!--//figure-holder-->
+                        <h3 class="item-title">Получайте информацию оперативно</h3>
+                        <div class="item-desc">
+                            Владельцы обменных пукнтов, а также их персонал имеют возможность получать информацию обо
+                            всех операциях в любой момент времени.
+                        </div><!--//item-desc-->
+                    </div><!--//item-inner-->
+                </div><!--//item-->
+                <div class="item col-md-4 col-12">
+                    <div class="item-inner">
+                        <div class="figure-holder">
+                            <img class="figure-image" src="{{ asset('assets/landing/images/figure-3.png') }}"
+                                 alt="image">
+                        </div><!--//figure-holder-->
+                        <h3 class="item-title">Используйте любые девайсы для управления</h3>
+                        <div class="item-desc">
+                            Наш сервис является очень удобный в использовании и адаптивен для любых девайсов.
+                        </div><!--//item-desc-->
+                    </div><!--//item-inner-->
+                </div><!--//item-->
+            </div><!--//items-wrapper-->
+        </div><!--//container-->
+    </div><!--//about-section-->
+
+    <div id="features" class="features-section" style="background-color: #f4f4f4;">
+        <div class="container text-center">
+            <h2 class="section-title">Возможности системы</h2>
+            <p class="intro">Наш сервис предлагает множество различных функций для управления обменными пунктами и
+                ведения отчетности</p>
+
+            <div class="tabbed-area row">
+
+                <!-- Nav tabs -->
+                <div class="feature-nav nav nav-pill flex-column col-lg-4 col-md-6 col-12 order-0 order-md-1"
+                     role="tablist" aria-orientation="vertical">
+                    <a class="nav-link active mb-lg-3" href="#feature-1" aria-controls="feature-1" data-toggle="pill"
+                       role="tab" aria-selected="true"><i class="fas fa-magic"></i>Покупка и продажа валют</a>
+                    <a class="nav-link mb-lg-3" href="#feature-2" aria-controls="feature-2" data-toggle="pill"
+                       role="tab" aria-selected="false"><i class="fas fa-cubes"></i>Управление валютными кассами</a>
+                    <a class="nav-link mb-lg-3" href="#feature-3" aria-controls="feature-3" data-toggle="pill"
+                       role="tab" aria-selected="false"><i class="fas fa-chart-bar"></i>Сводные отчеты и графики</a>
+                    <a class="nav-link mb-lg-3" href="#feature-4" aria-controls="feature-4" data-toggle="pill"
+                       role="tab" aria-selected="false"><i class="fas fa-code"></i>Управление персоналом</a>
+                    <a class="nav-link mb-lg-3" href="#feature-5" aria-controls="feature-5" data-toggle="pill"
+                       role="tab" aria-selected="false"><i class="fas fa-rocket"></i>Управление VIP клиентами</a>
+                    <a class="nav-link mb-lg-3" href="#feature-6" aria-controls="feature-6" data-toggle="pill"
+                       role="tab" aria-selected="false"><i class="fas fa-mobile-alt"></i>Управление курсами валют</a>
                 </div>
+
+                <!-- Tab panes -->
+                <div class="feature-content tab-content col-lg-8 col-md-6 col-12 order-1 order-md-0">
+                    <div role="tabpanel" class="tab-pane fade show active" id="feature-1">
+                        <a href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/appkit-landing-free-bootstrap-theme-for-developers-and-startups/"
+                           target="_blank"><img class="img-fluid" src="{{ asset('assets/landing/images/feature-1.png') }}"
+                                                alt="screenshot"></a>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="feature-2">
+                        <a href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/appkit-landing-free-bootstrap-theme-for-developers-and-startups/"
+                           target="_blank"><img class="img-fluid" src="{{ asset('assets/landing/images/feature-2.png') }}"
+                                                alt="screenshot"></a>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="feature-3">
+                        <a href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/appkit-landing-free-bootstrap-theme-for-developers-and-startups/"
+                           target="_blank"><img class="img-fluid" src="{{ asset('assets/landing/images/feature-3.png') }}"
+                                                alt="screenshot"></a>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="feature-4">
+                        <a href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/appkit-landing-free-bootstrap-theme-for-developers-and-startups/"
+                           target="_blank"><img class="img-fluid" src="{{ asset('assets/landing/images/feature-4.png') }}"
+                                                alt="screenshot"></a>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="feature-5">
+                        <a href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/appkit-landing-free-bootstrap-theme-for-developers-and-startups/"
+                           target="_blank"><img class="img-fluid" src="{{ asset('assets/landing/images/feature-5.png') }}"
+                                                alt="screenshot"></a>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="feature-6">
+                        <a href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/appkit-landing-free-bootstrap-theme-for-developers-and-startups/"
+                           target="_blank"><img class="img-fluid" src="{{ asset('assets/landing/images/feature-6.png') }}"
+                                                alt="screenshot"></a>
+                    </div>
+
+                </div><!--//feature-content-->
+
+
+            </div><!--//tabbed-area-->
+
+        </div><!--//container-->
+    </div><!--//features-->
+
+    <div id="pricing" class="pricing-section">
+        <div class="container text-center">
+            <h2 class="section-title">Тарифы</h2>
+            <div class="intro">Представляем Вам наши тарифные планы для различных размеров компаний</div>
+            <div class="pricing-wrapper row">
+                <div class="item item-1 col-md-4 col-12">
+                    <div class="item-inner">
+                        <h3 class="item-heading">Бесплатный<br><span
+                                    class="item-heading-desc">(без срока истечения)</span></h3>
+                        <div class="price-figure">
+                            <span class="currency">$</span><span class="number">0</span>
+                        </div><!--//price-figure-->
+                        <ul class="list-unstyled mb-3">
+                            <li class="mb-2"><i class="fas fa-check"></i> Только один обменный пункт</li>
+                            <li class="mb-2"><i class="fas fa-check"></i> Отчеты</li>
+                            <li class="mb-2"><i class="fas fa-times"></i> Онлайн консультации</li>
+                        </ul>
+                        <a class="btn btn-cta mt-3"
+                           href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/appkit-landing-free-bootstrap-theme-for-developers-and-startups/">Подключить</a>
+                    </div><!--//item-inner-->
+                </div><!--//item-->
+                <div class="item item-2 col-md-4 col-12">
+                    <div class="item-inner">
+                        <h3 class="item-heading">Стандартный<br><span
+                                    class="item-heading-desc">(месячная лицензия)</span>
+                        </h3>
+
+                        <div class="price-figure">
+                            <span class="currency">$</span><span class="number">29</span>
+                        </div><!--//price-figure-->
+                        <ul class="list-unstyled mb-3">
+                            <li class="mb-2"><i class="fas fa-check"></i> Безграничное количество обменных пунктов</li>
+                            <li class="mb-2"><i class="fas fa-check"></i> Отчеты</li>
+                            <li class="mb-2"><i class="fas fa-times"></i> Онлайн консультации</li>
+                        </ul>
+                        <a class="btn btn-cta mt-3"
+                           href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/appkit-landing-free-bootstrap-theme-for-developers-and-startups/">Подключить</a>
+                    </div><!--//item-inner-->
+                </div><!--//item-->
+
+                <div class="item item-3 col-md-4 col-12">
+                    <div class="item-inner">
+                        <h3 class="item-heading">Премиум<br><span class="item-heading-desc">(месячная лицензия)</span>
+                        </h3>
+                        <div class="price-figure">
+                            <span class="currency">$</span><span class="number">99</span>
+                        </div><!--//price-figure-->
+                        <ul class="list-unstyled mb-3">
+                            <li class="mb-2"><i class="fas fa-check"></i> Безграничное количество обменных пунктов</li>
+                            <li class="mb-2"><i class="fas fa-check"></i> Отчеты</li>
+                            <li class="mb-2"><i class="fas fa-check"></i> Онлайн консультации</li>
+                        </ul>
+                        <a class="btn btn-cta mt-3"
+                           href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/appkit-landing-free-bootstrap-theme-for-developers-and-startups/">Подключить</a>
+                    </div><!--//item-inner-->
+                </div><!--//item-->
+            </div><!--//pricing-wrapper-->
+
+        </div><!--//container-->
+    </div><!--//pricing-section-->
+    <div id="contact" class="contact-section">
+        <div class="container text-center">
+            <h2 class="section-title">Свяжитесь с нами</h2>
+            <div class="contact-content">
+                <p>Наш офис находится по адресу Московская 180, пересекает ул. Совествкая.</p>
+                <p>Тел.: (996) 555 353 535, (996) 773 353 535</p>
+
             </div>
-        </div>
+            <a class="btn btn-cta btn-primary"
+               href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/appkit-landing-free-bootstrap-theme-for-developers-and-startups/">Позвонить</a>
 
-        <div class="row">
-            <p class="col-sm-4" style="text-align:center; padding: 30px;">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam aspernatur at blanditiis, delectus facere iste nam nemo omnis quis ratione. Dicta ducimus error ex itaque optio perferendis quia repudiandae? A accusamus assumenda at aut debitis deleniti dolorum et facere fugiat illo inventore ipsa laboriosam minima mollitia nam nemo nisi nobis nulla odit omnis optio possimus provident quas quia quidem quis quisquam ratione rem repellat repellendus reprehenderit sint, tempore totam ullam ut veritatis voluptatum. Aliquam asperiores assumenda delectus iure perspiciatis possimus provident suscipit temporibus tenetur voluptas. Eveniet fugiat illo, incidunt laboriosam laudantium libero magni modi, molestias nisi optio provident quo ut!
-            </p>
-            <img class="col-sm-4" style="max-width: 100%" src="{{ asset('img/2.jpg') }}">
-        </div>
+        </div><!--//container-->
+    </div><!--//contact-section-->
 
-        <div class="tryForFree">
-            <div class="card">
-                <div class="card-header">
-                    <H2 STYLE="text-align: center;">Попробуйте прямо сейчас бесплатный Demo-аккаунт</H2>
-                </div>
-                <div class="card-body">
-                    <img src="{{ asset("img/5.svg") }}" alt="">
-                    <a href="{{ path('fos_user_registration_register') }}" class="nav-link btn btn-outline-warning">Зарегистрироваться</a>
-                </div>
-                <div class="card-footer text-muted">
-                </div>
-            </div>
-        </div>
-        {% block footer %}{{ parent() }}{% endblock %}
-    </div>
+    {% block footer %}{{ parent() }}{% endblock %}
 {% endblock %}
