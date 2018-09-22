@@ -41,7 +41,7 @@
                     {% if is_granted('ROLE_USER') %}
                         <a href="{{ path('profile_index') }}" class="btn btn-primary btn-cta ml-4">Личный кабинет</a>
                     {% else %}
-                        <a href="{{ path('fos_user_security_login') }}" class="btn btn-primary btn-cta ml-4">Войти</a>
+                        <a href="{{ path('fos_user_security_login') }}" class="btn btn-primary btn-cta ml-4" target="_blank">Войти</a>
                     {% endif %}
                 </div><!--//navabr-collapse-->
             </nav><!--//main-nav-->
