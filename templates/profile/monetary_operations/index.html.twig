@@ -163,7 +163,7 @@
                                                    data-cashbox-action="sale"
                                             >
                                         </td>
-                                        <td class="currency discount">
+                                        <td class="currency discount" >
                                             <input
                                                     type="text"
                                                     class="discount-form"
@@ -271,25 +271,26 @@
             $(".save-transactions").on("click", function (e) {
                 e.preventDefault();
 
-                var currency, national_currency, amount, data;
+                var currency, national_currency, amount, data,numberDiscount ;
                 var cashboxId = $(this).data("cashbox-id");
                 var cashboxAction = $(this).data("cashbox-action");
-                var result = $('.form-result').val()
+                // var result = $('.form-result').val();
                 var cashboxNumberClass = ".cashbox-number-" + cashboxId;
                 var vip_client_id = $("#vip_client_id").val();
                 var notes = $("#notes").val();
                 var exchange_office_id = "{{ exchangeOffice.id }}";
                 var $boxMessage = $(".box-message");
                 var $btnSaveTransactions = $(".save-transactions");
+                var btnActive = $();
 
-
+                console.log('sas');
                 if (cashboxAction === "sale") {
                     currency = $(cashboxNumberClass + " .cashbox-sale").val();
                     amount = $(cashboxNumberClass + " .sale .cashbox-form").val();
+
                     // if (amountSale !== '') {
-                    //     descountCalculation = discount(cashboxId, cashboxNumberClass, amountSale, numberDiscount, btnActive);
-                    //     result = currencySale * amountSale - descountCalculation;
-                    //
+                    //    var  descountCalculation = discount(cashboxId, cashboxNumberClass, amount, numberDiscount, btnActive);
+                    //    var  result = currencySale * amountSale - descountCalculation;
                     // }
                 } else if (cashboxAction === "purchase") {
                     currency = $(cashboxNumberClass + " .cashbox-purchase").val();
@@ -300,10 +301,11 @@
                     //     result = currencyPurchase * amountPurchase + parseFloat(descountCalculation);
                     // }
                 }
+                // numberDiscount = $(".discount").children().find("input[data ='cashbox-id']");
 
 
                 national_currency = amount * currency;
-                console.log(national_currency)
+                // console.log(national_currency);
 
                 data = {
                     cashboxId,
@@ -317,7 +319,6 @@
                 };
                 $.post("{{ path('profile_monetary_operations_create') }}", data)
                     .done(function (response) {
-
 
                         if (response.status) {
                             $(".cashbox-form").val("");
@@ -334,7 +335,7 @@
 
                     })
                     .fail(function (response) {
-                        console.log(response);
+                        // console.log(response);
                     });
 
             });
@@ -375,7 +376,6 @@
                         descountCalculation = discount(cashboxId, cashboxNumberClass, amount, discountNumber, btnActive);
                         result = currency * amount - descountCalculation;
                     } else {
-
                         result = currency * amount;
                     }
 
@@ -424,7 +424,7 @@
             });
 
             var discount = function (cashbox, cashboxNumberClass, amount, numberDiscount, btnActive) {
-                let cashboxId = cashbox
+                let cashboxId = cashbox;
                 let currencySale = $(".cashbox-number-" + cashboxId + " .cashbox-sale").val();
                 let currencyPurchase = $(".cashbox-number-" + cashboxId + " .cashbox-purchase").val();
                 let discount;

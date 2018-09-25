@@ -50,6 +50,8 @@ class TransactionsHandler extends ModelHandler
         $amount = $request->get('amount');
         $nationalCurrency = $request->get('national_currency');
         $notes = $request->get('notes');
+        $margin = $request->get('margin');
+
 
         $exchangeOffice = $this->exchangeOfficeRepository->findByOne($exchangeOfficeId, $this->getOwner($user));
         $defaultCurrency = $this->cashboxRepository->findByOneDefaultCurrency($exchangeOffice);
@@ -74,6 +76,7 @@ class TransactionsHandler extends ModelHandler
                 'amount' => $nationalCurrency,
                 'notes' => $notes,
                 'user' => $user,
+                'margin' => $margin
             ]);
 
             $resultAmount = $this->saveTransaction([
@@ -86,6 +89,7 @@ class TransactionsHandler extends ModelHandler
                 'nationalCurrency' => $nationalCurrency,
                 'notes' => $notes,
                 'user' => $user,
+                'margin' => 0,
             ]);
 
             $this->manager->commit();
@@ -147,6 +151,7 @@ class TransactionsHandler extends ModelHandler
         $exchangeOfficeId = $data['exchangeOfficeId'] ?? 0;
         $cashboxId = $data['cashboxId'] ?? 0;
         $nationalCurrency = $data['nationalCurrency'] ?? null;
+        $margin = $data['margin'] ?? null;
 
         $owner = $this->getOwner($user);
         $exchangeOffice = $this->exchangeOfficeRepository->findByOne($exchangeOfficeId, $owner);
@@ -200,6 +205,7 @@ class TransactionsHandler extends ModelHandler
             ->setNationalCurrency($nationalCurrency)
             ->setVIPClient($vipClient ?? null)
             ->setNote($notes)
+            ->setMargin($margin)
         ;
 
         $this->manager->persist($transactions);
