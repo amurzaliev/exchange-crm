@@ -4,13 +4,7 @@ function moneyOperation(profile_monetary_operations_create,exchange_office_id) {
 
     $(".money_operation .save-transactions").on("click", function (e) {
         e.preventDefault();
-
-
-        $('.discount-form').val('')
-
-        let amountSale = $(this).parent().parent().children('.sale').children('.cashbox-form').val();
-
-        var currency, national_currency, amount, data;
+        var currency, national_currency, amount, data, descountCalculation, margin ;
         var cashboxId = $(this).data("cashbox-id");
         var cashboxAction = $(this).data("cashbox-action");
         var cashboxNumberClass = ".money_operation .cashbox-number-" + cashboxId;
@@ -19,20 +13,48 @@ function moneyOperation(profile_monetary_operations_create,exchange_office_id) {
         var $boxMessage = $(".money_operation .box-message");
         var $btnSaveTransactions = $(".money_operation .save-transactions");
 
-        var discount_button = $('.activeBtn-'+cashboxId+'').data('active')
-        var discount = $('#amount-'+cashboxId+'').val()
-        console.log(discount_button)
+        var amountAndCashboxId = "amount-"+cashboxId;
+        var amountDiscount = $(".money_operation").find("#"+amountAndCashboxId).val();
+        var btnActive = $(".money_operation").find(".activeBtn-"+cashboxId).attr("data-active");
+
+        var currencySale = $(".cashbox-number-" + cashboxId + " .cashbox-sale").val();
+        var currencyPurchase = $(".cashbox-number-" + cashboxId + " .cashbox-purchase").val();
+        var differenceСourse = currencySale - currencyPurchase ;
+
 
         if (cashboxAction === "sale") {
             currency = $(cashboxNumberClass + " .cashbox-sale").val();
             amount = $(cashboxNumberClass + " .sale .cashbox-form").val();
+            descountCalculation = discount(cashboxId, cashboxNumberClass, amount, amountDiscount, parseInt(btnActive));
+            national_currency = currency * amount - parseFloat(descountCalculation);
+            margin = differenceСourse * amount;
+
+            if(amountDiscount !== ''){
+                if(parseInt(btnActive) === 1){
+                    let  procentDicount = (100 - amountDiscount) /100;
+                    margin  = differenceСourse * procentDicount * amount ;
+                }else if(parseInt(btnActive) === 0){
+                    margin  = differenceСourse * amount - amountDiscount ;
+                }
+            }
+
         } else if (cashboxAction === "purchase") {
-            currency = $(cashboxNumberClass + " .cashbox-purchase").val();
-            amount = $(cashboxNumberClass + " .purchase .cashbox-form").val();
+                currency = $(cashboxNumberClass + " .cashbox-purchase").val();
+                amount = $(cashboxNumberClass + " .purchase .cashbox-form").val();
+                descountCalculation = discount(cashboxId, cashboxNumberClass, amount, amountDiscount, parseInt(btnActive));
+                national_currency = currency * amount + parseFloat(descountCalculation);
+
+                margin = differenceСourse * amount;
+
+            if(amountDiscount !== ''){
+                if(parseInt(btnActive) === 1){
+                    let  procentDicount = (100 - amountDiscount) /100;
+                         margin  = differenceСourse * procentDicount * amount ;
+                }else if(parseInt(btnActive) === 0){
+                    margin  = differenceСourse * amount - amountDiscount ;
+                }
+            }
         }
-
-
-        national_currency = amount * currency;
 
 
         data = {
@@ -44,10 +66,10 @@ function moneyOperation(profile_monetary_operations_create,exchange_office_id) {
             exchange_office_id,
             vip_client_id,
             notes,
+            margin
         };
         $.post(profile_monetary_operations_create, data)
             .done(function (response) {
-
 
                 if (response.status) {
                     $(".money_operation .cashbox-form").val("");
@@ -61,12 +83,11 @@ function moneyOperation(profile_monetary_operations_create,exchange_office_id) {
                 } else {
                     $boxMessage.html('<p class="bg-danger">' + response.message + '</p>');
                 }
-
             })
             .fail(function (response) {
                 console.log(response);
             });
-
+        $('.discount-form').val('');
     });
 
     $(".money_operation .cashbox-form").on("keyup", function () {
@@ -76,17 +97,17 @@ function moneyOperation(profile_monetary_operations_create,exchange_office_id) {
         var currency, result, descountCalculation;
         var amount = $(this).val();
 
-        var discountNumber = $(this).parent().parent().children('.discount').children('.discount-form').val()
-        var discountField = $(this).parent().parent().children('.discount').children('.discount-form').data('cashbox-id')
+        var discountNumber = $(this).parent().parent().children('.discount').children('.discount-form').val();
+        var discountField = $(this).parent().parent().children('.discount').children('.discount-form').data('cashbox-id');
         var $btnSaveTransactions = $(".money_operation .save-transactions");
         var cashboxNumberClass = ".cashbox-number-" + cashboxId;
         var $boxMessage = $(".money_operation .box-message");
-        let btnActive = $(this).parent().parent().children('.discount').children('.btn_discount').attr('data-active')
+        let btnActive = $(this).parent().parent().children('.discount').children('.btn_discount').attr('data-active');
 
         $boxMessage.html("");
         $(".money_operation .cashbox-form").val("");
         $(".money_operation .form-result").val("");
-        $('.money_operation .discount-form').val('')
+        $('.money_operation .discount-form').val('');
 
         if (cashboxId === discountField) {
             $(this).parent().parent().children('.discount').children('.discount-form').val(discountNumber)
@@ -102,7 +123,7 @@ function moneyOperation(profile_monetary_operations_create,exchange_office_id) {
             currency = $(".cashbox-number-" + cashboxId + " .cashbox-sale").val();
 
             if (discountNumber !== '') {
-                descountCalculation = discount(cashboxId, cashboxNumberClass, amount, discountNumber, btnActive);
+                descountCalculation = discount(cashboxId, cashboxNumberClass, amount, discountNumber, parseInt(btnActive));
                 result = currency * amount - descountCalculation;
             } else {
 
@@ -114,7 +135,7 @@ function moneyOperation(profile_monetary_operations_create,exchange_office_id) {
             currency = $(".cashbox-number-" + cashboxId + " .cashbox-purchase").val();
 
             if (discountNumber !== '') {
-                descountCalculation = discount(cashboxId, cashboxNumberClass, amount, discountNumber, btnActive);
+                descountCalculation = discount(cashboxId, cashboxNumberClass, amount, discountNumber, parseInt(btnActive));
                 result = currency * amount + parseFloat(descountCalculation);
             } else {
                 result = currency * amount;
@@ -141,31 +162,30 @@ function moneyOperation(profile_monetary_operations_create,exchange_office_id) {
 
         let btnActive = $(this).parent().children('.money_operation .btn_discount').attr('data-active')
         if (amountSale !== '') {
-            descountCalculation = discount(cashboxId, cashboxNumberClass, amountSale, numberDiscount, btnActive);
+            descountCalculation = discount(cashboxId, cashboxNumberClass, amountSale, numberDiscount, parseInt(btnActive));
             result = currencySale * amountSale - descountCalculation;
 
         }
         else if (amountPurchase !== '') {
 
-            descountCalculation = discount(cashboxId, cashboxNumberClass, amountPurchase, numberDiscount, btnActive);
+            descountCalculation = discount(cashboxId, cashboxNumberClass, amountPurchase, numberDiscount, parseInt(btnActive));
             result = currencyPurchase * amountPurchase + parseFloat(descountCalculation);
         }
         $(cashboxNumberClass + " .form-result").val(result);
     });
 
-    var discount = function (cashbox, cashboxNumberClass, amount, numberDiscount, btnActive) {
-        let cashboxId = cashbox
+    var discount = function (cashbox, cashboxNumberClass, amount, amountDiscount, btnActive) {
+        let cashboxId = cashbox;
         let currencySale = $(".cashbox-number-" + cashboxId + " .cashbox-sale").val();
         let currencyPurchase = $(".cashbox-number-" + cashboxId + " .cashbox-purchase").val();
         let discount;
-        if (numberDiscount !== '') {
-
-            if (btnActive === '1') {
-                let oneUnit = (currencySale - currencyPurchase) * (parseInt(numberDiscount) / 100);
+        if (amountDiscount !== '') {
+            if (btnActive === 1) {
+                let oneUnit = (currencySale - currencyPurchase) * (parseInt(amountDiscount) / 100);
                 discount = amount * oneUnit;
                 return discount;
-            } else {
-                return numberDiscount;
+            } else if (btnActive === 0) {
+                return amountDiscount;
             }
         } else {
             return 0;
@@ -181,6 +201,7 @@ function moneyOperation(profile_monetary_operations_create,exchange_office_id) {
             $(this).addClass('discount_active');
             $(this).attr('data-active', 1);
         }
+
     });
 }
 

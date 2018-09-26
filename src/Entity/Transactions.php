@@ -103,6 +103,13 @@ class Transactions
     private $nationalCurrency;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(type="decimal", precision=60, scale=4, nullable=true)
+     */
+    private $margin;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\VIPClient", inversedBy="transactions")
      */
     private $VIPClient;
@@ -272,5 +279,23 @@ class Transactions
         $this->VIPClient = $VIPClient;
 
         return $this;
+    }
+
+    /**
+     * @param float $margin
+     * @return Transactions
+     */
+    public function setMargin(float $margin): Transactions
+    {
+        $this->margin = $margin;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMargin(): float
+    {
+        return $this->margin;
     }
 }
