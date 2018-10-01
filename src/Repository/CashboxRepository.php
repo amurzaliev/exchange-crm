@@ -211,7 +211,6 @@ class CashboxRepository extends ServiceEntityRepository
         } catch (NotFoundResourceException $e) {
             return null;
         }
-
     }
 
     /**
@@ -239,5 +238,27 @@ class CashboxRepository extends ServiceEntityRepository
             ->setParameter('owner', $owner)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param $exchangesId
+     * @return Cashbox[] | null
+     */
+    public function findByAllCashboxes($exchangesId)
+    {
+        try {
+            return $this->createQueryBuilder('c')
+                ->where("c.exchangeOffice IN(:exchangesId)")
+                ->select("currency.id", "currency.icon", "currency.iso")
+                ->join('c.currency', 'currency')
+                ->andWhere("currency.defaultCurrency = :defaultCurrency")
+                ->groupBy("currency.id")
+                ->setParameter('exchangesId', $exchangesId)
+                ->setParameter('defaultCurrency', 0)
+                ->getQuery()
+                ->getArrayResult();
+        } catch (NotFoundResourceException $e) {
+            return null;
+        }
     }
 }
