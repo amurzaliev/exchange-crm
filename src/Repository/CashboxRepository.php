@@ -139,7 +139,7 @@ class CashboxRepository extends ServiceEntityRepository
         try {
             return $this->createQueryBuilder('c')
                 ->andWhere('c.currency = :currency')
-                ->setParameter("exchangeOffice", $currency)
+                ->setParameter("currency", $currency)
                 ->getQuery()
                 ->getOneOrNullResult();
         } catch (NonUniqueResultException $e) {

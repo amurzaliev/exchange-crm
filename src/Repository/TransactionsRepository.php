@@ -5,7 +5,9 @@ namespace App\Repository;
 use App\Entity\Transactions;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\DBALException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\VarDumper\Cloner\Data;
 
 /**
  * @method Transactions|null find($id, $lockMode = null, $lockVersion = null)
@@ -80,5 +82,193 @@ class TransactionsRepository extends ServiceEntityRepository
             ->getQuery()
             ->setMaxResults($maxResult)
             ->getResult();
+    }
+
+    public function totalProfit(int $exchange_id)
+    {
+        try {
+            $conn = $this->getEntityManager()->getConnection();
+            $sql = 'SELECT sum(margin) as summa FROM transactions
+                    where transactions.exchange_office_id = :id
+                    and year(created_at) = year(now()) and week(created_at, 1) = week(now(), 1);';
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':id' => $exchange_id
+            ]);
+
+            return $stmt->fetchAll();
+
+        } catch (DBALException $e) {
+            return null;
+        }
+    }
+
+    public function allTotalProfit(int $owner_id)
+    {
+        try {
+            $conn = $this->getEntityManager()->getConnection();
+            $sql = 'SELECT sum(margin) as summa FROM transactions
+                    where transactions.user_id = :id
+                    and year(created_at) = year(now()) and week(created_at, 1) = week(now(), 1);';
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':id' => $owner_id
+            ]);
+
+            return $stmt->fetchAll();
+
+        } catch (DBALException $e) {
+            return null;
+        }
+    }
+
+    public function numberOfOperations(int $exchange_id)
+    {
+        try {
+            $conn = $this->getEntityManager()->getConnection();
+            $sql = 'SELECT count(basic_type) as count_basic FROM transactions
+                    where transactions.exchange_office_id = :id
+                    and year(created_at) = year(now()) and week(created_at, 1) = week(now(), 1);';
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':id' => $exchange_id
+            ]);
+
+            return $stmt->fetchAll();
+
+        } catch (DBALException $e) {
+            return null;
+        }
+    }
+
+    public function allNumberOfOperations(int $owner_id)
+    {
+        try {
+            $conn = $this->getEntityManager()->getConnection();
+            $sql = 'SELECT count(basic_type) as count_basic FROM transactions
+                    where transactions.user_id = :id
+                    and year(created_at) = year(now()) and week(created_at, 1) = week(now(), 1);';
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':id' => $owner_id
+            ]);
+
+            return $stmt->fetchAll();
+
+        } catch (DBALException $e) {
+            return null;
+        }
+    }
+
+    public function totalProfitOneDay(int $exchange_id)
+    {
+        try {
+            $conn = $this->getEntityManager()->getConnection();
+                $sql = 'SELECT  DAYNAME(created_at) as days, sum(margin) as margin, exchange_office_id FROM transactions
+                where transactions.exchange_office_id = :id
+                and date(created_at)  =  CURDATE()
+                group by days
+                union 
+                    SELECT DAYNAME(created_at) as days, sum(margin) as margin, exchange_office_id  FROM transactions
+                    where transactions.exchange_office_id = :id
+                    and  date(created_at)  = curdate()-INTERVAL 1 DAY
+                  group by days
+                  union
+                  SELECT DAYNAME(created_at) as days, sum(margin) as margin, exchange_office_id  FROM transactions
+                    where transactions.exchange_office_id = :id
+                    and  date(created_at)  = curdate()-INTERVAL 2 DAY
+                  group by days
+                  union
+                  SELECT DAYNAME(created_at) as days, sum(margin) as margin, exchange_office_id  FROM transactions
+                    where transactions.exchange_office_id = :id
+                    and  date(created_at)  = curdate()-INTERVAL 3 DAY
+                  group by days
+                  union
+                  SELECT DAYNAME(created_at) as days, sum(margin) as margin, exchange_office_id  FROM transactions
+                    where transactions.exchange_office_id = :id
+                    and  date(created_at)  = curdate()-INTERVAL 3 DAY
+                  group by days
+                  union
+                  SELECT DAYNAME(created_at) as days, sum(margin) as margin, exchange_office_id  FROM transactions
+                    where transactions.exchange_office_id = :id
+                    and  date(created_at)  = curdate()-INTERVAL 4 DAY
+                  group by days
+                  union
+                  SELECT DAYNAME(created_at) as days, sum(margin) as margin, exchange_office_id  FROM transactions
+                    where transactions.exchange_office_id = :id
+                    and  date(created_at)  = curdate()-INTERVAL 5 DAY
+                  group by days
+                  union
+                  SELECT DAYNAME(created_at) as days, sum(margin) as margin, exchange_office_id  FROM transactions
+                    where transactions.exchange_office_id = :id
+                    and  date(created_at)  = curdate()-INTERVAL 6 DAY
+                  group by days';
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':id' => $exchange_id
+            ]);
+
+            return $stmt->fetchAll();
+
+        } catch (DBALException $e) {
+            return null;
+        }
+    }
+
+    public function allTotalProfitOneDay(int $owner_id)
+    {
+        try {
+            $conn = $this->getEntityManager()->getConnection();
+            $sql = 'SELECT  DAYNAME(created_at) as weekday, sum(margin) as margin FROM transactions
+                where transactions.user_id = :id  and date(created_at)  =  CURDATE()
+                group by weekday
+                union 
+                    SELECT DAYNAME(created_at) as weekday, sum(margin) as margin FROM transactions
+                    where transactions.user_id = :id and  date(created_at)  = curdate()-INTERVAL 1 DAY
+                  group by weekday
+                  union
+                  SELECT DAYNAME(created_at) as weekday, sum(margin) as margin  FROM transactions
+                    where transactions.user_id = :id and  date(created_at)  = curdate()-INTERVAL 2 DAY
+                  group by weekday
+                  union
+                  SELECT DAYNAME(created_at) as weekday, sum(margin) as margin FROM transactions
+                    where transactions.user_id = :id and  date(created_at)  = curdate()-INTERVAL 3 DAY
+                  group by weekday
+                  union
+                  SELECT DAYNAME(created_at) as weekday, sum(margin) as margin  FROM transactions
+                    where transactions.user_id = :id
+                    and  date(created_at)  = curdate()-INTERVAL 3 DAY
+                  group by weekday
+                  union
+                  SELECT DAYNAME(created_at) as weekday, sum(margin) as margin  FROM transactions
+                    where transactions.user_id = :id
+                    and  date(created_at)  = curdate()-INTERVAL 4 DAY
+                  group by weekday
+                  union
+                  SELECT DAYNAME(created_at) as weekday, sum(margin) as margin  FROM transactions
+                    where transactions.user_id = :id
+                    and  date(created_at)  = curdate()-INTERVAL 5 DAY
+                  group by weekday
+                  union
+                  SELECT DAYNAME(created_at) as weekday, sum(margin) as margin  FROM transactions
+                    where transactions.user_id = :id
+                    and  date(created_at)  = curdate()-INTERVAL 6 DAY
+                  group by weekday';
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':id' => $owner_id
+            ]);
+
+            return $stmt->fetchAll();
+
+        } catch (DBALException $e) {
+            return null;
+        }
     }
 }

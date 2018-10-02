@@ -12,7 +12,8 @@
                                 <h4 class="statistic-title float-left">Пользователи</h4><!-- /.statistic-title -->
                                 <div class="statistic-details">
                                     <span class="count float-left">1345</span><!-- /.count -->
-                                    <span class="statistic-icon color-success float-right"><i class="pe-7s-users"></i></span><!-- /.statistic-icon -->
+                                    <span class="statistic-icon color-success float-right"><i
+                                                class="pe-7s-users"></i></span><!-- /.statistic-icon -->
                                 </div><!-- /.statistic-details -->
                             </div><!-- /.statistic-box -->
                         </a>
@@ -23,7 +24,8 @@
                                 <h4 class="statistic-title float-left">Обменные пункты</h4><!-- /.statistic-title -->
                                 <div class="statistic-details">
                                     <span class="count float-left">1300</span><!-- /.count -->
-                                    <span class="statistic-icon color-primary float-right"><i class="pe-7s-ticket"></i></span><!-- /.statistic-icon -->
+                                    <span class="statistic-icon color-primary float-right"><i class="pe-7s-ticket"></i></span>
+                                    <!-- /.statistic-icon -->
                                 </div><!-- /.statistic-details -->
                             </div><!-- /.statistic-box -->
                         </a>
@@ -31,10 +33,12 @@
                     <div class="col-lg-3 col-md-6">
                         <a href="#">
                             <div class="statistic-box m-0">
-                                <h4 class="statistic-title float-left">Общий баланс в сомах</h4><!-- /.statistic-title -->
+                                <h4 class="statistic-title float-left">Общий баланс в сомах</h4>
+                                <!-- /.statistic-title -->
                                 <div class="statistic-details">
                                     <span class="count float-left">1225</span><!-- /.count -->
-                                    <span class="statistic-icon color-purple float-right"><i class="pe-7s-albums"></i></span><!-- /.statistic-icon -->
+                                    <span class="statistic-icon color-purple float-right"><i
+                                                class="pe-7s-albums"></i></span><!-- /.statistic-icon -->
                                 </div><!-- /.statistic-details -->
                             </div><!-- /.statistic-box -->
                         </a>
@@ -42,10 +46,12 @@
                     <div class="col-lg-3 col-md-6">
                         <a href="#">
                             <div class="statistic-box m-0">
-                                <h4 class="statistic-title float-left">Общий баланс в сомах</h4><!-- /.statistic-title -->
+                                <h4 class="statistic-title float-left">Общий баланс в сомах</h4>
+                                <!-- /.statistic-title -->
                                 <div class="statistic-details">
                                     <span class="count float-left">1095</span><!-- /.count -->
-                                    <span class="statistic-icon color-danger float-right"><i class="pe-7s-credit"></i></span><!-- /.statistic-icon -->
+                                    <span class="statistic-icon color-danger float-right"><i
+                                                class="pe-7s-credit"></i></span><!-- /.statistic-icon -->
                                 </div><!-- /.statistic-details -->
                             </div><!-- /.statistic-box -->
                         </a>
@@ -54,4 +60,119 @@
             </div><!-- /.section-content -->
         </div>
     </div>
+    <div class="block_exchange" style="display:inline-block">
+    <div style="width: 400px; height: 400px ;float: left; ">
+        <h2>Сумма касс по всем обменным пунктам</h2>
+        <h5>Общее количество прибыли: {{ all_total_point }}</h5>
+        <h5>Общее количество операций: {{ all_number_of_operations }}</h5>
+        {% for  key , currency in all_currency %}
+            <h5>{{ key }} : {{ currency }}  </h5>
+        {% endfor %}
+        <input type="button" class="btn btn-primary" value="Отчет">
+    </div>
+        <div class="exchanges" style="width:600px; height: 400px; float: left;   "></div>
+    </div>
+    <hr>
+    {% for exchange in all_exchange %}
+        <div style="display:inline-block">
+            <div style="width: 400px; height: 400px ;float: left; ">
+                <h4>{{ exchange.exchange_name }}</h4>
+                <p>Общее количество прибыли : {{ exchange.total_point }}</p>
+                <p>Общее количество операций : {{ exchange.numberOfOperations }}</p>
+                {% for cashbox in exchange.cashboxs %}
+                    <p> {{ cashbox.iso }} : {{ cashbox.summa }}  </p>
+                {% endfor %}
+                <input type="button" class="btn btn-primary" data-id="{{ exchange.exchange_id }}" value="Отчет">
+            </div>
+            <div class="exchange-{{ exchange.exchange_id }}"
+                 style="width:600px; height: 400px; float: left;   ">
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
+
+
+{% endblock %}
+
+{% block Javascript %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <script>
+        $(function () {
+            $.post("{{ path('profile_index_ajax_all_exchange') }}", function (data) {
+                let weekdays = [];
+                let margins = [];
+                $.each(data, function (weekday, margin) {
+                    weekdays.push(weekday);
+                    margins.push(margin);
+                });
+                weekdays.reverse();
+                margins.reverse();
+
+                var block_exchange = $('.exchanges');
+
+                let containerChart = '<div class="ct-chart0 ct-perfect-fourth" ></div>';
+                block_exchange.append(containerChart);
+
+                var datas = {
+                    // Массив меток, который содержит любые значения
+                    labels: weekdays,
+                    // Наш массив может содержать серию объектов или серии массивов с данными
+                    series: [{
+                        data: margins
+                    }
+                    ]
+                };
+                var options = {
+                    width: 600,
+                    height: 200
+                };
+
+                // Создаем объект линейного графика с первым параметров - селектором.
+                // Второй параметр - объект с данными
+                new Chartist.Line('.ct-chart0', datas, options);
+                // block_exchange.append(containerChart)
+
+            });
+            $.post("{{ path('profile_index_ajax') }}", function (data) {
+
+                $.each(data, function (key, value) {
+                    let weekday = [];
+                    let margin = [];
+
+                    $.each(value.weekday, function (key, value) {
+                        weekday.push(key);
+                        margin.push(value);
+                    });
+
+                    weekday.reverse();
+                    margin.reverse();
+                    var block_exchange = $('.exchange-' + value.id);
+
+                    let containerChart = '<div class="ct-chart' + value.id + ' ct-perfect-fourth" ></div>';
+                    block_exchange.append(containerChart);
+                    var datas = {
+                        // Массив меток, который содержит любые значения
+                        labels: weekday,
+                        // Наш массив может содержать серию объектов или серии массивов с данными
+                        series: [{
+                            data: margin
+                        }
+                        ]
+                    };
+                    var options = {
+                        width: 600,
+                        height: 200
+                    };
+
+                    // Создаем объект линейного графика с первым параметров - селектором.
+                    // Второй параметр - объект с данными
+                    new Chartist.Line('.ct-chart' + value.id, datas, options);
+                    // block_exchange.append(containerChart)
+                });
+
+
+            });
+        })
+    </script>
 {% endblock %}
