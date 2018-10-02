@@ -28,14 +28,23 @@ class ExchangeOfficeRepository extends ServiceEntityRepository
      * @param User $owner
      * @return ExchangeOffice|null
      */
-    public function findByOne(int $id, User $owner)
+    public function findByOne(int $id, User $owner = null)
     {
         try {
-            return $this->createQueryBuilder('e')
+            $qb = $this->createQueryBuilder('e')
                 ->andWhere('e.id = :id')
-                ->andWhere('e.user = :owner')
                 ->setParameter('id', $id)
-                ->setParameter('owner', $owner)
+            ;
+
+            if ($owner) {
+                $qb
+                    ->andWhere('e.user = :owner')
+                    ->setParameter('owner', $owner)
+                ;
+            }
+
+
+            return $qb
                 ->getQuery()
                 ->getOneOrNullResult();
         } catch (NonUniqueResultException $e) {
@@ -77,6 +86,32 @@ class ExchangeOfficeRepository extends ServiceEntityRepository
             return null;
         }
     }
+
+    /**
+     * @param null $owner
+     * @return ExchangeOffice[]|null
+     */
+    public function findAllByOwner($owner = null)
+    {
+        try {
+            $qb =  $this->createQueryBuilder('e');
+
+            if ($owner) {
+                $qb
+                    ->andWhere('e.user = :owner')
+                    ->setParameter('owner', $owner)
+                ;
+            }
+
+            return $qb
+                ->orderBy("e.id", "desc")
+                ->getQuery()
+                ->getResult()
+                ;
+        } catch (NotFoundHttpException $e) {
+            return null;
+        }
+     }
 
 
     /**

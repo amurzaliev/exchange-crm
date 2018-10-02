@@ -12,9 +12,9 @@ class SecurityController extends Controller
      */
     public function indexAction()
     {
-        if ($this->isGranted('ROLE_ADMIN')) {
+/*        if ($this->isGranted('ROLE_ADMIN')) {
             return $this->redirectToRoute('sonata_admin_dashboard');
-        }
+        }*/
 
         return $this->redirectToRoute('profile_index');
     }

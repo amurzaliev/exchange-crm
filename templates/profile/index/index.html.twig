@@ -60,43 +60,91 @@
             </div><!-- /.section-content -->
         </div>
     </div>
-    <div class="block_exchange" style="display:inline-block">
-    <div style="width: 400px; height: 400px ;float: left; ">
-        <h2>Сумма касс по всем обменным пунктам</h2>
-        <h5>Общее количество прибыли: {{ all_total_point }}</h5>
-        <h5>Общее количество операций: {{ all_number_of_operations }}</h5>
-        {% for  key , currency in all_currency %}
-            <h5>{{ key }} : {{ currency }}  </h5>
-        {% endfor %}
-        <input type="button" class="btn btn-primary" value="Отчет">
-    </div>
-        <div class="exchanges" style="width:600px; height: 400px; float: left;   "></div>
-    </div>
-    <hr>
-    {% for exchange in all_exchange %}
-        <div style="display:inline-block">
-            <div style="width: 400px; height: 400px ;float: left; ">
-                <h4>{{ exchange.exchange_name }}</h4>
-                <p>Общее количество прибыли : {{ exchange.total_point }}</p>
-                <p>Общее количество операций : {{ exchange.numberOfOperations }}</p>
-                {% for cashbox in exchange.cashboxs %}
-                    <p> {{ cashbox.iso }} : {{ cashbox.summa }}  </p>
-                {% endfor %}
-                <input type="button" class="btn btn-primary" data-id="{{ exchange.exchange_id }}" value="Отчет">
+    <div class="row">
+        <div class="col-12">
+            <div class="section-content">
+                <div class="content-head">
+                    <h2>Сумма касс по всем обменным пунктам</h2><!-- /.content-title -->
+                </div><!-- /.content-head -->
+                <div class="content-details show">
+                    <table id="data-table" class="table data-table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Наименоварие:</th>
+                            <th>Сумма:</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Прибыль</th>
+                                <td>{{ all_total_point }}</td>
+                            </tr>
+                            <tr>
+                                <th>Операции</th>
+                                <td>{{ all_number_of_operations }}</td>
+                            </tr>
+                            {% for  key , currency in all_currency %}
+                                <tr>
+                                    <th>{{ key }}</th>
+                                    <td>{{ currency }}</td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <th colspan="2" style="text-align: center">
+                                    <div class="exchanges" style="width:600px; height: 200px;margin: 0 auto;"></div>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div><!-- /.content-details -->
             </div>
-            <div class="exchange-{{ exchange.exchange_id }}"
-                 style="width:600px; height: 400px; float: left;   ">
+            {% for exchange in all_exchange %}
+            <div class="section-content">
+                <div class="content-head">
+                    <h2>{{ exchange.exchange_name }}</h2><!-- /.content-title -->
+                </div><!-- /.content-head -->
+                <div class="content-details show">
+                    <table id="data-table" class="table data-table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Наименоварие:</th>
+                            <th>сумма:</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th>Прибыль</th>
+                            <td>{{ exchange.total_point }}</td>
+                        </tr>
+                        <tr>
+                            <th>Операции</th>
+                            <td>{{ exchange.numberOfOperations }}</td>
+                        </tr>
+                        {% for cashbox in exchange.cashboxs %}
+                            <tr>
+                                <th>{{ cashbox.iso }}</th>
+                                <td>{{ cashbox.summa }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <th colspan="2" style="text-align: center">
+                                <div class="exchange-{{ exchange.exchange_id }}" style="width:600px; height: 200px;margin: 0 auto;">
+                                    {#<input type="button" class="btn btn-primary" data-id="{{ exchange.exchange_id }}" value="Отчет">#}
+                                </div>
+                            </th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div><!-- /.content-details -->
             </div>
+            {% endfor %}
         </div>
-        <hr>
-    {% endfor %}
-
+    </div>
 
 {% endblock %}
 
 {% block Javascript %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
-    <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+
     <script>
         $(function () {
             $.post("{{ path('profile_index_ajax_all_exchange') }}", function (data) {
