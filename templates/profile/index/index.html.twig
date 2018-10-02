@@ -1,24 +1,23 @@
 {% extends 'layouts/profile.layout.html.twig' %}
 
 {% block content %}
-
+    {% if is_granted('ROLE_ADMIN') %}
     <div class="row">
         <div class="col-12">
             <div class="section-content">
                 <div class="row">
-                    <div class="col-lg-3 col-md-6">
+                    <div class="col-lg-6 col-md-6">
                         <a href="#">
                             <div class="statistic-box m-0">
                                 <h4 class="statistic-title float-left">Пользователи</h4><!-- /.statistic-title -->
                                 <div class="statistic-details">
                                     <span class="count float-left">1345</span><!-- /.count -->
-                                    <span class="statistic-icon color-success float-right"><i
-                                                class="pe-7s-users"></i></span><!-- /.statistic-icon -->
+                                    <span class="statistic-icon color-success float-right"><i class="pe-7s-users"></i></span><!-- /.statistic-icon -->
                                 </div><!-- /.statistic-details -->
                             </div><!-- /.statistic-box -->
                         </a>
                     </div>
-                    <div class="col-lg-3 col-md-6">
+                    <div class="col-lg-6 col-md-6">
                         <a href="#">
                             <div class="statistic-box m-0">
                                 <h4 class="statistic-title float-left">Обменные пункты</h4><!-- /.statistic-title -->
@@ -30,36 +29,11 @@
                             </div><!-- /.statistic-box -->
                         </a>
                     </div>
-                    <div class="col-lg-3 col-md-6">
-                        <a href="#">
-                            <div class="statistic-box m-0">
-                                <h4 class="statistic-title float-left">Общий баланс в сомах</h4>
-                                <!-- /.statistic-title -->
-                                <div class="statistic-details">
-                                    <span class="count float-left">1225</span><!-- /.count -->
-                                    <span class="statistic-icon color-purple float-right"><i
-                                                class="pe-7s-albums"></i></span><!-- /.statistic-icon -->
-                                </div><!-- /.statistic-details -->
-                            </div><!-- /.statistic-box -->
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <a href="#">
-                            <div class="statistic-box m-0">
-                                <h4 class="statistic-title float-left">Общий баланс в сомах</h4>
-                                <!-- /.statistic-title -->
-                                <div class="statistic-details">
-                                    <span class="count float-left">1095</span><!-- /.count -->
-                                    <span class="statistic-icon color-danger float-right"><i
-                                                class="pe-7s-credit"></i></span><!-- /.statistic-icon -->
-                                </div><!-- /.statistic-details -->
-                            </div><!-- /.statistic-box -->
-                        </a>
-                    </div>
                 </div>
             </div><!-- /.section-content -->
         </div>
     </div>
+    {% else %}
     <div class="row">
         <div class="col-12">
             <div class="section-content">
@@ -140,11 +114,12 @@
             {% endfor %}
         </div>
     </div>
+{% endif %}
 
 {% endblock %}
 
 {% block Javascript %}
-
+    {% if not is_granted('ROLE_ADMIN') %}
     <script>
         $(function () {
             $.post("{{ path('profile_index_ajax_all_exchange') }}", function (data) {
@@ -223,4 +198,5 @@
             });
         })
     </script>
+    {% endif %}
 {% endblock %}
