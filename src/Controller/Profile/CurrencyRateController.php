@@ -257,4 +257,29 @@ class CurrencyRateController extends BaseProfileController
             ]);
         }
     }
+
+    /**
+     * @Route("/test")
+     * @param ExchangeOfficeRepository $exchangeOfficeRepository
+     * @param CashboxRepository $cashboxRepository
+     */
+    public function testAction(
+        ExchangeOfficeRepository $exchangeOfficeRepository,
+        CashboxRepository $cashboxRepository
+    )
+    {
+        $exchangeOfficesListId = $exchangeOfficeRepository->getIdArrayExchangeOffice($this->getOwner());
+        $currencys = $cashboxRepository->findByAllCashboxes($exchangeOfficesListId);
+
+        $exchangeOffices = $exchangeOfficeRepository->getCurrencyRateExchangeOffice($this->getOwner(), $currencys);
+
+        dump($currencys);
+        dump($exchangeOffices);
+
+        return $this->render('profile/currency_rate/index2.html.twig', [
+            'currencys' => $currencys,
+            'exchangeOffices' => $exchangeOffices
+        ]);
+    }
+
 }

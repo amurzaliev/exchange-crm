@@ -1,0 +1,51 @@
+{% extends "layouts/profile.layout.html.twig" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="section-content">
+                <div class="content-head">
+                    <h4 class="content-title">Управление курсами валют</h4><!-- /.content-title -->
+                </div><!-- /.content-head -->
+                <div class="content-details show">
+                    <div id="showMessage" style="width: 90%;"></div>
+                    <table id="table" class="table data-table table-striped table-bordered table-responsive">
+                        <tr>
+                            <th rowspan="2" style="text-align: center;">Обменый пункт</th>
+                            {% for currency in currencys %}
+                                <th colspan="2" style="text-align:center;">
+                                    {{ currency["iso"] }}
+                                    <hr>
+                                    <img style="height: 30px; width: auto" src="{{ asset('uploads/images/currency/') }}{{ currency['icon'] }}" alt="">
+                                </th>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for currency in currencys %}
+                                <td style="font-size: 10px">Покупка</td>
+                                <td style="font-size: 10px;">Продажа</td>
+                            {% endfor %}
+                        </tr>
+                        {% for exchangeOffice in exchangeOffices %}
+                            <tr>
+                                <td>{{ exchangeOffice.name }}</td>
+                                {% for cashbox in exchangeOffice.cashboxs %}
+                                    {% if cashbox is null %}
+                                        <td>--</td>
+                                        <td>--</td>
+                                    {% else %}
+                                        <td data-id = '{{ cashbox.id }}'>{{ cashbox.currencyRates.0.purchase }}</td>
+                                        <td data-id = '{{ cashbox.id }}'>{{ cashbox.currencyRates.0.sale }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div><!-- /.content-details -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block Javascript %}
+
+{% endblock %}

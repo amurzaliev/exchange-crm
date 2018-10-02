@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Cashbox;
 use App\Entity\ExchangeOffice;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -75,5 +76,80 @@ class ExchangeOfficeRepository extends ServiceEntityRepository
         } catch (NotFoundHttpException $e) {
             return null;
         }
+    }
+
+
+    /**
+     * @param User $owner
+     * @return ExchangeOffice[]|null
+     */
+    public function findByAllOwnersExchangesResult (User $owner)
+    {
+        try {
+            return $this->createQueryBuilder('e')->select()
+                ->addSelect("cashboxes")
+                ->addSelect("currencyRates")
+                ->addSelect("currency")
+                ->join("e.cashboxes", "cashboxes")
+                ->join("cashboxes.currency", "currency")
+                ->innerJoin("cashboxes.currencyRates", "currencyRates")
+                ->andWhere('e.user = :owner')
+                ->orderBy('currency.id', 'ASC')
+                ->addOrderBy("currencyRates.id", "DESC")
+                ->setParameter('owner', $owner)
+                ->getQuery()
+                ->getResult();
+
+        } catch (NotFoundHttpException $e) {
+            return null;
+        }
+    }
+
+    public function getIdArrayExchangeOffice(User $owner)
+    {
+        $rows = $this->findByAllOwnersExchangesResult($owner);
+        $result = [];
+
+        if ($rows) {
+            foreach ($rows as $row) {
+                $result[] = $row->getId();
+            }
+        }
+
+        return $result;
+    }
+
+    public function getCurrencyRateExchangeOffice(User $owner, $currencys)
+    {
+
+        $currencysId = [];
+        foreach ($currencys as $currency) {
+            $currencysId[] = $currency['id'];
+        }
+
+        $exchangeOffices = $this->findByAllOwnersExchangesResult($owner);
+        for ($i = 0; $i < count($exchangeOffices); $i++) {
+
+            $cashboxAndCurrencyIdList = [];
+
+            /** @var Cashbox $cashbox */
+            foreach ($exchangeOffices[$i]->getCashboxes() as $cashbox) {
+                $cashboxAndCurrencyIdList['currencyId'][] = $cashbox->getCurrency()->getId();
+                $cashboxAndCurrencyIdList['cashbox'][$cashbox->getCurrency()->getId()] = $cashbox;
+            }
+
+            /** @var Cashbox[] $cashboxs */
+            $cashboxs = [];
+            foreach ($currencysId as $id) {
+                if (in_array($id, $cashboxAndCurrencyIdList['currencyId'])) {
+                    $cashboxs[] = $cashboxAndCurrencyIdList['cashbox'][$id];
+                } else {
+                    $cashboxs[] = null;
+                }
+            }
+            $exchangeOffices[$i]->cashboxs = $cashboxs;
+        }
+
+        return $exchangeOffices;
     }
 }
