@@ -29,17 +29,26 @@ class CurrencyRateController extends BaseProfileController
     /**
      * @Route("/", name="profile_currency_rate_index")
      * @Method({"GET", "POST"})
+     * @param ExchangeOfficeRepository $exchangeOfficeRepository
+     * @param CashboxRepository $cashboxRepository
+     * @return Response
      */
-    public function indexAction()
-    {
+    public function indexAction(
 
-//        if (!$this->isGranted('ROLE_ADMIN')) {
-//            return $this->show404();
-//        }
+        ExchangeOfficeRepository $exchangeOfficeRepository,
+        CashboxRepository $cashboxRepository
+    )
+    {
+        $exchangeOfficesListId = $exchangeOfficeRepository->getIdArrayExchangeOffice($this->getOwner());
+        $currencys = $cashboxRepository->findByAllCashboxes($exchangeOfficesListId);
+
+        $exchangeOffices = $exchangeOfficeRepository->getCurrencyRateExchangeOffice($this->getOwner(), $currencys);
 
         return $this->render('profile/currency_rate/index.html.twig', [
-
+            'currencys' => $currencys,
+            'exchangeOffices' => $exchangeOffices
         ]);
+
     }
     /**
      * @Route("/{id}/detail", name="profile_currency_rate_detail", requirements={"id"="\d+"})
@@ -94,7 +103,7 @@ class CurrencyRateController extends BaseProfileController
     }
 
     /**
-     * @Route( "//ajax_all_exchange_owner", name="profile_all_owner_exchanges")
+     * @Route( "/ajax_all_exchange_owner", name="profile_all_owner_exchanges")
      * @Method("POST")
      * @param ExchangeOfficeRepository $exchangeOfficeRepository
      * @return Response
@@ -259,27 +268,13 @@ class CurrencyRateController extends BaseProfileController
     }
 
     /**
-     * @Route("/test")
-     * @param ExchangeOfficeRepository $exchangeOfficeRepository
-     * @param CashboxRepository $cashboxRepository
+     * @Route("/change", name="profile_currency_rate_change")
+     * @return Response
      */
-    public function testAction(
-        ExchangeOfficeRepository $exchangeOfficeRepository,
-        CashboxRepository $cashboxRepository
-    )
+    public function changeAction()
     {
-        $exchangeOfficesListId = $exchangeOfficeRepository->getIdArrayExchangeOffice($this->getOwner());
-        $currencys = $cashboxRepository->findByAllCashboxes($exchangeOfficesListId);
+        return $this->render('profile/currency_rate/change.html.twig');
 
-        $exchangeOffices = $exchangeOfficeRepository->getCurrencyRateExchangeOffice($this->getOwner(), $currencys);
-
-        dump($currencys);
-        dump($exchangeOffices);
-
-        return $this->render('profile/currency_rate/index2.html.twig', [
-            'currencys' => $currencys,
-            'exchangeOffices' => $exchangeOffices
-        ]);
     }
 
 }

@@ -5,137 +5,53 @@
         <div class="col-12">
             <div class="section-content">
                 <div class="content-head">
-                    <h4 class="content-title">Управление курсами валют</h4><!-- /.content-title -->
+                    <h4 class="content-title">Список курса валют</h4><!-- /.content-title -->
+                    <div class="float-right">
+                        <a href="{{ path('profile_currency_rate_change') }}" class="btn btn-success">
+                            <i class="fa fa-plus-square"></i> Управление курсами валют
+                        </a>
+                    </div><!-- /.corner-content -->
+                    <div class="clearfix"></div>
                 </div><!-- /.content-head -->
                 <div class="content-details show">
                     <div id="showMessage" style="width: 90%;"></div>
-                    <select id="selectExchange" class="btn btn-light">
-                        <option class="exchange" value="0">Все ваши обменные пункты</option>
-                    </select>
-                    <hr>
-                    <table id="table" class="table data-table table-striped table-bordered">
+                    <table id="table" class="table data-table table-striped table-bordered table-responsive">
                         <tr>
-                            <th>Название валюты</th>
-                            <th>Продажа</th>
-                            <th>Покупка</th>
-                            <th>Действие</th>
+                            <th rowspan="2" style="text-align: center;">Обменый пункт</th>
+                            {% for currency in currencys %}
+                                <th colspan="2" style="text-align:center;">
+                                    {{ currency["iso"] }}
+                                    <hr>
+                                    <img style="height: 30px; width: auto" src="{{ asset('uploads/images/currency/') }}{{ currency['icon'] }}" alt="">
+                                </th>
+                            {% endfor %}
                         </tr>
+                        <tr>
+                            {% for currency in currencys %}
+                                <td style="font-size: 10px">Покупка</td>
+                                <td style="font-size: 10px;">Продажа</td>
+                            {% endfor %}
+                        </tr>
+                        {% for exchangeOffice in exchangeOffices %}
+                            <tr>
+                                <td>{{ exchangeOffice.name }}</td>
+                                {% for cashbox in exchangeOffice.cashboxs %}
+                                    {% if cashbox is null %}
+                                        <td>--</td>
+                                        <td>--</td>
+                                    {% else %}
+                                        <td data-id = '{{ cashbox.id }}'>{{ cashbox.currencyRates.0.purchase }}</td>
+                                        <td data-id = '{{ cashbox.id }}'>{{ cashbox.currencyRates.0.sale }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
                     </table>
                 </div><!-- /.content-details -->
             </div>
         </div>
     </div>
 {% endblock %}
-
 {% block Javascript %}
-    <script type="text/javascript">
-        $(function () {
-            let selectExchange = $('#selectExchange');
-            let loadExchange = function () {
-                $.ajax({
-                    type: "POST",
-                    url: "{{ path('profile_all_owner_exchanges') }}",
-                    data: this.userId,
-                    success: function (exchanges) {
-                        selectExchange.append(
-                            $.each(exchanges, function (i, exchange) {
-                                selectExchange.append(
-                                    '<option class="exchange" value="' + exchange.id + '">' + exchange.name + '</option>'
-                                );
-                            })
-                        )
-                    }
-                })
-            };
-            $("#selectExchange").change(function () {
-                let table = $('#table');
-                let forms = table.children().find('.form_in_tr');
-                forms.remove();
-                let exchangeId = $(this).val();
-                if (exchangeId === '0') {
-                    allCurrency();
-                }
-                $.ajax({
-                    type: "POST",
-                    url: "{{ path('profile_find_by_exchange_office') }}",
-                    data: {'id': exchangeId},
-                    success: function (currencyRates) {
-                        builderForm(currencyRates, exchangeId);
-                        writeCurrencyRate();
-                    }
-                })
-            });
-            let allCurrency = function () {
-                $.ajax({
-                        type: "POST",
-                        url: "{{ path('profile_all_owners_currencies') }}",
-                        data: this.userId,
-                        success: function (curryncies) {
-                            builderForm(curryncies, 0);
-                            writeCurrencyRate();
-                        }
-                    }
-                )
-            };
-            let builderForm = function (datas, exchangeId) {
-                let table = $('#table');
-                $.each(datas, function (i, data) {
-                    if (!data.default_currency) {
-                        let form = $(
-                            '<tr class = "form_in_tr" >' +
-                            '<form class="form-inline form"  >' +
-                            '<td>' + data.name + '</td>' +
-                            '<input type="hidden" class="cashboxId"  name = "cashboxId" value = "' + (data.cashbox_id || '') + '" >' +
-                            '<input type="hidden" class="iso"  name = "iso" value = "' + (data.iso || '') + '" >' +
-                            '<input type="hidden" class="exchangeId"  name = "exchangeId" value = "' + exchangeId + '" >' +
-                            '<td>' + '<input type="text" id = "currency_rate_sale" class="form-control ml-2" name="currency_rate_sale" value = "' + (data.sale || '') + '" >' + '</td>' +
-                            '<td>' + '<input type="text" id = "currency_rate_purchase" class="form-control ml-2" name="currency_rate_purchase" value = "' + (data.purchase || '') + '" >' + '</td>' +
-                            '<td>' + '<input type="submit" name="save" class="save btn btn-primary ml-2" title = "Обменять курс валюты ' + data.name + ' " value = "Обновить" >' + '</td>' +
-                            '</form>' +
-                            '</tr>');
-                        table.append(form);
-                    }
-                })
-            };
-            let writeCurrencyRate = function () {
-                let table = $('#table');
-                let forms = table.children().find('.form_in_tr');
-                $.each(forms, function (i, form) {
-                    $(form).find('.save').on('click', function (e) {
-                        e.preventDefault();
-                        let array = {
-                            sale: $(this).parent().parent().find("input[name ='currency_rate_sale']").val(),
-                            purchase: $(this).parent().parent().find("input[name ='currency_rate_purchase']").val(),
-                            cashbox_id: $(this).parent().parent().find("input[name ='cashboxId']").val(),
-                            exchange_id: $(this).parent().parent().find('.exchangeId').val(),
-                            iso: $(this).parent().parent().find('.iso').val()
-                        };
-                        $.ajax({
-                            type: "POST",
-                            url: "{{ path('profile_currency_rate_create_ajax') }}",
-                            data: array,
-                            success: function (response) {
-                                let color = 'blue';
-                                if (response.error) {
-                                    color = 'red';
-                                }
-                                let message = $(
-                                    '<p class="text_message" style="color: ' + color + '; text-align: center; font-size: large ">' + response.message + '</p>'
-                                );
-                                if ($('#showMessage').children) {
-                                    $('.text_message').remove();
-                                    $('#showMessage').append(message);
-                                    setTimeout(function () {
-                                        $('.text_message').remove();
-                                    }, 6000)
-                                }
-                            }
-                        })
-                    })
-                })
-            };
-            allCurrency();
-            loadExchange();
-        });
-    </script>
+
 {% endblock %}
