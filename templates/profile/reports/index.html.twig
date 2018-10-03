@@ -1,0 +1,119 @@
+{% extends "layouts/profile.layout.html.twig" %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="section-content">
+                <div class="content-head">
+                    <h4 class="content-title">Отчеты</h4><!-- /.content-title -->
+                </div><!-- /.content-head -->
+                <div class="content-details show">
+
+                    <div class="balance border p-4">
+                        <h3 class="text-center mb-2">- Баланс -</h3>
+                        <p class="text-center mb-2">(в соотвествующей валюте)</p>
+                        <form action="" id="balanceForm">
+                            <input type="text" class="form-control d-inline-block" placeholder="Начальная дата"
+                                   name="balanceDateFrom" id="balanceDateFrom"
+                                   style="width: 200px; padding: 7px 12px 8px 12px;">
+                            <input type="text" class="form-control d-inline-block" placeholder="Конечная дата"
+                                   name="balanceDateTo" id="balanceDateTo"
+                                   style="width: 200px; padding: 7px 12px 8px 12px;">
+                            <button class="btn btn-primary" id="balanceFormSubmit">Обновить</button>
+                        </form>
+                        <div style="overflow-x: scroll; width: 1200px;" id="balanceBlock">
+                            {{ balanceBlock|raw }}
+                        </div>
+                    </div><!-- .balance -->
+
+                    <div class="margin border p-4 mt-4">
+                        <h3 class="text-center mb-2">- Выручка -</h3>
+                        <p class="text-center mb-2">(в сомах)</p>
+                        {#<div class="btn-group" role="group" aria-label="Basic example">#}
+                            {#<button type="button" class="btn btn-primary">День</button>#}
+                            {#<button type="button" class="btn btn-warning">Месяц</button>#}
+                            {#<button type="button" class="btn btn-primary">Год</button>#}
+                        {#</div>#}
+                        <form action="" id="marginForm">
+                            <input type="text" class="form-control d-inline-block" placeholder="Начальная дата"
+                                   name="marginDateFrom" id="marginDateFrom"  style="width: 200px; padding: 7px 12px 8px 12px;">
+                            <input type="text" class="form-control d-inline-block" placeholder="Конечная дата"
+                                   name="marginDateTo" id="marginDateTo" style="width: 200px; padding: 7px 12px 8px 12px;">
+                            <button class="btn btn-primary" id="marginFormSubmit">Обновить</button>
+                        </form>
+                        <div style="overflow-x: scroll; width: 1200px;" id="marginBlock">
+                            {{ marginBlock|raw }}
+                        </div>
+                    </div><!-- .margin -->
+
+                </div><!-- /.content-details -->
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block Javascript %}
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $(function () {
+            $('#balanceDateFrom').datepicker({dateFormat: 'dd/mm/yy'});
+            $('#balanceDateTo').datepicker({dateFormat: 'dd/mm/yy'});
+            $('#marginDateFrom').datepicker({dateFormat: 'dd/mm/yy'});
+            $('#marginDateTo').datepicker({dateFormat: 'dd/mm/yy'});
+        });
+
+        $('#balanceFormSubmit').on('click', function (e) {
+            e.preventDefault();
+            let data = {};
+
+            $.each($('#balanceForm').find(':input, select'), function () {
+                if ($(this).is(':checkbox')) {
+                    data[this.name] = !!$(this).is(':checked');
+                } else {
+                    data[this.name] = $(this).val();
+                }
+            });
+
+            if (data.balanceDateFrom && data.balanceDateTo) {
+                $.post('{{ path('profile_reports_update_balance_ajax') }}', data, function (response) {
+                    console.log(response.message);
+                    let balanceBlock = $('#balanceBlock');
+                    balanceBlock.empty();
+                    balanceBlock.append(response.balanceBlock);
+                });
+            }
+        });
+
+        $('#marginFormSubmit').on('click', function (e) {
+            e.preventDefault();
+            let data = {};
+
+            $.each($('#marginForm').find(':input, select'), function () {
+                if ($(this).is(':checkbox')) {
+                    data[this.name] = !!$(this).is(':checked');
+                } else {
+                    data[this.name] = $(this).val();
+                }
+            });
+
+            if (data.marginDateFrom && data.marginDateTo) {
+                $.post('{{ path('profile_reports_update_margin_ajax') }}', data, function (response) {
+                    console.log(response.message);
+                    let marginBlock = $('#marginBlock');
+                    marginBlock.empty();
+                    marginBlock.append(response.marginBlock);
+                });
+            }
+        });
+    </script>
+
+{% endblock %}

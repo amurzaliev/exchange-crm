@@ -151,7 +151,7 @@ class TransactionsHandler extends ModelHandler
         $exchangeOfficeId = $data['exchangeOfficeId'] ?? 0;
         $cashboxId = $data['cashboxId'] ?? 0;
         $nationalCurrency = $data['nationalCurrency'] ?? null;
-        $margin = $data['margin'] ?? null;
+        $margin = $data['margin'] ?? 0;
 
         $owner = $this->getOwner($user);
         $exchangeOffice = $this->exchangeOfficeRepository->findByOne($exchangeOfficeId, $owner);

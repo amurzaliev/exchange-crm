@@ -46,7 +46,7 @@ class ExchangeOfficeRepository extends ServiceEntityRepository
      * @param User $owner
      * @return ExchangeOffice[]|null
      */
-    public function findByAllOwnersExchange (User $owner)
+    public function findByAllOwnersExchange(User $owner)
     {
         try {
             return $this->createQueryBuilder('e')
@@ -57,6 +57,15 @@ class ExchangeOfficeRepository extends ServiceEntityRepository
         } catch (NotFoundHttpException $e) {
             return null;
         }
+    }
+
+    public function findAllByOwner(User $owner)
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.user = :owner')
+            ->setParameter('owner', $owner)
+            ->getQuery()
+            ->getResult();
     }
 
 

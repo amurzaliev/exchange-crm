@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Transactions;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -80,5 +82,46 @@ class TransactionsRepository extends ServiceEntityRepository
             ->getQuery()
             ->setMaxResults($maxResult)
             ->getResult();
+    }
+
+//    public function getAllBalanceByPeriod(User $owner)
+//    {
+//        try {
+//            $sql = "SELECT COALESCE(t.cashbox_from_id, t.cashbox_to_id) as cashbox_id, t.basic_type, DATE_FORMAT(t.created_at, '%Y-%m-%d') as t_date, SUM(t.amount) as t_amount
+//                FROM transactions AS t
+//                WHERE t.user_id = :owner
+//                GROUP BY cashbox_id, t.basic_type, t_date
+//                ";
+//
+//            $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+//            $stmt->execute([
+//                ':owner' => $owner->getId()
+//            ]);
+//            $stmt->execute();
+//            return $stmt->fetchAll();
+//        } catch (DBALException $e) {
+//            return null;
+//        }
+//
+//    }
+
+    public function getAllMarginsByOwner(User $owner)
+    {
+        try {
+            $sql = "SELECT COALESCE(t.cashbox_from_id, t.cashbox_to_id) as cashbox_id, DATE_FORMAT(t.created_at, '%Y-%m-%d') as t_date, SUM(t.margin) as t_margin
+                FROM transactions AS t
+                WHERE t.user_id = :owner
+                GROUP BY cashbox_id, t_date
+                ";
+
+            $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+            $stmt->execute([
+                ':owner' => $owner->getId()
+            ]);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (DBALException $e) {
+            return null;
+        }
     }
 }

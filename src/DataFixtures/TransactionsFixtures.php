@@ -25,22 +25,20 @@ class TransactionsFixtures extends Fixture implements DependentFixtureInterface
             /** @var Cashbox $cashbox */
             $cashbox = $this->getReference($cashboxRefId);
 
-            if ($cashbox->getCurrency()->getIso() === 'KGS') {
-                $transactions = new Transactions();
-                $transactions
-                    ->setCreatedAt(new \DateTime())
-                    ->setUpdateAt(new \DateTime())
-                    ->setUser($cashbox->getUser())
-                    ->setCashboxTo($cashbox)
-                    ->setAmount(6000000)
-                    ->setNote("Стартовый капитал для Дефолтной кассы {$cashbox->getExchangeOffice()->getName()}")
-                    ->setBasicType(1)
-                    ->setExchangeOffice($cashbox->getExchangeOffice());
-                $manager->persist($transactions);
-            }
-
-            $manager->flush();
+            $transactions = new Transactions();
+            $transactions
+                ->setCreatedAt(new \DateTime('-20 days'))
+                ->setUpdateAt(new \DateTime('-20 days'))
+                ->setUser($cashbox->getUser())
+                ->setCashboxTo($cashbox)
+                ->setAmount(10000)
+                ->setNote("Стартовый капитал для кассы {$cashbox->getExchangeOffice()->getName()}")
+                ->setBasicType(1)
+                ->setExchangeOffice($cashbox->getExchangeOffice());
+            $manager->persist($transactions);
         }
+
+        $manager->flush();
     }
 
     /**

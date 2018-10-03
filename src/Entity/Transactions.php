@@ -28,7 +28,7 @@ class Transactions
     /**
      * @var Cashbox
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Cashbox", inversedBy="transctionsTo")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Cashbox", inversedBy="transactionsTo")
      */
     private $cashboxTo;
 

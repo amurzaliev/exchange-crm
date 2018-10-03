@@ -27,3 +27,10 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+        dql:
+            string_functions:
+                date: DoctrineExtensions\Query\Mysql\Date
+                date_format: DoctrineExtensions\Query\Mysql\DateFormat
+                day: DoctrineExtensions\Query\Mysql\Day
+                month: DoctrineExtensions\Query\Mysql\Month
+                year: DoctrineExtensions\Query\Mysql\Year

@@ -1,0 +1,27 @@
+<table class="table mt-4">
+    <thead>
+    <tr>
+        <th scope="col"></th>
+        {% for date in dates %}
+            <th scope="col" style="word-break: keep-all;">{{ date|date('d/m/Y') }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for exchangeOffice in exchangeOffices %}
+        <tr>
+            <th scope="row" style="word-break: keep-all;">{{ exchangeOffice.name }}</th>
+            {% for date in dates %}
+                <td></td>{% endfor %}
+        </tr>
+        {% for cashbox in exchangeOffice.cashboxes %}
+            <tr>
+                <th scope="row"><span class="pl-4">{{ cashbox.currency.iso }}</span></th>
+                {% for balance in balances[cashbox.id] %}
+                    <td>{{ balance['amount'] }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    {% endfor %}
+    </tbody>
+</table>
