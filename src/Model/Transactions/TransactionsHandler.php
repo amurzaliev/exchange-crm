@@ -52,6 +52,10 @@ class TransactionsHandler extends ModelHandler
         $notes = $request->get('notes');
         $margin = $request->get('margin');
 
+        if (empty($currency)) {
+            throw new \Exception("Курс не может быть пустым", 403);
+        }
+
 
         $exchangeOffice = $this->exchangeOfficeRepository->findByOne($exchangeOfficeId, $this->getOwner($user));
         $defaultCurrency = $this->cashboxRepository->findByOneDefaultCurrency($exchangeOffice);
