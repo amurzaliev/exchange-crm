@@ -40,20 +40,21 @@ class MonetaryOperationsController extends BaseProfileController
         VIPClientRepository $clientRepository
     )
     {
-        $exchangeOffice = $exchangeOfficeRepository->findByOne($id, $this->getOwner());
-        $vipClients = $clientRepository->findByOwner($this->getOwner());
+        $exchangeOffice = $this->getOwnerExchangeOffice($exchangeOfficeRepository, $id);
 
         if (!$exchangeOffice) {
             return $this->show404();
         }
 
-        $cashboxs = $cashboxRepository->findByAll($exchangeOffice);
+        $owner = $exchangeOffice->getUser();
+        $vipClients = $clientRepository->findByOwner($owner);
         $defaultCurrency = $cashboxRepository->findByOneDefaultCurrency($exchangeOffice);
         $defaultCurrencyAmount = $cashboxRepository->getAllAmount($defaultCurrency->getId(), $exchangeOffice)[0];
+        $cashboxes = $cashboxRepository->findByAll($exchangeOffice);
 
         return $this->render('profile/monetary_operations/index.html.twig', [
-            'cashboxs' => $cashboxs,
             'exchangeOffice' => $exchangeOffice,
+            'cashboxes' => $cashboxes,
             'vipClients' => $vipClients,
             'defaultCurrencyAmount' => $defaultCurrencyAmount,
             'defaultCurrency' => $defaultCurrency,
@@ -109,17 +110,17 @@ class MonetaryOperationsController extends BaseProfileController
         CashboxRepository $cashboxRepository
     )
     {
-        $exchangeOffice = $exchangeOfficeRepository->findByOne($id, $this->getOwner());
+        $exchangeOffice = $this->getOwnerExchangeOffice($exchangeOfficeRepository, $id);
 
         if (!$exchangeOffice) {
             return $this->show404();
         }
 
-        $cashboxs = $cashboxRepository->findByAll($exchangeOffice);
+        $cashboxes = $cashboxRepository->findByAll($exchangeOffice);
 
         return $this->render('profile/monetary_operations/balance.html.twig', [
-            'cashboxs' => $cashboxs,
-            'exchangeOffice' => $exchangeOffice
+            'exchangeOffice' => $exchangeOffice,
+            'cashboxes' => $cashboxes
         ]);
     }
 
@@ -209,6 +210,7 @@ class MonetaryOperationsController extends BaseProfileController
     )
     {
         $status = true;
+        $blockList = null;
         $message = 'Данные обновлены';
 
         try {

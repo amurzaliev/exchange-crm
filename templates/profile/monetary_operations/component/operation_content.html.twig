@@ -1,0 +1,160 @@
+{% extends "layouts/profile.layout.html.twig" %}
+
+{% block stylesheet %}
+    <style>
+        .box-body .balance tr th, td {
+            text-align: center;
+        }
+
+        .box-body .balance tr td input {
+            width: 100px;
+            padding: 2px 2px;
+            font-weight: bold;
+        }
+
+        .balance table tr {
+            font-size: 18px;
+        }
+
+        .balance table tr td.active-cashbox-balance input {
+            border: 1px solid #a96d0e;
+            background: #b7760d;
+        }
+
+        .balance textarea {
+            width: 100%;
+        }
+
+        .balance .active-cashbox-balance {
+            background: rgb(223, 138, 12);
+            color: white;
+        }
+
+        .balance .active-cashbox-balance td {
+            border-right: 1px solid #df8a0b !important;
+        }
+
+        .balance .active-cashbox-balance td input {
+            background: #ad6d0d;
+            border: 1px solid #df8a0b !important;
+        }
+        .form-check-input {
+            margin-top: 0;
+            margin-left: 0;
+        }
+        .money_operation .box-body tr th, td {
+            text-align: center;
+        }
+
+        .money_operation  td.sale, th.sale, td.sale input {
+            background: #4cd0936b;
+        }
+
+        .money_operation td.purchase, th.purchase, td.purchase input {
+            background: #0087a94d;
+        }
+
+        .money_operation td.currency, th.currency, td.currency input {
+            background: #e9fb1e8c;
+        }
+
+        .money_operation .box-body tr td input {
+            width: 80px;
+            border: 1px solid #5cb599;
+            padding: 2px 2px;
+            font-weight: bold;
+        }
+
+        .money_operation table tr {
+            font-size: 17px;
+        }
+
+        .money_operation table tr td.active-cashbox {
+            background: #f39c12 !important;
+            color: white;
+            border-right: 1px solid #f39c11;
+            border-top: 3px solid #ce8510;
+            border-bottom: 3px solid #ce8510;
+        }
+
+        .money_operation table tr td.active-cashbox input {
+            border: 1px solid #a96d0e;
+            background: #b7760d;
+        }
+
+        .money_operation textarea {
+            width: 100%;
+        }
+
+        .money_operation .discount input {
+            float: left;
+            border-right: none !important;
+        }
+
+        .money_operation .discount input + button {
+            background: white;
+            padding: 2px 11px;
+            cursor: pointer;
+            margin: 0 !important;
+            display: list-item;
+            font-size: 13px;
+            border-radius: 0;
+            border: 1px solid #dadada;
+        }
+
+        .money_operation .DefaultCurrency {
+            color: #55840b;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .money_operation .discount_active {
+            background: #e8e8e8 !important;
+            color: black;
+            box-shadow: inset 1px 2px 6px 4px #bbbbbb;
+            border: 1px solid #dadada;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="section-content">
+                <div class="content-head">
+                    <h4>Управление обменным пунктом <b style="color: #50c37f">{{ exchangeOffice.name }}</b></h4><!-- /.content-title -->
+                    <div class="float-right">
+                        <a href="{{ path('profile_exchange_office_index') }}"
+                           class="btn btn-primary">
+                            Список обменных пунктов <i class="fa fa-fw fa-list"></i>
+                        </a>
+                        {% if is_granted('ROLE_OWNER') %}
+                            <a href="{{ path('profile_exchange_office_create') }}"
+                               class="btn btn-success">
+                                Добавить обменный пункт <i class="fa fa-fw fa-plus"></i>
+                            </a>
+                        {% endif %}
+                    </div><!-- /.corner-content -->
+                    <div class="clearfix"></div>
+                </div><!-- /.content-head -->
+                <div class="content-details show">
+                    <!-- general form elements disabled -->
+                    <div class="box box-warning">
+                        <div class="box-header">
+                            {% include "profile/monetary_operations/component/tab_list_menu.html.twig" %}
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="tab-content" id="exchangeOfficeTabContent">
+                                <div class="tab-pane fade in active show" role="tabpanel" aria-labelledby="monetory_operations-tab">
+                                    {% block operation_content %}{% endblock %}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div><!-- /.content-details -->
+            </div>
+        </div>
+    </div>
+{% endblock %}

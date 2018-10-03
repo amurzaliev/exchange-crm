@@ -274,7 +274,28 @@ class CurrencyRateController extends BaseProfileController
     public function changeAction()
     {
         return $this->render('profile/currency_rate/change.html.twig');
+    }
 
+    /**
+     * @Route("/change/exchange_office/{id}", name="profile_currency_rate_change_exchange_office")
+     * @param int $id
+     * @param ExchangeOfficeRepository $exchangeOfficeRepository
+     * @return Response
+     */
+    public function changeExchangeOfficeAction(
+        int $id,
+        ExchangeOfficeRepository $exchangeOfficeRepository
+    )
+    {
+        $exchangeOffice = $this->getOwnerExchangeOffice($exchangeOfficeRepository, $id);
+
+        if (!$exchangeOffice) {
+            return $this->show404();
+        }
+
+        return $this->render('profile/exchange_office/currency_rate.html.twig', [
+            'exchangeOffice' => $exchangeOffice
+        ]);
     }
 
 }

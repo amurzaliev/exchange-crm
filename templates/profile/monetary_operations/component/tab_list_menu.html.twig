@@ -1,0 +1,25 @@
+<ul class="nav nav-tabs" id="exchangeOfficeTabMenu" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link" id="monetary_operations_index" href="{{ path('profile_monetary_operations', {'id' : exchangeOffice.id}) }}"
+           role="tab"
+           aria-controls="contact" aria-selected="true">Работа с обменным пунктом</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="currency_rate_change" href="{{ path('profile_currency_rate_change_exchange_office', {'id' : exchangeOffice.id}) }}"
+           role="tab"
+           aria-controls="contact" aria-selected="false">Курсы валют</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="monetary_operations_balance" href="{{ path('profile_monetary_operations_balance', {'id' : exchangeOffice.id}) }}" role="tab"
+           aria-controls="profile" aria-selected="false">Валютные кассы и баланс</a>
+    </li>
+    {% if is_granted('ROLE_OWNER') %}
+        <li class="nav-item">
+            <a class="nav-link"
+               id="exchange_office_detail"
+               href="{{ path('profile_exchange_office_detail',{'id' : exchangeOffice.id }) }}" role="tab"
+               aria-controls="exchangeOffice"
+               aria-selected="false">Информация об обменном пункте</a>
+        </li>
+    {% endif %}
+</ul>

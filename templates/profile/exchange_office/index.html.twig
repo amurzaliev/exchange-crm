@@ -48,7 +48,7 @@
                                 {% endif %}
                                 <td>{{ exchangeOffice.address }}</td>
                                 <td>
-                                    <a href="{{ path('profile_exchange_office_detail',{'id' : exchangeOffice.id }) }}"
+                                    <a href="{{ path('profile_monetary_operations', {'id' : exchangeOffice.id}) }}"
                                        class="btn btn-primary"
                                        title="Управление обменным пунктом {{ exchangeOffice.name }}">Управление
                                         обменным пунктом <i class="fa fa-cogs"></i></a>

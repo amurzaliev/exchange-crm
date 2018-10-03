@@ -3,6 +3,7 @@
 namespace App\Controller\Profile;
 
 use App\Entity\User;
+use App\Repository\ExchangeOfficeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
@@ -31,6 +32,24 @@ abstract class BaseProfileController extends Controller
         }
 
         return $user;
+    }
+
+    public function getOwnerExchangeOffice(ExchangeOfficeRepository $exchangeOfficeRepository, $id)
+    {
+        $owner = null;
+        $staff = null;
+
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $owner = $this->getOwner();
+        }
+
+        if ($this->isGranted('ROLE_USER')) {
+            $staff = $this->getUser()->getStaff();
+        }
+
+        $exchangeOffice = $exchangeOfficeRepository->findByOne($id, $owner, $staff);
+
+        return $exchangeOffice;
     }
 
 }
