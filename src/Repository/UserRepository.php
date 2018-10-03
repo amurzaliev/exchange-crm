@@ -19,6 +19,25 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    public function getAllOwners()
+    {
+        /** @var User[] $rows */
+        $rows = $this->createQueryBuilder('u')
+            ->getQuery()
+            ->getResult()
+            ;
+
+        $result = [];
+        if ($rows) {
+            foreach ($rows as $row) {
+                if (in_array("ROLE_OWNER", $row->getRoles())) {
+                    $result[] = $row;
+                }
+            }
+        }
+        return $result;
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

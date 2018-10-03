@@ -11,6 +11,15 @@
                     <div id="showMessage"  style="width: 90%;" ></div>
                     <form>
                         <div class="form-group">
+                            {% if is_granted('ROLE_ADMIN') %}
+                            <label for="exchange_office_name" >Выберите владельца</label>
+
+                            <select class="custom-select form-control" id="id_owner">
+                                {% for owner in ownersList %}
+                                    <option value="{{ owner.id }}">{{ owner.fullName }}</option>
+                                {% endfor %}
+                            </select>
+                            {% endif %}
 
                             <label for="exchange_office_name" >Название</label>
                             <input type="text" name="name_exchange" id="exchange_office_name" class="form-control">
@@ -68,13 +77,15 @@
                 if($('#exchange_office_active').is(':checked')){
                     active = 1;
                 }
+                let id_owner = $('#id_owner').val();
                 let datas ={
                     name: $('#exchange_office_name').val(),
                     address: $('#exchange_office_address').val(),
                     contact: $('#exchange_office_contact').val(),
                     active: active,
                     cashboxes: $('#selectCahboxes').val(),
-                    staffs: $('#selectStaffs').val()
+                    staffs: $('#selectStaffs').val(),
+                    id_owner: id_owner,
                 }
                 $.ajax({
                     type: "POST",

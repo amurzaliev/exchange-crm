@@ -11,6 +11,7 @@ use App\Repository\CurrencyRepository;
 use App\Repository\ExchangeOfficeRepository;
 use App\Repository\PermissionGroupRepository;
 use App\Repository\StaffRepository;
+use App\Repository\UserRepository;
 use App\Repository\VIPClientRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -63,22 +64,27 @@ class ExchangeOfficeController extends BaseProfileController
      * @param StaffRepository $staffRepository
      * @param CurrencyRepository $currencyRepository
      * @param PermissionGroupRepository $permissionGroupRepository
+     * @param UserRepository $userRepository
      * @return Response
      */
     public function createAction(
         StaffRepository $staffRepository,
         CurrencyRepository $currencyRepository,
-        PermissionGroupRepository $permissionGroupRepository
+        PermissionGroupRepository $permissionGroupRepository,
+        UserRepository $userRepository
     )
     {
         $staffs = $staffRepository->findByAllOwnerStaff($this->getOwner());
         $permissionGroups = $permissionGroupRepository->findAllByOwner($this->getOwner());
         $currencies = $currencyRepository->findAll();
 
+        $owners = $userRepository->getAllOwners();
+
         return $this->render('profile/exchange_office/create.html.twig', [
             'staffs' => $staffs,
             'currencies' => $currencies,
-            'permissionGroups' => $permissionGroups
+            'permissionGroups' => $permissionGroups,
+            'ownersList' => $owners
         ]);
     }
 
@@ -206,13 +212,15 @@ class ExchangeOfficeController extends BaseProfileController
      * @param ObjectManager $manager
      * @param CurrencyRepository $currencyRepository
      * @param StaffRepository $staffRepository
+     * @param UserRepository $userRepository
      * @return JsonResponse
      */
     public function createActionAjax(
         Request $request,
         ObjectManager $manager,
         CurrencyRepository $currencyRepository,
-        StaffRepository $staffRepository
+        StaffRepository $staffRepository,
+        UserRepository $userRepository
     )
     {
         $data = $request->request->all();
@@ -225,8 +233,14 @@ class ExchangeOfficeController extends BaseProfileController
                 throw new \Exception('Поле название обменного пункта не может быть пустым');
             }
 
+            if (isset($data['id_owner'])) {
+                $user = $userRepository->find(intval($data['id_owner']));
+            } else {
+                $user = $this->getUser();
+            }
+
             $exchangeOffice = new ExchangeOffice();
-            $exchangeOffice->setUser($this->getUser());
+            $exchangeOffice->setUser($user);
             $exchangeOffice->setName($data['name']);
             $exchangeOffice->setAddress($data['address']);
             $exchangeOffice->setContact($data['contact']);
