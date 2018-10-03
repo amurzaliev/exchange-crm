@@ -69,7 +69,7 @@ class ExchangeOfficeRepository extends ServiceEntityRepository
         }
     }
 
-    public function findAllByOwner(User $owner)
+    public function findAllByOwnerRep(User $owner)
     {
         return $this->createQueryBuilder('e')
             ->andWhere('e.user = :owner')

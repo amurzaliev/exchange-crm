@@ -41,7 +41,7 @@ class ReportsController extends BaseProfileController
             new \DateTime('+1 days')
         );
 
-        $exchangeOffices = $exchangeOfficeRepository->findAllByOwner($owner);
+        $exchangeOffices = $exchangeOfficeRepository->findAllByOwnerRep($owner);
         $marginsData = $transactionsRepository->getAllMarginsByOwner($owner);
 
         $balances = [];
@@ -144,7 +144,7 @@ class ReportsController extends BaseProfileController
                 $dateTo->modify('+1 day')
             );
 
-            $exchangeOffices = $exchangeOfficeRepository->findAllByOwner($owner);
+            $exchangeOffices = $exchangeOfficeRepository->findAllByOwnerRep($owner);
             $balances = [];
 
             /** @var ExchangeOffice $exchangeOffice */
@@ -224,7 +224,7 @@ class ReportsController extends BaseProfileController
                 $dateTo->modify('+1 day')
             );
 
-            $exchangeOffices = $exchangeOfficeRepository->findAllByOwner($owner);
+            $exchangeOffices = $exchangeOfficeRepository->findAllByOwnerRep($owner);
             $marginsData = $transactionsRepository->getAllMarginsByOwner($owner);
 
             $margins = [];
