@@ -3,16 +3,13 @@
 namespace App\Controller\Profile;
 
 use App\Repository\CashboxRepository;
-use App\Repository\CurrencyRepository;
 use App\Repository\ExchangeOfficeRepository;
 use App\Repository\TransactionsRepository;
-use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class IndexController extends Controller
+class IndexController extends BaseProfileController
 {
 
     /**
@@ -22,13 +19,14 @@ class IndexController extends Controller
      * @param TransactionsRepository $transactionsRepository
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction(ExchangeOfficeRepository $exchangeOfficeRepository,
-                                CashboxRepository $cashboxRepository,
-                                TransactionsRepository $transactionsRepository)
+    public function indexAction(
+        ExchangeOfficeRepository $exchangeOfficeRepository,
+        CashboxRepository $cashboxRepository,
+        TransactionsRepository $transactionsRepository)
     {
-        $allExchange = $exchangeOfficeRepository->findByAllOwnersExchange($this->getUser());
+        $allExchange = $exchangeOfficeRepository->findByAllOwnersExchange($this->getOwner());
         $all_total_point = $transactionsRepository->allTotalProfit($this->getUser()->getId());
-        $all_number_of_operations = $transactionsRepository->allNumberOfOperations($this->getUser()->getId());
+        $all_number_of_operations = $transactionsRepository->allNumberOfOperations($this->getOwner()->getId());
         $all_operations = $all_number_of_operations[0]['count_basic'] ?? 0 ;
         $all_point = $all_total_point[0]['summa'] ?? 0 ;
 
@@ -37,7 +35,7 @@ class IndexController extends Controller
         foreach ($allExchange as $key => $exchange) {
             $exchangeName = $exchange['name'];
             $exchangeId = $exchange['id'];
-            $exchangeOffice = $exchangeOfficeRepository->findByOne($exchangeId, $this->getUser());
+            $exchangeOffice = $exchangeOfficeRepository->findByOne($exchangeId, $this->getOwner());
             $cashboxs = $cashboxRepository->findByAll($exchangeOffice);
 
             foreach ($cashboxs as $key => $value) {
@@ -59,11 +57,6 @@ class IndexController extends Controller
             ];
         }
 
-
-
-
-
-
         return $this->render('profile/index/index.html.twig',[
             'all_exchange' => $array,
             'all_currency' => $arrayAllCurrency,
@@ -80,8 +73,10 @@ class IndexController extends Controller
      * @param TransactionsRepository $transactionsRepository
      * @return JsonResponse
      */
-    public function indexAjaxAction(ExchangeOfficeRepository $exchangeOfficeRepository,
-                                    TransactionsRepository $transactionsRepository)
+    public function indexAjaxAction(
+        ExchangeOfficeRepository $exchangeOfficeRepository,
+        TransactionsRepository $transactionsRepository
+    )
     {
         function sortedWithNext($days, $tomorrow) {
             $index_dictionary = array_combine(array_keys($days), range(0,6));

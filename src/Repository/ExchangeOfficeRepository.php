@@ -109,7 +109,7 @@ class ExchangeOfficeRepository extends ServiceEntityRepository
      * @param Staff|null $staff
      * @return ExchangeOffice[]|null
      */
-    public function findAllByOwner($owner = null, Staff $staff = null)
+    public function findAllByOwner($owner = null, Staff $staff = null, $array = false)
     {
         try {
             $qb =  $this->createQueryBuilder('e');
@@ -128,11 +128,14 @@ class ExchangeOfficeRepository extends ServiceEntityRepository
                     ->setParameter(":staff", $staff);
             }
 
-            return $qb
-                ->orderBy("e.id", "desc")
-                ->getQuery()
-                ->getResult()
-                ;
+            $qb->orderBy("e.id", "desc");
+
+            if ($array) {
+                return $qb->getQuery()->getArrayResult();
+            }
+
+            return $qb->getQuery()->getResult();
+
         } catch (NotFoundHttpException $e) {
             return null;
         }

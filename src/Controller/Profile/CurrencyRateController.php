@@ -110,25 +110,33 @@ class CurrencyRateController extends BaseProfileController
      */
     public function allOwnerExchanges(ExchangeOfficeRepository $exchangeOfficeRepository)
     {
-        /** @var User $user */
-        $user = $this->getUser();
-        $exchangeOffices = $exchangeOfficeRepository->findByAllOwnersExchange($user);
+        $owner = null;
+        $staff = null;
+
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            /** @var User $owner */
+            $owner = $this->getOwner();
+        }
+
+        if ($this->isGranted('ROLE_USER')) {
+            $staff = $this->getUser()->getStaff();
+        }
+
+        $exchangeOffices = $exchangeOfficeRepository->findAllByOwner($owner, $staff, true);
 
         return new JsonResponse($exchangeOffices);
     }
 
     /**
-     * @Route( "/ajax_all_owner's_currencies", name="profile_all_owners_currencies")
+     * @Route( "/ajax_all_owners_currencies", name="profile_all_owners_currencies")
      * @Method("POST")
      * @param CurrencyRepository $currencyRepository
      * @return Response
      */
     public function allOwnerCurrencies(CurrencyRepository $currencyRepository)
     {
-        /** @var User $user */
-        $user = $this->getUser();
 
-        $currenciesAll = $currencyRepository->findByCurrency($user->getId());
+        $currenciesAll = $currencyRepository->findByCurrency($this->getOwner()->getId());
 
         $currencies = [];
         foreach ($currenciesAll as $currency)
