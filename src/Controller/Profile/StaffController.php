@@ -5,7 +5,6 @@ namespace App\Controller\Profile;
 use App\Entity\Staff;
 use App\Entity\User;
 use App\Form\UserStaffType;
-use App\Repository\ExchangeOfficeRepository;
 use App\Repository\PermissionGroupRepository;
 use App\Repository\StaffRepository;
 use App\Repository\UserRepository;
@@ -38,18 +37,8 @@ class StaffController extends BaseProfileController
         PermissionGroupRepository $permissionGroupRepository
     )
     {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        $permissionGroups = $permissionGroupRepository->findAllByOwner($user);
-
-        if ($this->isGranted('ROLE_ADMIN')) {
-            $staffs = $staffRepository->findAll();
-        } elseif ($this->isGranted('ROLE_OWNER')) {
-            $staffs = $staffRepository->findByAllOwnerStaff($this->getUser());
-        } else {
-            $staffs = $staffRepository->findByAllOwnerStaff($user->getStaff()->getOwner());
-        }
+        $permissionGroups = $permissionGroupRepository->findAllByOwner($this->getOwner());
+        $staffs = $staffRepository->findByAllOwnerStaff($this->getOwner());
 
         return $this->render('profile/staff/index.html.twig', [
             'staffs' => $staffs,
@@ -295,8 +284,7 @@ class StaffController extends BaseProfileController
         Request $request,
         ObjectManager $manager,
         PermissionGroupRepository $permissionGroupRepository,
-        StaffRepository $staffRepository,
-        UserRepository $userRepository
+        StaffRepository $staffRepository
     )
     {
         $message = null;
@@ -313,6 +301,7 @@ class StaffController extends BaseProfileController
             $stafId = intval($request->get('stafId'));
 
             $staff = $staffRepository->find($stafId);
+
             $user = $staff->getUser();
             $permissionGroup = $permissionGroupRepository->find($group);
 

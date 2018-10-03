@@ -191,6 +191,7 @@ class Staff
     public function toArray()
     {
         $data = [
+            "staf_id" => $this->getId(),
             "fullname" => $this->user->getFullName(),
             "username" => $this->user->getUsername(),
             "enabled" => $this->user->isEnabled(),

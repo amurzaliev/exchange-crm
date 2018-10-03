@@ -1,7 +1,11 @@
 <header class="top-header media">
     <div class="top-left mr-3">
         <a class="navbar-brand" style="color: #777c7e;font-weight: bold;" href="{{ path('profile_index') }}">
-            Личный кабинет
+            {% if is_granted('ROLE_ADMIN') %}
+                Админ панель
+            {% else %}
+                Личный кабинет
+            {% endif %}
         </a><!-- /.navbar-brand -->
     </div><!-- /.top-left -->
 

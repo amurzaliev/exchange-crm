@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{{ asset('profile/assets/css/linea-basic.css') }}">
     <link rel="stylesheet" href="{{ asset('profile/assets/css/pe-icon-7-stroke.css') }}">
 
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
     <!-- Import Custom Country Select CSS Files -->
     <link rel="stylesheet" href="{{ asset('profile/assets/css/countrySelect.min.css') }}">
 
@@ -22,7 +23,6 @@
     <!-- Import Bootstrap CSS File -->
 
     <link rel="stylesheet" href="{{ asset('profile/assets/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
 
     <!-- Import Owl Carousel CSS File -->
 
@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="{{ asset('profile/assets/css/tables/tables.css') }}">
     <link rel="stylesheet" href="{{ asset('profile/assets/css/responsive.css') }}">
     <link rel="stylesheet" href="{{ asset('profile/assets/fastselect/fastselect.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
 
     <style>
         .content-wrapper .dashboard-contents .contents-inner {
@@ -44,9 +45,46 @@
         .box-header {
             margin-bottom: 20px;
         }
+
+        {% if is_granted('ROLE_ADMIN') %}
+
+        header.top-header .top-left {
+            background: #384250;
+        }
+
+        header.top-header .top-left a{
+            color: white !important;
+        }
+
+        .top-right {
+            background: #2b333e;
+        }
+        header.top-header {
+            background: #2b333e;
+        }
+
+        .sidenav-toggle i {
+            color: white;
+        }
+
+        header.top-header .top-right .right-content a {
+            color: white;
+        }
+
+        .content-wrapper aside.left-panel .navbar .navbar-nav li a {
+            color: #585858;
+        }
+
+        .content-wrapper aside.left-panel {
+            background: white;
+        }
+
+        {% endif %}
     </style>
 
     {% block stylesheet %}{% endblock %}
+
+
 
 </head>
 
@@ -73,12 +111,11 @@
     </div><!-- /.dashboard-contents -->
 </div><!-- /.content-wrapper -->
 
-
-
 <script src="{{ asset('profile/assets/js/jquery-3.2.1.slim.min.js') }}"></script>
 <script src="{{ asset('profile/assets/js/plugins.js') }}"></script>
 <script src="{{ asset('profile/assets/js/main.js') }}"></script>
 <script src="{{ asset('profile/assets/fastselect/fastselect.standalone.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
 {% block Javascript %}{% endblock %}
 </body>
 </html>

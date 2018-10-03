@@ -2,7 +2,7 @@
 
 namespace App\Controller\Profile;
 
-use App\Model\Controller\ControllerHandler;
+use App\Entity\User;
 use App\Entity\Cashbox;
 use App\Entity\ExchangeOffice;
 use App\Form\ExchangeOfficeType;
@@ -31,14 +31,24 @@ class ExchangeOfficeController extends BaseProfileController
     /**
      * @Route("/", name="profile_exchange_office_index")
      * @Method("GET")
-     *
-     * @param ControllerHandler $controllerHandler
+     * @param ExchangeOfficeRepository $exchangeOfficeRepository
      * @return Response
      */
-    public function indexAction(ControllerHandler $controllerHandler)
+    public function indexAction(
+        ExchangeOfficeRepository $exchangeOfficeRepository
+    )
     {
+        $owner = null;
+
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            /** @var User $owner */
+            $owner = $this->getOwner();
+        }
+
+        $exchangeOffices = $exchangeOfficeRepository->findAllByOwner($owner);
+
         return $this->render('profile/exchange_office/index.html.twig', [
-            'exchangeOffices' => $controllerHandler->getAllForRoles(ExchangeOffice::class, $this->getUser()),
+            'exchangeOffices' => $exchangeOffices,
         ]);
     }
 
@@ -56,10 +66,9 @@ class ExchangeOfficeController extends BaseProfileController
         PermissionGroupRepository $permissionGroupRepository
     )
     {
-        $staffs = $staffRepository->findByAllOwnerStaff($this->getUser());
-        $permissionGroups = $permissionGroupRepository->findAllByOwner($this->getUser());
+        $staffs = $staffRepository->findByAllOwnerStaff($this->getOwner());
+        $permissionGroups = $permissionGroupRepository->findAllByOwner($this->getOwner());
         $currencies = $currencyRepository->findAll();
-
 
         return $this->render('profile/exchange_office/create.html.twig', [
             'staffs' => $staffs,
@@ -144,34 +153,30 @@ class ExchangeOfficeController extends BaseProfileController
             return $this->show404();
         }
 
+        $owner = null;
 
-        $exchangeOffice = $exchangeOfficeRepository->findByOne($id, $this->getOwner());
-        $vipClients = $clientRepository->findByOwner($this->getOwner());
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            /** @var User $owner */
+            $owner = $this->getOwner();
+        }
 
+        $exchangeOffice = $exchangeOfficeRepository->findByOne($id, $owner);
+        $owner = $exchangeOffice->getUser();
+
+        $vipClients = $clientRepository->findByOwner($owner);
         $defaultCurrency = $cashboxRepository->findByOneDefaultCurrency($exchangeOffice);
         $defaultCurrencyAmount = $cashboxRepository->getAllAmount($defaultCurrency->getId(), $exchangeOffice)[0];
-
-
         $cashboxes = $cashboxRepository->findByAll($exchangeOffice);
-
-        $exchangeOffice = $exchangeOfficeRepository->find($id);
-
-        if (!$exchangeOffice) {
-            return $this->show404();
-        }
-
-        if (!$this->isGranted('VIEW', $exchangeOffice)) {
-            return $this->show404();
-        }
-
-        $staffs = $staffRepository->findByAllOwnerStaff($this->getUser());
+        $staffs = $staffRepository->findByAllOwnerStaff($owner);
         $currencyCashboxes = $cashboxRepository->findByExchangeOffice($exchangeOffice);
+
         $attachedCurrencies = [];
         foreach ($currencyCashboxes as $currencyCashbox) {
             $attachedCurrencies[] = $currencyCashbox->getCurrency()->getId();
         }
+
         $currencies = $currencyRepository->findAllExcept($attachedCurrencies);
-        $permissionGroups = $permissionGroupRepository->findAllByOwner($this->getUser());
+        $permissionGroups = $permissionGroupRepository->findAllByOwner($owner);
 
         return $this->render('profile/exchange_office/detail.html.twig', [
                 'exchangeOffice' => $exchangeOffice,
