@@ -80,6 +80,18 @@ class SecurityContext extends RawMinkContext
     {
         $path = $this->getContainer()
             ->get('router')
+            ->generate('profile_monetary_operations', ['id' => $this->getExchangeOfficeIdByName($name)]);
+        $this->visitPath($path);
+    }
+
+    /**
+     * @When /^я перехожу на просмотр вкладки обменного пункта "([^"]*)"$/
+     * @param $name
+     */
+    public function iViewExchangeTabOffice($name)
+    {
+        $path = $this->getContainer()
+            ->get('router')
             ->generate('profile_exchange_office_detail', ['id' => $this->getExchangeOfficeIdByName($name)]);
         $this->visitPath($path);
     }

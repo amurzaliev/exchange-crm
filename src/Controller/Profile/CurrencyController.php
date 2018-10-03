@@ -56,6 +56,7 @@ class CurrencyController extends BaseProfileController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $currency->setUser($this->getUser());
+            $currency->setDefaultCurrency(0);
             $manager->persist($currency);
             $manager->flush();
 

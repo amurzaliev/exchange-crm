@@ -18,16 +18,19 @@ class StaffFixtures extends Fixture implements DependentFixtureInterface
 
         $user1 = $this->createUser('staff_1', '12345', 'Иванов А.А');
         $staff1 = $this->createStaff($owner1, $user1, 'Администратор');
+        $staff1->addExchangeOffice($this->getReference(ExchangeOfficeFixtures::EXCHANGE_OFFICE_ONE));
         $manager->persist($user1);
         $manager->persist($staff1);
 
         $user2 = $this->createUser('staff_2', '12345', 'Петров А.А');
         $staff2 = $this->createStaff($owner1, $user2, 'Кассир');
+        $staff2->addExchangeOffice($this->getReference(ExchangeOfficeFixtures::EXCHANGE_OFFICE_ONE));
         $manager->persist($user2);
         $manager->persist($staff2);
 
         $user3 = $this->createUser('staff_3', '12345', 'Сидоров А.А');
         $staff3 = $this->createStaff($owner1, $user3, 'Кассир');
+        $staff3->addExchangeOffice($this->getReference(ExchangeOfficeFixtures::EXCHANGE_OFFICE_ONE));
         $manager->persist($user3);
         $manager->persist($staff3);
 
@@ -36,16 +39,19 @@ class StaffFixtures extends Fixture implements DependentFixtureInterface
 
         $user4 = $this->createUser('staff_4', '12345', 'Глушков А.А');
         $staff4 = $this->createStaff($owner2, $user4, 'Администратор');
+        $staff4->addExchangeOffice($this->getReference(ExchangeOfficeFixtures::EXCHANGE_OFFICE_THREE));
         $manager->persist($user4);
         $manager->persist($staff4);
 
         $user5 = $this->createUser('staff_5', '12345', 'Козлов А.А');
         $staff5 = $this->createStaff($owner2, $user5, 'Кассир');
+        $staff5->addExchangeOffice($this->getReference(ExchangeOfficeFixtures::EXCHANGE_OFFICE_THREE));
         $manager->persist($user5);
         $manager->persist($staff5);
 
         $user6 = $this->createUser('staff_6', '12345', 'Игнатьевич А.А');
         $staff6 = $this->createStaff($owner2, $user6, 'Кассир');
+        $staff6->addExchangeOffice($this->getReference(ExchangeOfficeFixtures::EXCHANGE_OFFICE_THREE));
         $manager->persist($user6);
         $manager->persist($staff6);
 
