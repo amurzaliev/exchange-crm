@@ -177,6 +177,7 @@ class CurrencyRateController extends BaseProfileController
             $currencyRate['sale'] = $sale;
             $currencyRate['purchase'] = $purchase;
             $currencyRate['name'] = $cashbox->getCurrency()->getName();
+            $currencyRate['icon'] = $cashbox->getCurrency()->getIcon();
             $currencyRate['iso'] = $cashbox->getCurrency()->getIso();
             $currencyRate['imageFile'] = $cashbox->getCurrency()->getImageFile();
             $currencyRate['currency'] = $cashbox->getCurrency();

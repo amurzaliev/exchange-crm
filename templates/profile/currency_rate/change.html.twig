@@ -15,6 +15,7 @@
                     <hr>
                     <table id="table" class="table data-table table-striped table-bordered">
                         <tr>
+                            <th>Флаг</th>
                             <th>Название валюты</th>
                             <th>Продажа</th>
                             <th>Покупка</th>
@@ -84,6 +85,7 @@
                         let form = $(
                             '<tr class = "form_in_tr" >' +
                             '<form class="form-inline form"  >' +
+                            '<td><img style="width: 50px; height: 25px" src="/uploads/images/currency/' + data.icon + '"></td>' +
                             '<td>' + data.name + '</td>' +
                             '<input type="hidden" class="cashboxId"  name = "cashboxId" value = "' + (data.cashbox_id || '') + '" >' +
                             '<input type="hidden" class="iso"  name = "iso" value = "' + (data.iso || '') + '" >' +
