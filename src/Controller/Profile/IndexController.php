@@ -5,6 +5,7 @@ namespace App\Controller\Profile;
 use App\Repository\CashboxRepository;
 use App\Repository\ExchangeOfficeRepository;
 use App\Repository\TransactionsRepository;
+use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,13 +18,19 @@ class IndexController extends BaseProfileController
      * @param ExchangeOfficeRepository $exchangeOfficeRepository
      * @param CashboxRepository $cashboxRepository
      * @param TransactionsRepository $transactionsRepository
+     * @param UserRepository $userRepository
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function indexAction(
         ExchangeOfficeRepository $exchangeOfficeRepository,
         CashboxRepository $cashboxRepository,
-        TransactionsRepository $transactionsRepository)
+        TransactionsRepository $transactionsRepository,
+        UserRepository $userRepository
+    )
     {
+        $exchangesList = $exchangeOfficeRepository->findAll();
+        $usersList = $userRepository->findAll();
+
         $allExchange = $exchangeOfficeRepository->findByAllOwnersExchange($this->getOwner());
         $all_total_point = $transactionsRepository->allTotalProfit($this->getUser()->getId());
         $all_number_of_operations = $transactionsRepository->allNumberOfOperations($this->getOwner()->getId());
@@ -61,7 +68,9 @@ class IndexController extends BaseProfileController
             'all_exchange' => $array,
             'all_currency' => $arrayAllCurrency,
             'all_total_point' => $all_point,
-            'all_number_of_operations' => $all_operations
+            'all_number_of_operations' => $all_operations,
+            'exchangesList' => count($exchangesList),
+            'usersList' => count($usersList),
         ]);
     }
 

@@ -111,7 +111,7 @@ class Staff
         return $this->permissionGroup;
     }
 
-    public function setPermissionGroup(PermissionGroup $permissionGroup): self
+    public function setPermissionGroup(?PermissionGroup $permissionGroup): self
     {
         $this->permissionGroup = $permissionGroup;
 
