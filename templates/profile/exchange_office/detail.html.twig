@@ -122,16 +122,18 @@
         <div class="col-12">
             <div class="section-content">
                 <div class="content-head">
-                    <h4 class="content-title">Управление обменным пунктом</h4><!-- /.content-title -->
+                    <h4>Управление обменным пунктом <b style="color: #50c37f">{{ exchangeOffice.name }}</b></h4><!-- /.content-title -->
                     <div class="float-right">
                         <a href="{{ path('profile_exchange_office_index') }}"
                            class="btn btn-primary">
                             Список обменных пунктов <i class="fa fa-fw fa-list"></i>
                         </a>
+                        {% if is_granted('ROLE_OWNER') %}
                         <a href="{{ path('profile_exchange_office_create') }}"
                            class="btn btn-success">
                             Добавить обменный пункт <i class="fa fa-fw fa-plus"></i>
                         </a>
+                        {% endif %}
                     </div><!-- /.corner-content -->
                     <div class="clearfix"></div>
                 </div><!-- /.content-head -->
@@ -154,17 +156,20 @@
                                     <a class="nav-link" id="cashbox-tab" data-toggle="tab" href="#cashbox" role="tab"
                                        aria-controls="profile" aria-selected="false">Валютные кассы и баланс</a>
                                 </li>
+                                {% if is_granted('ROLE_OWNER') %}
                                 <li class="nav-item">
                                     <a class="nav-link" id="exchangeOffice-tab" data-toggle="tab"
                                        href="#exchangeOffice" role="tab"
                                        aria-controls="exchangeOffice"
                                        aria-selected="false">Информация об обменном пункте</a>
                                 </li>
+                                {% endif %}
                             </ul>
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
                             <div class="tab-content" id="exchangeOfficeTabContent">
+                                {% if is_granted('ROLE_OWNER') %}
                                 <div class="tab-pane fade" id="exchangeOffice" role="tabpanel"
                                      aria-labelledby="exchangeOffice-tab">
                                     {% include 'profile/exchange_office/tabs/exchange_office_tab.html.twig' %}
@@ -173,6 +178,7 @@
                                         {{ include('profile/components/forms/modal_form_staff.html.twig', {'permissionGroups' : permissionGroups}) }}
                                     </div>
                                 </div>
+                                {% endif %}
                                 <div class="tab-pane fade" id="cashbox" role="tabpanel" aria-labelledby="cashbox-tab">
                                     {% include 'profile/exchange_office/tabs/balance_tab_html.twig' %}
                                 </div>

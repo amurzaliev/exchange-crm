@@ -6,11 +6,13 @@
                     <i class="fa fa-user"></i> <span class="menu-title">Профаил</span>
                 </a>
             </li>
+            {% if is_granted('ROLE_OWNER') %}
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('profile_permission_group_index') }}" role="button" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-lock"></i> <span class="menu-title">Группы привилегий</span>
                 </a>
             </li>
+            {% endif %}
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('profile_exchange_office_index') }}" role="button" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-window-restore"></i> <span class="menu-title">Обменные пункты</span>
@@ -25,11 +27,14 @@
             {% endif %}
 
             {% if not is_granted('ROLE_ADMIN') %}
+
+                {% if is_granted('ROLE_OWNER') %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('profile_staff_index') }}" role="button" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-users"></i> <span class="menu-title">Персонал</span>
                     </a>
                 </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('profile_vip_client_index') }}" role="button" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-star"></i> <span class="menu-title">VIP клиенты</span>
@@ -41,17 +46,18 @@
                     </a>
                 </li>
             {% endif %}
-
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('profile_monetary_operations_history') }}" role="button" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-search-plus"></i> <span class="menu-title">История транзакций</span>
                 </a>
             </li>
+            {% if is_granted('ROLE_OWNER') %}
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('profile_reports_index') }}" role="button" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-line-chart"></i> <span class="menu-title">Отчеты</span>
                 </a>
             </li>
+            {% endif %}
         </ul>
     </nav>
 </aside><!-- /.left-panel -->

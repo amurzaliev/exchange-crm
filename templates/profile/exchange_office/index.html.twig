@@ -6,7 +6,7 @@
             <div class="section-content">
                 <div class="content-head">
                     <h4 class="content-title">Управление обменными пунктами</h4><!-- /.content-title -->
-                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_OWNER') %}
+                    {% if not is_granted('ROLE_USER') or is_granted('ROLE_OWNER') %}
                         <div class="float-right">
                             <a href="{{ path('profile_exchange_office_create') }}">
                                 <button type="button" class="btn btn-success">

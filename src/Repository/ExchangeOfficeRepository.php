@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Cashbox;
 use App\Entity\ExchangeOffice;
+use App\Entity\Staff;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -26,9 +27,10 @@ class ExchangeOfficeRepository extends ServiceEntityRepository
     /**
      * @param int $id
      * @param User $owner
+     * @param null $staff
      * @return ExchangeOffice|null
      */
-    public function findByOne(int $id, User $owner = null)
+    public function findByOne(int $id, User $owner = null, $staff = null)
     {
         try {
             $qb = $this->createQueryBuilder('e')
@@ -43,6 +45,12 @@ class ExchangeOfficeRepository extends ServiceEntityRepository
                 ;
             }
 
+            if ($staff) {
+                $qb
+                    ->join("e.staffs", "staffs")
+                    ->andWhere("staffs.id IN(:staff)")
+                    ->setParameter(":staff", $staff);
+            }
 
             return $qb
                 ->getQuery()
@@ -98,9 +106,10 @@ class ExchangeOfficeRepository extends ServiceEntityRepository
 
     /**
      * @param null $owner
+     * @param Staff|null $staff
      * @return ExchangeOffice[]|null
      */
-    public function findAllByOwner($owner = null)
+    public function findAllByOwner($owner = null, Staff $staff = null)
     {
         try {
             $qb =  $this->createQueryBuilder('e');
@@ -110,6 +119,13 @@ class ExchangeOfficeRepository extends ServiceEntityRepository
                     ->andWhere('e.user = :owner')
                     ->setParameter('owner', $owner)
                 ;
+            }
+
+            if ($staff) {
+                $qb
+                    ->join("e.staffs", "staffs")
+                    ->andWhere("staffs.id IN(:staff)")
+                    ->setParameter(":staff", $staff);
             }
 
             return $qb

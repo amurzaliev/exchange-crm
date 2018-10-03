@@ -7,7 +7,6 @@ use App\Entity\User;
 use App\Form\UserStaffType;
 use App\Repository\PermissionGroupRepository;
 use App\Repository\StaffRepository;
-use App\Repository\UserRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -62,6 +61,7 @@ class StaffController extends BaseProfileController
         StaffRepository $staffRepository
     )
     {
+        $staffData = [];
         $message = null;
         $blockList = null;
         $user = new User();
@@ -77,6 +77,7 @@ class StaffController extends BaseProfileController
             $permissionGroup = $permissionGroupRepository->find($group);
 
             $user->setFullName($fullname)
+                ->setRoles(['ROLE_USER'])
                 ->setUsername($username)
                 ->setPlainPassword($password)
                 ->setEnabled($enabled)
@@ -277,7 +278,6 @@ class StaffController extends BaseProfileController
      * @param ObjectManager $manager
      * @param PermissionGroupRepository $permissionGroupRepository
      * @param StaffRepository $staffRepository
-     * @param UserRepository $userRepository
      * @return JsonResponse
      */
     public function editAjaxAction(
@@ -306,6 +306,7 @@ class StaffController extends BaseProfileController
             $permissionGroup = $permissionGroupRepository->find($group);
 
             $user->setFullName($fullname)
+                ->setRoles(['ROLE_USER'])
                 ->setUsername($username)
                 ->setEnabled($enabled)
             ;

@@ -39,13 +39,18 @@ class ExchangeOfficeController extends BaseProfileController
     )
     {
         $owner = null;
+        $staff = null;
 
         if (!$this->isGranted('ROLE_ADMIN')) {
             /** @var User $owner */
             $owner = $this->getOwner();
         }
 
-        $exchangeOffices = $exchangeOfficeRepository->findAllByOwner($owner);
+        if ($this->isGranted('ROLE_USER')) {
+            $staff = $this->getUser()->getStaff();
+        }
+
+        $exchangeOffices = $exchangeOfficeRepository->findAllByOwner($owner, $staff);
 
         return $this->render('profile/exchange_office/index.html.twig', [
             'exchangeOffices' => $exchangeOffices,
@@ -143,24 +148,25 @@ class ExchangeOfficeController extends BaseProfileController
         PermissionGroupRepository $permissionGroupRepository
     )
     {
-        $exchangeOffice = $exchangeOfficeRepository->find($id);
-
-        if (!$exchangeOffice) {
-            return $this->show404();
-        }
-
-        if (!$this->isGranted('VIEW', $exchangeOffice)) {
-            return $this->show404();
-        }
 
         $owner = null;
+        $staff = null;
 
         if (!$this->isGranted('ROLE_ADMIN')) {
             /** @var User $owner */
             $owner = $this->getOwner();
         }
 
-        $exchangeOffice = $exchangeOfficeRepository->findByOne($id, $owner);
+        if ($this->isGranted('ROLE_USER')) {
+            $staff = $this->getUser()->getStaff();
+        }
+
+        $exchangeOffice = $exchangeOfficeRepository->findByOne($id, $owner, $staff);
+
+        if (!$exchangeOffice) {
+            return $this->show404();
+        }
+
         $owner = $exchangeOffice->getUser();
 
         $vipClients = $clientRepository->findByOwner($owner);
